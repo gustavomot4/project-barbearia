@@ -1,0 +1,791 @@
+/* ============================================================
+   CASA NAVALHA — Camada de estilo autoral
+   Tudo que o Tailwind não resolve bem: texturas, animações,
+   componentes recorrentes e micro-interações.
+   ============================================================ */
+
+:root {
+  --ink:        #0A0A0B;
+  --ink-800:    #0F0F11;
+  --ink-700:    #141416;
+  --ink-600:    #1A191C;
+  --bone:       #EDE6DA;
+  --bone-dim:   #A79F94;
+  --bone-faint: #6E675E;
+  --gold:       #C9A24A;
+  --gold-light: #E8CE8A;
+  --gold-deep:  #8A6A22;
+  --wine:       #5E241F;
+
+  --line:      rgba(201, 162, 74, 0.22);
+  --line-soft: rgba(237, 230, 218, 0.08);
+
+  /* Curva de saída usada em praticamente todas as transições */
+  --ease: cubic-bezier(0.22, 0.61, 0.36, 1);
+}
+
+/* ---------- Base ---------- */
+
+html { -webkit-tap-highlight-color: transparent; }
+
+body {
+  background: var(--ink);
+  overflow-x: hidden;
+}
+
+/* Grão sutil sobre a página inteira — tira o aspecto "plano digital" */
+body::after {
+  content: '';
+  position: fixed;
+  inset: 0;
+  z-index: 100;
+  pointer-events: none;
+  opacity: 0.035;
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='140' height='140'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.85' numOctaves='3'/%3E%3C/filter%3E%3Crect width='140' height='140' filter='url(%23n)'/%3E%3C/svg%3E");
+}
+
+/* Barra de rolagem discreta e no tom da marca */
+::-webkit-scrollbar { width: 9px; height: 9px; }
+::-webkit-scrollbar-track { background: var(--ink-800); }
+::-webkit-scrollbar-thumb { background: #2A2831; border: 2px solid var(--ink-800); }
+::-webkit-scrollbar-thumb:hover { background: var(--gold-deep); }
+
+.no-scrollbar { scrollbar-width: none; -ms-overflow-style: none; }
+.no-scrollbar::-webkit-scrollbar { display: none; }
+
+/* Foco visível e coerente com a marca (acessibilidade) */
+:focus-visible {
+  outline: 1px solid var(--gold);
+  outline-offset: 3px;
+}
+
+/* Compensa o header fixo ao navegar por âncoras */
+section[id] { scroll-margin-top: 90px; }
+
+/* ---------- Tipografia de apoio ---------- */
+
+/* Título vazado — cria contraste com a linha sólida acima */
+.text-outline {
+  color: transparent;
+  -webkit-text-stroke: 1.4px var(--gold);
+  text-stroke: 1.4px var(--gold);
+}
+@supports not (-webkit-text-stroke: 1px black) {
+  .text-outline { color: var(--gold); }
+}
+
+/* Etiqueta que abre cada seção */
+.section-eyebrow {
+  display: flex;
+  align-items: center;
+  gap: 0.9rem;
+  font-size: 10px;
+  letter-spacing: 0.34em;
+  text-transform: uppercase;
+  color: var(--gold);
+}
+.section-eyebrow::before {
+  content: '';
+  width: 2.2rem;
+  height: 1px;
+  background: var(--gold);
+  flex-shrink: 0;
+}
+
+/* ---------- Navegação ---------- */
+
+.nav-link {
+  position: relative;
+  font-size: 11px;
+  letter-spacing: 0.2em;
+  text-transform: uppercase;
+  color: var(--bone-dim);
+  transition: color 0.3s var(--ease);
+  padding-block: 4px;
+}
+.nav-link::after {
+  content: '';
+  position: absolute;
+  left: 0;
+  bottom: 0;
+  width: 0;
+  height: 1px;
+  background: var(--gold);
+  transition: width 0.4s var(--ease);
+}
+.nav-link:hover,
+.nav-link.is-active { color: var(--bone); }
+.nav-link:hover::after,
+.nav-link.is-active::after { width: 100%; }
+
+/* Header ganha fundo sólido ao rolar.
+   Com o menu aberto o header fica ACIMA do overlay (z-50 vs z-45) para
+   que o botão de fechar continue clicável — por isso precisa de fundo
+   próprio, senão os links do menu aparecem por trás do logo.          */
+#site-header.is-stuck,
+#site-header.is-menu-open {
+  background: rgba(10, 10, 11, 0.9);
+  backdrop-filter: blur(14px);
+  -webkit-backdrop-filter: blur(14px);
+}
+#site-header.is-menu-open { background: var(--ink); }
+
+/* Ícone hambúrguer desenhado em CSS */
+.burger,
+.burger::before,
+.burger::after {
+  display: block;
+  width: 18px;
+  height: 1.5px;
+  background: var(--bone);
+  transition: transform 0.4s var(--ease), opacity 0.25s;
+}
+.burger::before,
+.burger::after { content: ''; position: absolute; }
+.burger::before { transform: translateY(-6px); }
+.burger::after  { transform: translateY(6px); }
+
+#menu-toggle[aria-expanded='true'] .burger { background: transparent; }
+#menu-toggle[aria-expanded='true'] .burger::before { transform: rotate(45deg); }
+#menu-toggle[aria-expanded='true'] .burger::after  { transform: rotate(-45deg); }
+
+/* Menu mobile */
+#mobile-menu.is-open { opacity: 1; visibility: visible; }
+
+.m-link {
+  display: block;
+  font-family: 'Anton', Impact, sans-serif;
+  font-size: clamp(2rem, 9vw, 3rem);
+  line-height: 1.15;
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+  color: var(--bone);
+  padding-block: 0.35rem;
+  opacity: 0;
+  transform: translateY(22px);
+  transition: opacity 0.5s var(--ease), transform 0.5s var(--ease), color 0.25s;
+}
+.m-link:active { color: var(--gold); }
+#mobile-menu.is-open .m-link {
+  opacity: 1;
+  transform: none;
+  transition-delay: calc(var(--i) * 55ms + 90ms);
+}
+
+/* ---------- Botões ---------- */
+
+/* Varredura de brilho no hover — assinatura dos CTAs dourados */
+.btn-gold {
+  position: relative;
+  overflow: hidden;
+  isolation: isolate;
+  transition: transform 0.25s var(--ease), box-shadow 0.35s var(--ease);
+}
+.btn-gold::after {
+  content: '';
+  position: absolute;
+  inset: 0;
+  z-index: -1;
+  background: linear-gradient(105deg, transparent 34%, rgba(255, 255, 255, 0.55) 50%, transparent 66%);
+  transform: translateX(-125%);
+  transition: transform 0.75s var(--ease);
+}
+.btn-gold:hover::after { transform: translateX(125%); }
+.btn-gold:hover { box-shadow: 0 12px 34px -12px rgba(201, 162, 74, 0.75); }
+.btn-gold:active { transform: scale(0.975); }
+
+.ghost-btn {
+  padding: 0.6rem 1rem;
+  border: 1px solid rgba(255, 255, 255, 0.12);
+  font-size: 10px;
+  letter-spacing: 0.18em;
+  text-transform: uppercase;
+  color: var(--bone-dim);
+  transition: border-color 0.25s, color 0.25s;
+}
+.ghost-btn:hover { border-color: var(--line); color: var(--bone); }
+.ghost-btn--danger:hover { border-color: #8E4038; color: #F0A9A0; }
+
+.social {
+  display: grid;
+  place-items: center;
+  width: 38px;
+  height: 38px;
+  border: 1px solid rgba(255, 255, 255, 0.12);
+  color: var(--bone-dim);
+  transition: all 0.3s var(--ease);
+}
+.social:hover {
+  border-color: var(--gold);
+  color: var(--gold);
+  transform: translateY(-2px);
+}
+
+/* Pílulas de filtro do painel */
+.chip {
+  padding: 0.5rem 0.95rem;
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  font-size: 10px;
+  letter-spacing: 0.16em;
+  text-transform: uppercase;
+  color: var(--bone-dim);
+  transition: all 0.25s var(--ease);
+}
+.chip:hover { border-color: var(--line); color: var(--bone); }
+.chip.is-active {
+  background: var(--gold);
+  border-color: var(--gold);
+  color: var(--ink);
+  font-weight: 600;
+}
+
+/* ---------- Ornamentos ---------- */
+
+/* Poste de barbeiro em movimento — usado como filete de 2–3px */
+.pole {
+  background: repeating-linear-gradient(
+    115deg,
+    var(--gold)  0px, var(--gold)  9px,
+    var(--ink-600) 9px, var(--ink-600) 18px,
+    var(--wine) 18px, var(--wine) 27px,
+    var(--ink-600) 27px, var(--ink-600) 36px
+  );
+  background-size: 72px 100%;
+  animation: pole-slide 2.6s linear infinite;
+}
+@keyframes pole-slide { to { background-position: 72px 0; } }
+
+/* Cantoneiras que aparecem no hover dos cards */
+.bracket { position: relative; }
+.bracket::before,
+.bracket::after {
+  content: '';
+  position: absolute;
+  width: 15px;
+  height: 15px;
+  border: 1px solid var(--gold);
+  opacity: 0;
+  transition: opacity 0.35s var(--ease), transform 0.35s var(--ease);
+  pointer-events: none;
+}
+.bracket::before { top: 8px; left: 8px; border-right: 0; border-bottom: 0; transform: translate(7px, 7px); }
+.bracket::after  { bottom: 8px; right: 8px; border-left: 0; border-top: 0;  transform: translate(-7px, -7px); }
+.bracket:hover::before,
+.bracket:hover::after,
+.bracket.is-selected::before,
+.bracket.is-selected::after { opacity: 1; transform: translate(0, 0); }
+
+/* Linha animada do indicador "role a página" */
+.scroll-line {
+  position: relative;
+  display: block;
+  width: 1px;
+  height: 42px;
+  background: rgba(237, 230, 218, 0.15);
+  overflow: hidden;
+}
+.scroll-line::after {
+  content: '';
+  position: absolute;
+  inset: 0;
+  background: var(--gold);
+  animation: scroll-drop 1.9s var(--ease) infinite;
+}
+@keyframes scroll-drop {
+  0%   { transform: translateY(-100%); }
+  55%  { transform: translateY(0); }
+  100% { transform: translateY(100%); }
+}
+
+/* Malha do "mapa" estilizado */
+.map-grid {
+  background-image:
+    linear-gradient(rgba(201, 162, 74, 0.16) 1px, transparent 1px),
+    linear-gradient(90deg, rgba(201, 162, 74, 0.16) 1px, transparent 1px);
+  background-size: 46px 46px;
+}
+
+.pulse-ring { animation: pulse-ring 2.4s var(--ease) infinite; }
+@keyframes pulse-ring {
+  0%   { transform: scale(0.75); opacity: 0.9; }
+  100% { transform: scale(1.7);  opacity: 0; }
+}
+
+/* ---------- Aparição no scroll ---------- */
+
+.reveal {
+  opacity: 0;
+  transform: translateY(22px);
+  transition: opacity 0.85s var(--ease), transform 0.85s var(--ease);
+  transition-delay: var(--d, 0ms);
+  will-change: opacity, transform;
+}
+.reveal.is-in { opacity: 1; transform: none; }
+
+/* ---------- Cards de serviço ---------- */
+
+.svc-card {
+  position: relative;
+  display: block;
+  width: 100%;
+  text-align: left;
+  padding: 2rem 1.75rem;
+  background: var(--ink);
+  transition: background 0.4s var(--ease), transform 0.4s var(--ease);
+}
+.svc-card:hover { background: var(--ink-600); }
+.svc-card__price {
+  font-family: 'Cormorant Garamond', Georgia, serif;
+  font-size: 2rem;
+  font-weight: 600;
+  color: var(--gold);
+  line-height: 1;
+}
+.svc-card__tag {
+  position: absolute;
+  top: 0;
+  right: 0;
+  padding: 0.35rem 0.7rem;
+  background: var(--gold);
+  color: var(--ink);
+  font-size: 9px;
+  font-weight: 700;
+  letter-spacing: 0.18em;
+  text-transform: uppercase;
+}
+
+/* ---------- Cards de barbeiro ---------- */
+
+.barber-card { position: relative; overflow: hidden; }
+.barber-card img {
+  transition: transform 0.8s var(--ease), filter 0.6s var(--ease);
+  filter: grayscale(1) contrast(1.06);
+}
+.barber-card:hover img { transform: scale(1.06); filter: grayscale(0) contrast(1); }
+
+/* ---------- Galeria ---------- */
+
+.gal-item { position: relative; overflow: hidden; background: var(--ink-600); }
+.gal-item img {
+  transition: transform 0.9s var(--ease), filter 0.6s var(--ease);
+  filter: grayscale(0.75);
+}
+.gal-item:hover img { transform: scale(1.07); filter: grayscale(0); }
+.gal-item::after {
+  content: '';
+  position: absolute;
+  inset: 0;
+  background: linear-gradient(to top, rgba(10, 10, 11, 0.85), transparent 55%);
+  opacity: 0;
+  transition: opacity 0.45s var(--ease);
+}
+.gal-item:hover::after { opacity: 1; }
+.gal-item figcaption {
+  position: absolute;
+  left: 0;
+  bottom: 0;
+  z-index: 2;
+  padding: 1rem;
+  font-size: 10px;
+  letter-spacing: 0.2em;
+  text-transform: uppercase;
+  color: var(--bone);
+  opacity: 0;
+  transform: translateY(10px);
+  transition: all 0.45s var(--ease);
+}
+.gal-item:hover figcaption { opacity: 1; transform: none; }
+
+/* ---------- Fluxo de agendamento ---------- */
+
+.step-title {
+  font-family: 'Anton', Impact, sans-serif;
+  font-size: clamp(1.5rem, 4.5vw, 2rem);
+  text-transform: uppercase;
+  letter-spacing: 0.02em;
+  line-height: 1.05;
+}
+.step-sub {
+  margin-top: 0.6rem;
+  font-size: 0.875rem;
+  color: var(--bone-dim);
+}
+
+/* Animação de entrada ao trocar de etapa */
+.step { animation: step-in 0.45s var(--ease) both; }
+@keyframes step-in {
+  from { opacity: 0; transform: translateX(16px); }
+  to   { opacity: 1; transform: none; }
+}
+.step.is-back { animation-name: step-in-back; }
+@keyframes step-in-back {
+  from { opacity: 0; transform: translateX(-16px); }
+  to   { opacity: 1; transform: none; }
+}
+
+/* Trilha de progresso */
+.stepper-node {
+  display: grid;
+  place-items: center;
+  width: 30px;
+  height: 30px;
+  flex-shrink: 0;
+  border: 1px solid rgba(255, 255, 255, 0.16);
+  font-size: 11px;
+  font-weight: 600;
+  color: var(--bone-faint);
+  background: var(--ink-700);
+  transition: all 0.4s var(--ease);
+}
+.stepper-item.is-done .stepper-node {
+  border-color: var(--gold);
+  color: var(--gold);
+}
+.stepper-item.is-current .stepper-node {
+  background: var(--gold);
+  border-color: var(--gold);
+  color: var(--ink);
+  box-shadow: 0 0 0 4px rgba(201, 162, 74, 0.15);
+}
+.stepper-label {
+  margin-left: 0.6rem;
+  font-size: 10px;
+  letter-spacing: 0.16em;
+  text-transform: uppercase;
+  color: var(--bone-faint);
+  white-space: nowrap;
+  transition: color 0.3s;
+}
+.stepper-item.is-current .stepper-label,
+.stepper-item.is-done .stepper-label { color: var(--bone); }
+
+.stepper-bar {
+  flex: 1;
+  height: 1px;
+  margin: 0 0.65rem;
+  background: rgba(255, 255, 255, 0.13);
+  position: relative;
+  overflow: hidden;
+}
+.stepper-bar::after {
+  content: '';
+  position: absolute;
+  inset: 0;
+  background: var(--gold);
+  transform: scaleX(0);
+  transform-origin: left;
+  transition: transform 0.5s var(--ease);
+}
+.stepper-item.is-done + .stepper-bar::after { transform: scaleX(1); }
+
+/* Opção selecionável (serviço, barbeiro, data, horário) */
+.opt {
+  position: relative;
+  display: block;
+  width: 100%;
+  text-align: left;
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  background: var(--ink-800);
+  transition: border-color 0.3s var(--ease), background 0.3s var(--ease), transform 0.2s var(--ease);
+}
+.opt:hover:not(:disabled) { border-color: var(--line); background: var(--ink-600); }
+.opt:active:not(:disabled) { transform: scale(0.99); }
+.opt.is-selected {
+  border-color: var(--gold);
+  background: rgba(201, 162, 74, 0.07);
+}
+.opt:disabled { opacity: 0.32; cursor: not-allowed; }
+
+/* Marcador circular à esquerda das opções */
+.opt-dot {
+  display: grid;
+  place-items: center;
+  width: 20px;
+  height: 20px;
+  flex-shrink: 0;
+  border: 1px solid rgba(255, 255, 255, 0.22);
+  border-radius: 50%;
+  transition: all 0.3s var(--ease);
+}
+.opt-dot::after {
+  content: '';
+  width: 8px;
+  height: 8px;
+  border-radius: 50%;
+  background: var(--gold);
+  transform: scale(0);
+  transition: transform 0.3s var(--ease);
+}
+.opt.is-selected .opt-dot { border-color: var(--gold); }
+.opt.is-selected .opt-dot::after { transform: scale(1); }
+
+/* Chip de data (faixa horizontal rolável) */
+.day-chip {
+  flex-shrink: 0;
+  scroll-snap-align: start;
+  width: 62px;
+  padding: 0.75rem 0;
+  text-align: center;
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  background: var(--ink-800);
+  transition: all 0.28s var(--ease);
+}
+.day-chip:hover:not(:disabled) { border-color: var(--line); }
+.day-chip.is-selected {
+  background: var(--gold);
+  border-color: var(--gold);
+  color: var(--ink);
+}
+.day-chip.is-selected .day-chip__dow,
+.day-chip.is-selected .day-chip__mon { color: rgba(10, 10, 11, 0.65); }
+.day-chip:disabled { opacity: 0.28; cursor: not-allowed; }
+.day-chip__dow { display: block; font-size: 9px; letter-spacing: 0.16em; text-transform: uppercase; color: var(--bone-faint); }
+.day-chip__num { display: block; font-family: 'Anton', Impact, sans-serif; font-size: 1.35rem; line-height: 1.15; margin-top: 2px; }
+.day-chip__mon { display: block; font-size: 9px; letter-spacing: 0.12em; text-transform: uppercase; color: var(--bone-faint); }
+
+/* Horário */
+.slot {
+  padding: 0.7rem 0.25rem;
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  background: var(--ink-800);
+  font-size: 0.875rem;
+  font-variant-numeric: tabular-nums;
+  transition: all 0.24s var(--ease);
+}
+.slot:hover:not(:disabled) { border-color: var(--gold); color: var(--gold); }
+.slot.is-selected {
+  background: var(--gold);
+  border-color: var(--gold);
+  color: var(--ink);
+  font-weight: 600;
+}
+.slot:disabled {
+  background: rgba(255, 255, 255, 0.04);
+  border-color: transparent;
+  color: var(--bone-faint);
+  text-decoration: line-through;
+  cursor: not-allowed;
+}
+
+/* ---------- Formulário ---------- */
+
+.field-label {
+  display: block;
+  margin-bottom: 0.55rem;
+  font-size: 10px;
+  letter-spacing: 0.2em;
+  text-transform: uppercase;
+  color: var(--bone-dim);
+}
+
+.field {
+  width: 100%;
+  padding: 0.85rem 1rem;
+  background: var(--ink-800);
+  border: 1px solid rgba(255, 255, 255, 0.12);
+  border-radius: 0;
+  color: var(--bone);
+  font-size: 0.95rem;
+  font-family: inherit;
+  transition: border-color 0.28s var(--ease), background 0.28s var(--ease);
+}
+.field::placeholder { color: var(--bone-faint); }
+.field:focus {
+  outline: none;
+  border-color: var(--gold);
+  background: var(--ink-600);
+}
+.field.has-error { border-color: #A2493F; }
+
+.field-error {
+  min-height: 1rem;
+  margin-top: 0.4rem;
+  font-size: 0.75rem;
+  color: #E39289;
+  opacity: 0;
+  transform: translateY(-3px);
+  transition: all 0.25s var(--ease);
+}
+.field-error.is-visible { opacity: 1; transform: none; }
+
+/* Checkbox custom */
+.check-mark {
+  appearance: none;
+  -webkit-appearance: none;
+  position: relative;
+  width: 17px;
+  height: 17px;
+  flex-shrink: 0;
+  margin-top: 2px;
+  border: 1px solid rgba(237, 230, 218, 0.25);
+  background: transparent;
+  cursor: pointer;
+  transition: all 0.25s var(--ease);
+}
+.check-mark:checked { background: var(--gold); border-color: var(--gold); }
+.check-mark:checked::after {
+  content: '';
+  position: absolute;
+  left: 5px;
+  top: 1px;
+  width: 5px;
+  height: 10px;
+  border: solid var(--ink);
+  border-width: 0 2px 2px 0;
+  transform: rotate(43deg);
+}
+
+/* Tremida curta ao errar a validação */
+.shake { animation: shake 0.42s var(--ease); }
+@keyframes shake {
+  10%, 90% { transform: translateX(-2px); }
+  20%, 80% { transform: translateX(4px); }
+  30%, 50%, 70% { transform: translateX(-6px); }
+  40%, 60% { transform: translateX(6px); }
+}
+
+/* ---------- Modal de confirmação ---------- */
+
+#confirm-card.is-in { opacity: 1; transform: none; }
+
+/* Selo: círculo desenha, depois o "check" */
+#success-seal .ring {
+  stroke-dasharray: 208;
+  stroke-dashoffset: 208;
+}
+#success-seal .tick {
+  stroke-dasharray: 45;
+  stroke-dashoffset: 45;
+}
+#confirm-card.is-in #success-seal .ring { animation: draw 0.85s var(--ease) 0.15s forwards; }
+#confirm-card.is-in #success-seal .tick { animation: draw 0.45s var(--ease) 0.75s forwards; }
+@keyframes draw { to { stroke-dashoffset: 0; } }
+
+/* Partículas douradas do "confete" */
+.spark {
+  position: absolute;
+  width: 5px;
+  height: 5px;
+  background: var(--gold);
+  opacity: 0;
+}
+#confirm-card.is-in .spark {
+  animation: spark-out 1.05s var(--ease) 0.7s forwards;
+}
+@keyframes spark-out {
+  0%   { opacity: 1; transform: translate(0, 0) scale(1) rotate(0deg); }
+  100% { opacity: 0; transform: translate(var(--x), var(--y)) scale(0.25) rotate(220deg); }
+}
+
+/* ---------- Painel do proprietário ---------- */
+
+#admin-sheet.is-in { transform: none; }
+
+.kpi {
+  padding: 1.35rem 1.25rem;
+  background: var(--ink-800);
+}
+.kpi-label { font-size: 9px; letter-spacing: 0.22em; text-transform: uppercase; color: var(--bone-faint); }
+.kpi-value { font-family: 'Anton', Impact, sans-serif; font-size: 1.9rem; line-height: 1.1; color: var(--gold); margin-top: 0.45rem; }
+.kpi-hint  { font-size: 11px; color: var(--bone-faint); margin-top: 0.2rem; }
+
+.booking-row {
+  display: grid;
+  gap: 1rem;
+  padding: 1.15rem 1.25rem;
+  border: 1px solid rgba(255, 255, 255, 0.09);
+  background: var(--ink-700);
+  transition: border-color 0.3s var(--ease), opacity 0.3s;
+  animation: row-in 0.4s var(--ease) both;
+}
+.booking-row:hover { border-color: var(--line); }
+.booking-row.is-cancelado { opacity: 0.5; }
+@keyframes row-in {
+  from { opacity: 0; transform: translateY(10px); }
+  to   { opacity: 1; transform: none; }
+}
+@media (min-width: 700px) {
+  .booking-row { grid-template-columns: 92px 1fr auto; align-items: center; }
+}
+
+.status-badge {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.4rem;
+  padding: 0.25rem 0.6rem;
+  font-size: 9px;
+  font-weight: 600;
+  letter-spacing: 0.16em;
+  text-transform: uppercase;
+  border: 1px solid currentColor;
+}
+.status-agendado  { color: var(--gold); }
+.status-concluido { color: #7FBF8A; }
+.status-cancelado { color: #C97C72; }
+
+.row-action {
+  padding: 0.5rem 0.8rem;
+  border: 1px solid rgba(255, 255, 255, 0.12);
+  font-size: 10px;
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+  color: var(--bone-dim);
+  transition: all 0.25s var(--ease);
+  white-space: nowrap;
+}
+.row-action:hover { color: var(--bone); border-color: var(--line); }
+.row-action--ok:hover     { color: #93D6A0; border-color: #3E7A4A; }
+.row-action--danger:hover { color: #E8A79E; border-color: #8E4038; }
+
+/* ---------- Toasts ---------- */
+
+.toast {
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+  padding: 0.9rem 1.1rem;
+  background: var(--ink-600);
+  border: 1px solid var(--line);
+  border-left-width: 3px;
+  color: var(--bone);
+  font-size: 0.875rem;
+  box-shadow: 0 18px 40px -18px rgba(0, 0, 0, 0.9);
+  pointer-events: auto;
+  animation: toast-in 0.4s var(--ease) both;
+}
+.toast--error { border-color: #8E4038; }
+.toast--info  { border-color: rgba(255, 255, 255, 0.15); }
+.toast.is-out { animation: toast-out 0.32s var(--ease) both; }
+@keyframes toast-in {
+  from { opacity: 0; transform: translateY(16px) scale(0.97); }
+  to   { opacity: 1; transform: none; }
+}
+@keyframes toast-out {
+  to { opacity: 0; transform: translateY(10px) scale(0.97); }
+}
+
+/* ---------- Placeholder para imagens que falharem ---------- */
+
+.img-fallback {
+  background:
+    linear-gradient(135deg, rgba(201, 162, 74, 0.13), transparent 60%),
+    repeating-linear-gradient(45deg, #17161A 0 12px, #131217 12px 24px) !important;
+}
+
+/* ---------- Bloqueio de rolagem com modal aberto ---------- */
+
+body.is-locked { overflow: hidden; }
+
+/* ---------- Respeito a "movimento reduzido" ---------- */
+
+@media (prefers-reduced-motion: reduce) {
+  *,
+  *::before,
+  *::after {
+    animation-duration: 0.001ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.001ms !important;
+    scroll-behavior: auto !important;
+  }
+  .reveal { opacity: 1; transform: none; }
+}
