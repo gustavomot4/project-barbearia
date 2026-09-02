@@ -56,7 +56,7 @@ CN.booking = (function () {
       return '' +
         '<button type="button" class="opt ' + (sel ? 'is-selected' : '') + '" data-servico="' + s.id + '" aria-pressed="' + sel + '">' +
           '<span class="flex items-baseline justify-between gap-4">' +
-            '<span class="font-medium">' + CN.util.escapar(s.nome) + '</span>' +
+            '<span class="font-semibold">' + CN.util.escapar(s.nome) + '</span>' +
             '<span class="tnum font-semibold shrink-0">' + CN.util.moeda(s.preco) + '</span>' +
           '</span>' +
           '<span class="flex items-baseline justify-between gap-4 fraco mt-0.5">' +
@@ -100,7 +100,7 @@ CN.booking = (function () {
           '<span class="flex items-center gap-3">' +
             '<img data-src="' + b.foto + '" alt="" class="barbeiro__foto" style="width:44px;height:44px" loading="lazy" />' +
             '<span class="min-w-0">' +
-              '<span class="block font-medium truncate">' + CN.util.escapar(b.nome) + '</span>' +
+              '<span class="block font-semibold truncate">' + CN.util.escapar(b.nome) + '</span>' +
               '<span class="block fraco truncate">' + CN.util.escapar(b.especialidade) +
                 ' · folga ' + CN.DIAS_SEMANA[b.folga].toLowerCase() + '</span>' +
             '</span>' +

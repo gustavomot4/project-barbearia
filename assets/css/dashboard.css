@@ -2,50 +2,102 @@
    CASA NAVALHA — Design system do PAINEL (dashboard.html)
    Folha independente do site institucional.
 
-   Direção visual: CLARO E NEUTRO.
-   Fundo off-white, texto quase preto, UM acento — e nada além
-   de neutros. O acento marca a ação primária da tela e o único
-   estado crítico do sistema (a linha do "agora" na agenda).
-   Se ele aparecesse em mais lugares, deixaria de marcar.
+   Direção visual: CLARO E NEUTRO, construído com o método da Apple.
 
-   Três decisões que governam esta folha:
-   1. Uma família tipográfica (Inter). Hierarquia por PESO,
-      depois por tamanho. Quatro tamanhos, nunca um quinto.
-   2. Caixa alta com letter-spacing só em rótulo curto. Nunca
-      em frase.
-   3. Seleção e estado usam a escala de neutros; cor é
-      privilégio da ação.
+   MAS a referência aqui NÃO é a apple.com. Página de marketing e
+   ferramenta de trabalho são dois produtos diferentes na própria
+   Apple: o apple.com usa corpo de 17px, pílula de 44px e headline
+   de 56px; um app do macOS usa corpo de 13–14px, botão de 6px de
+   raio e barra de 52px. Copiar a vitrine para dentro de um ERP dá
+   uma tela bonita onde cabe metade dos dados.
+
+     institucional  →  apple.com          (pílula, 17px, respiro)
+     agendamento    →  fluxo de checkout  (alvo de 44px, uma ação)
+     painel         →  app macOS          (denso, raio 6/12, 14px)
+
+   ── O QUE VEIO DO HIG, COM VALOR ──────────────────────────────
+   pílula da navegação      item de 32px, raio 6px, respiro de 8px
+   lista agrupada           separador recuado 16px, sem caixa por linha
+   segmented control        trilho 9px, pílula 7px + sombra, altura 32
+   interruptor              38×22, botão 18, curso 16
+   campo                    36px de altura, raio 6px, pad 10px
+   foco                     halo de 3px, offset 3px em linha de tabela
+   tabela                   cabeçalho 28px, linha 36px (44 no toque)
+   alvo mínimo              28px no mouse, 44px no dedo
+   cartão                   raio 12px, sombra 0 1px 3px rgba(0,0,0,.04)
+   line-height              título = corpo+4px · leitura = corpo+8px
+   pesos                    só 400 e 600
+
+   ── ONDE ESTA FOLHA SE AFASTA DA APPLE, DE PROPÓSITO ──────────
+   1. A Apple pinta de azul a seleção da sidebar, o link, o anel de
+      foco, o switch ligado E o botão primário — cinco lugares. A
+      regra deste projeto é UM acento. Ele fica no botão primário,
+      no anel de foco e na linha do "agora". Seleção de menu e
+      interruptor se resolvem na escala de neutros.
+   2. Cabeçalho de coluna em CAIXA ALTA é marca de dashboard
+      genérico; Numbers e Finder usam caixa normal. Aqui também.
+   3. backdrop-filter só na barra fixa de 52px. Na sidebar e nas
+      linhas de lista o custo aparece em máquina fraca — que é o
+      hardware provável de uma barbearia.
    ============================================================ */
 
 :root {
   color-scheme: light;
 
-  /* Superfícies — do fundo ao topo */
-  --ds-paper:     #FBFAF8;   /* fundo da aplicação */
-  --ds-surface:   #FFFFFF;   /* cartões e tabelas */
-  --ds-sunken:    #F4F2EE;   /* campos, cabeçalho de tabela, faixas */
-  --ds-rail:      #F7F5F1;   /* barra lateral */
+  /* ---- Superfícies: a MESMA rampa quente do site.
+     Os cinzas da Apple são azulados (#F5F5F7 tem B > R); misturar
+     as duas famílias faz o off-white parecer encardido.       ---- */
+  --ds-paper:     #FAF9F7;   /* fundo da aplicação */
+  --ds-surface:   #FFFFFF;   /* cartões, tabelas, listas */
+  --ds-rail:      #F4F2EC;   /* barra lateral */
+  --ds-sunken:    #F4F2EC;   /* cabeçalho de tabela, áreas recuadas */
+  --ds-fill:      rgba(118, 114, 106, 0.12);   /* trilhos, chips */
+  --ds-fill-2:    rgba(120, 116, 108, 0.18);
 
-  /* Traços */
-  --ds-line:      #E5E2DC;
-  --ds-line-2:    #CFCBC3;
+  /* ---- Traços ---- */
+  --ds-line:      #E8E4DC;
+  --ds-line-2:    #CBC6BC;
 
-  /* Texto — três degraus, e só três */
-  --ds-ink:       #16161A;   /* texto e números */
-  --ds-ink-2:     #55534E;   /* subordinado */
-  --ds-ink-3:     #8A8781;   /* rótulo e apoio */
+  /* ---- Texto: três degraus, todos acima de 4,5:1 ----
+     Os label colors do iOS reprovam AA na web (secondaryLabel dá
+     3,44:1). Funcionam no iPhone a 30cm; num monitor a 60cm com
+     texto de 14px, não. Estes são os números da web.          */
+  --ds-ink:       #1C1B19;
+  --ds-ink-2:     #6B6862;
+  --ds-ink-3:     #8A867E;   /* só letra miúda, nunca frase longa */
 
-  /* Acento único */
-  --ds-accent:      #1F5C4C;
-  --ds-accent-hover:#17483B;
-  --ds-accent-soft: #E9F0ED;
-  --ds-on-accent:   #FFFFFF;
+  /* ---- Acento único ---- */
+  --ds-accent:        #8E2C26;   /* branco em cima: 8,27:1 */
+  --ds-accent-hover:  #9C332C;   /* mais CLARO no hover, como a Apple */
+  --ds-accent-active: #7A2520;
+  --ds-accent-text:   #7A2520;
+  --ds-accent-tint:   #F1E6E5;
+  --ds-on-accent:     #FFFFFF;
+  --ds-focus:         rgba(142, 44, 38, 0.35);
 
-  /* Escala tipográfica — quatro degraus */
-  --ds-t1: 1.75rem;      /* informação herói */
-  --ds-t2: 1.0625rem;    /* título de bloco */
-  --ds-t3: 0.875rem;     /* corpo, tabela, campo */
-  --ds-t4: 0.75rem;      /* rótulo e apoio */
+  /* ---- Rampa tipográfica: quatro degraus da escada da Apple ---- */
+  --ds-t1: 1.75rem;      /* 28px — informação herói */
+  --ds-t2: 1.0625rem;    /* 17px — título de tela e de bloco */
+  --ds-t3: 0.875rem;     /* 14px — corpo, tabela, campo */
+  --ds-t4: 0.75rem;      /* 12px — rótulo e cabeçalho de coluna */
+
+  --ds-lh-titulo: calc(1em + 4px);
+  --ds-lh-corpo:  calc(1em + 8px);
+  --ds-lh-denso:  calc(1em + 6px);
+
+  /* Tracking calibrado para a Inter (metade do valor da SF Pro).
+     De 19 a 40px zeramos: o eixo opsz já faz a compensação.    */
+  --ds-tr-28: 0em;
+  --ds-tr-17: -0.011em;
+  --ds-tr-14: -0.008em;
+  --ds-tr-12: -0.005em;
+
+  /* ---- Raios ---- */
+  --ds-r-card:  12px;
+  --ds-r-field: 6px;
+  --ds-r-nav:   6px;
+  --ds-r-seg:   9px;
+  --ds-r-thumb: 7px;
 
   --ds-ease: cubic-bezier(0.22, 0.61, 0.36, 1);
 }
@@ -56,70 +108,80 @@ body {
   background: var(--ds-paper);
   color: var(--ds-ink);
   font-size: var(--ds-t3);
+  line-height: var(--ds-lh-denso);
+  letter-spacing: var(--ds-tr-14);
   -webkit-tap-highlight-color: transparent;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
 }
 
+body, input, select, textarea, button { font-optical-sizing: auto; }
+
 /* Números sempre alinhados em colunas — detalhe que separa um ERP
-   sério de um site com tabela.                                    */
+   sério de um site com tabela. Ligado ANTES de fechar as larguras
+   de coluna: tabular alarga os algarismos em ~4%.               */
 .tnum { font-variant-numeric: tabular-nums; font-feature-settings: 'tnum' 1; }
 
-:focus-visible { outline: 2px solid var(--ds-accent); outline-offset: 2px; }
+/* Anel de foco: halo, não contorno duro. Offset maior em linha de
+   tabela — com 1px ele encostaria no separador da linha vizinha. */
+:focus-visible { outline: none; box-shadow: 0 0 0 3px var(--ds-focus); border-radius: var(--ds-r-field); }
+tr:focus-visible, .ds-row:focus-visible, .ds-card:focus-visible { box-shadow: 0 0 0 3px var(--ds-focus); }
 
 ::-webkit-scrollbar { width: 10px; height: 10px; }
-::-webkit-scrollbar-track { background: var(--ds-paper); }
-::-webkit-scrollbar-thumb { background: var(--ds-line-2); border: 2px solid var(--ds-paper); border-radius: 8px; }
-::-webkit-scrollbar-thumb:hover { background: var(--ds-ink-3); }
+::-webkit-scrollbar-track { background: transparent; }
+::-webkit-scrollbar-thumb { background: rgba(0, 0, 0, 0.2); border: 3px solid transparent; background-clip: content-box; border-radius: 8px; }
+::-webkit-scrollbar-thumb:hover { background: rgba(0, 0, 0, 0.32); background-clip: content-box; }
 
 .no-scrollbar { scrollbar-width: none; -ms-overflow-style: none; }
 .no-scrollbar::-webkit-scrollbar { display: none; }
 
 body.is-locked { overflow: hidden; }
 
-/* ---------- Barra lateral ---------- */
+/* ---------- Barra lateral ----------
+   Pílula de seleção do macOS. Ela só existe por causa dos 8px de
+   respiro lateral na nav: com o padding antigo de 20px sairia um
+   retângulo arredondado colado nas duas bordas.               */
 
 .ds-sidebar {
   background: var(--ds-rail);
   border-right: 1px solid var(--ds-line);
 }
 
-/* Marca em uma linha de texto: sem monograma, sem eyebrow.
-   O dono não precisa que a ferramenta o informe de quem ela é. */
-.ds-brand {
-  font-size: var(--ds-t3);
-  font-weight: 600;
-  letter-spacing: 0.01em;
-  color: var(--ds-ink);
-}
+.ds-brand { display: inline-flex; align-items: center; gap: 0.5rem; color: var(--ds-ink); }
+.ds-brand__mark { display: block; flex-shrink: 0; }
+.ds-brand__nome { font-size: var(--ds-t3); font-weight: 600; letter-spacing: -0.02em; }
+
+/* align-content: start é obrigatório — a nav também é flex-1 do
+   flex-container da lateral, e sem isto o grid estica as linhas
+   para preencher a altura e as pílulas se afastam.            */
+.ds-nav { display: grid; align-content: start; gap: 2px; padding: 8px; }
 
 .ds-nav-item {
   position: relative;
   display: flex;
   align-items: center;
   width: 100%;
-  padding: 0.6rem 1.25rem;
-  color: var(--ds-ink-2);
+  min-height: 32px;
+  padding: 0 10px;
+  border-radius: var(--ds-r-nav);
+  color: var(--ds-ink);
   font-size: var(--ds-t3);
   text-align: left;
-  transition: color 0.18s var(--ds-ease), background 0.18s var(--ds-ease);
+  transition: background 0.15s var(--ds-ease);
 }
-.ds-nav-item:hover { color: var(--ds-ink); background: rgba(0, 0, 0, 0.035); }
+.ds-nav-item:hover { background: rgba(0, 0, 0, 0.04); }
 
-/* O item ativo se resolve em PESO, não em cor nem em filete deslizante */
-.ds-nav-item.is-active {
-  color: var(--ds-ink);
-  background: var(--ds-surface);
-  font-weight: 600;
-  box-shadow: inset 2px 0 0 0 var(--ds-ink);
-}
+/* Selecionado: pílula em NEUTRO + peso 600. O macOS pinta esta
+   pílula com o acento, mas aqui o acento é da ação primária, e ela
+   não pode competir com um item de menu aceso nas sete telas.   */
+.ds-nav-item.is-active { background: rgba(0, 0, 0, 0.07); font-weight: 600; }
 
-/* Contador de hoje. Conta só o que ainda está por atender —
-   um contador que inclui o dia inteiro já atendido é vaidade. */
 .ds-nav-badge {
   margin-left: auto;
   min-width: 20px;
   padding: 1px 6px;
-  background: var(--ds-sunken);
-  border: 1px solid var(--ds-line-2);
+  border-radius: 999px;
+  background: var(--ds-fill);
   color: var(--ds-ink-2);
   font-size: var(--ds-t4);
   font-weight: 600;
@@ -131,7 +193,9 @@ body.is-locked { overflow: hidden; }
 
 .ds-card {
   background: var(--ds-surface);
-  border: 1px solid var(--ds-line);
+  border-radius: var(--ds-r-card);
+  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.04);
+  overflow: hidden;
 }
 
 .ds-card__head {
@@ -139,58 +203,63 @@ body.is-locked { overflow: hidden; }
   align-items: center;
   justify-content: space-between;
   gap: 1rem;
-  padding: 0.9rem 1.25rem;
+  padding: 0.75rem 12px;
   border-bottom: 1px solid var(--ds-line);
 }
 .ds-card__title {
   font-size: var(--ds-t2);
   font-weight: 600;
-  letter-spacing: -0.01em;
+  line-height: var(--ds-lh-titulo);
+  letter-spacing: var(--ds-tr-17);
 }
 
-/* Rótulo curto — o único lugar onde caixa alta e letter-spacing
-   são permitidos. Nunca numa frase.                             */
+/* Rótulo curto. Caixa NORMAL: nenhum token da Apple usa
+   text-transform, e caixa alta com tracking é a marca visual de
+   dashboard genérico.                                        */
 .ds-eyebrow {
   font-size: var(--ds-t4);
   font-weight: 600;
-  letter-spacing: 0.08em;
-  text-transform: uppercase;
-  color: var(--ds-ink-3);
+  letter-spacing: var(--ds-tr-12);
+  color: var(--ds-ink-2);
 }
 
-/* ---------- Informação herói ----------
-   Uma por tela. O maior tamanho da escala, no peso mais alto. */
+/* ---------- Informação herói ---------- */
 
-.ds-hero__label { font-size: var(--ds-t4); color: var(--ds-ink-3); }
+.ds-hero__label { font-size: var(--ds-t3); color: var(--ds-ink-2); }
 .ds-hero__value {
   font-size: var(--ds-t1);
   font-weight: 600;
-  line-height: 1.1;
-  letter-spacing: -0.02em;
+  line-height: var(--ds-lh-titulo);
+  letter-spacing: var(--ds-tr-28);
   color: var(--ds-ink);
-  margin-top: 0.15rem;
+  margin-top: 0.1rem;
 }
 .ds-hero__sub { font-size: var(--ds-t3); color: var(--ds-ink-2); margin-top: 0.35rem; }
 
-/* ---------- Botões ---------- */
+/* ---------- Botões ----------
+   Botão de app macOS: retângulo arredondado e compacto. A pílula
+   de 44px do apple.com é linguagem de vitrine e ocuparia espaço
+   que aqui é de dado.                                          */
 
 .ds-btn {
   display: inline-flex;
   align-items: center;
   justify-content: center;
-  gap: 0.45rem;
-  padding: 0.55rem 0.95rem;
-  border: 1px solid var(--ds-line-2);
-  background: var(--ds-surface);
-  color: var(--ds-ink-2);
+  gap: 0.4rem;
+  min-height: 30px;
+  padding: 0.3rem 0.75rem;
+  border: 0;
+  border-radius: var(--ds-r-field);
+  background: var(--ds-fill);
+  color: var(--ds-ink);
   font-size: var(--ds-t3);
-  font-weight: 500;
+  font-weight: 400;
+  letter-spacing: var(--ds-tr-14);
   white-space: nowrap;
-  transition: border-color 0.18s var(--ds-ease), color 0.18s var(--ds-ease), background 0.18s var(--ds-ease);
+  transition: background 0.15s var(--ds-ease), opacity 0.15s var(--ds-ease);
 }
-.ds-btn:hover { color: var(--ds-ink); border-color: var(--ds-ink-3); }
-.ds-btn:active { transform: translateY(1px); }
-.ds-btn:disabled { opacity: 0.4; pointer-events: none; }
+.ds-btn:hover { background: var(--ds-fill-2); }
+.ds-btn:disabled { opacity: 0.42; pointer-events: none; }
 
 /* AÇÃO PRIMÁRIA — o único elemento com o acento em cada tela.
    Numa confirmação destrutiva, a ação destrutiva É a primária
@@ -198,81 +267,101 @@ body.is-locked { overflow: hidden; }
    é o texto explícito e o "Voltar" neutro ao lado.            */
 .ds-btn--primary {
   background: var(--ds-accent);
-  border-color: var(--ds-accent);
   color: var(--ds-on-accent);
   font-weight: 600;
 }
-.ds-btn--primary:hover {
-  background: var(--ds-accent-hover);
-  border-color: var(--ds-accent-hover);
-  color: var(--ds-on-accent);
-}
+.ds-btn--primary:hover  { background: var(--ds-accent-hover); }
+.ds-btn--primary:active { background: var(--ds-accent-active); }
+.ds-btn--primary:disabled { background: var(--ds-fill); color: var(--ds-ink-3); opacity: 1; }
 
-/* Ação de risco fora de um diálogo: peso de texto, sem cor.
-   Quem confirma o risco é o modal, não a cor do botão.      */
+/* Ação secundária como texto, no mesmo hue escurecido */
 .ds-btn--quiet {
-  border-color: transparent;
+  min-height: 0;
+  padding: 0;
   background: transparent;
-  color: var(--ds-ink-2);
-  text-decoration: underline;
-  text-underline-offset: 3px;
+  color: var(--ds-accent-text);
+  font-weight: 400;
 }
-.ds-btn--quiet:hover { color: var(--ds-ink); border-color: transparent; background: transparent; }
+.ds-btn--quiet:hover { background: transparent; opacity: 0.7; }
 
-.ds-btn--sm   { padding: 0.35rem 0.6rem; font-size: var(--ds-t4); }
-.ds-btn--icon { padding: 0.5rem; }
+.ds-btn--sm   { min-height: 26px; padding: 0.2rem 0.55rem; font-size: var(--ds-t4); }
+.ds-btn--icon { padding: 0.3rem; min-width: 30px; }
 
-/* ---------- Alternadores (Dia / Semana) ---------- */
+/* Abaixo do tablet o alvo cresce: 28px é medida de MOUSE, e este
+   painel abre no celular do dono.                              */
+@media (max-width: 767px) {
+  .ds-btn { min-height: 44px; padding: 0.6rem 1rem; }
+  .ds-btn--sm { min-height: 36px; }
+  .ds-btn--icon { min-width: 44px; }
+  .ds-btn--quiet { min-height: 36px; }
+}
+
+/* ---------- Segmented control ----------
+   O alternador Dia/Semana no padrão da Apple: trilho preenchido,
+   pílula branca com sombra marcando a seleção. Sem cor: a posição
+   da pílula É o estado.                                        */
+
+.ds-segmented {
+  display: inline-flex;
+  gap: 2px;
+  height: 32px;
+  padding: 2px;
+  border-radius: var(--ds-r-seg);
+  background: var(--ds-fill);
+}
 
 .ds-chip {
-  padding: 0.4rem 0.8rem;
-  border: 1px solid var(--ds-line-2);
-  background: var(--ds-surface);
-  color: var(--ds-ink-2);
-  font-size: var(--ds-t4);
-  font-weight: 500;
-  transition: all 0.18s var(--ds-ease);
+  padding: 0 0.75rem;
+  border: 0;
+  border-radius: var(--ds-r-thumb);
+  background: transparent;
+  color: var(--ds-ink);
+  font-size: var(--ds-t3);
+  font-weight: 400;
+  letter-spacing: var(--ds-tr-14);
+  transition: background 0.15s var(--ds-ease), box-shadow 0.15s var(--ds-ease);
 }
-.ds-chip:hover { color: var(--ds-ink); border-color: var(--ds-ink-3); }
-/* Seleção é neutro escuro: o acento pertence à ação, não ao estado */
+.ds-chip:hover { background: rgba(255, 255, 255, 0.55); }
 .ds-chip.is-active {
-  background: var(--ds-ink);
-  border-color: var(--ds-ink);
-  color: var(--ds-surface);
+  background: var(--ds-surface);
   font-weight: 600;
+  box-shadow: 0 3px 8px rgba(0, 0, 0, 0.12), 0 3px 1px rgba(0, 0, 0, 0.04);
 }
 
-/* ---------- Tabela ---------- */
+/* ---------- Tabela / lista agrupada ---------- */
 
 .ds-table { width: 100%; border-collapse: collapse; font-size: var(--ds-t3); }
 
+/* Cabeçalho de coluna em caixa NORMAL, cinza secundário, sem
+   tracking — como em Numbers e no Finder.                    */
 .ds-table thead th {
   position: sticky;
   top: 0;
   z-index: 1;
-  padding: 0.6rem 1rem;
+  height: 28px;
+  padding: 0 12px;
   background: var(--ds-sunken);
-  border-bottom: 1px solid var(--ds-line-2);
-  color: var(--ds-ink-3);
+  border-bottom: 1px solid var(--ds-line);
+  color: var(--ds-ink-2);
   font-size: var(--ds-t4);
   font-weight: 600;
-  letter-spacing: 0.08em;
-  text-transform: uppercase;
+  letter-spacing: var(--ds-tr-12);
   text-align: left;
   white-space: nowrap;
 }
 
 .ds-table tbody td {
-  padding: 0.75rem 1rem;
-  border-bottom: 1px solid var(--ds-line);
+  height: 36px;
+  padding: 0.4rem 12px;
   vertical-align: middle;
+  box-shadow: inset 0 -1px 0 0 var(--ds-line);
 }
-.ds-table tbody tr:last-child td { border-bottom: 0; }
+.ds-table tbody tr:last-child td { box-shadow: none; }
 
 /* Linha inteira clicável (Serviços): o alvo é a linha, não um
    botão "Editar" repetido em cada uma delas.                  */
-.ds-table tbody tr.is-clicavel { cursor: pointer; transition: background 0.15s var(--ds-ease); }
-.ds-table tbody tr.is-clicavel:hover { background: var(--ds-sunken); }
+.ds-table tbody tr.is-clicavel { cursor: pointer; transition: background 0.12s var(--ds-ease); }
+.ds-table tbody tr.is-clicavel:hover td { background: var(--ds-paper); }
 
 /* Serviço desativado: esmaecido, sem badge de status — a
    posição do interruptor já é o estado.                  */
@@ -290,74 +379,75 @@ body.is-locked { overflow: hidden; }
     display: grid;
     grid-template-columns: 1fr auto;
     gap: 0.3rem 1rem;
-    padding: 0.9rem 1rem;
-    border-bottom: 1px solid var(--ds-line);
+    padding: 0.85rem 12px;
+    box-shadow: inset 0 -1px 0 0 var(--ds-line);
   }
-  .ds-table tbody td { padding: 0; border: 0; }
+  .ds-table tbody tr:last-child { box-shadow: none; }
+  .ds-table tbody td { height: auto; padding: 0; box-shadow: none; }
   .ds-table tbody td[data-rotulo]::before {
     content: attr(data-rotulo);
     display: block;
     font-size: var(--ds-t4);
-    letter-spacing: 0.08em;
-    text-transform: uppercase;
-    color: var(--ds-ink-3);
+    color: var(--ds-ink-2);
   }
   .ds-table td.col-acoes { grid-column: 1 / -1; margin-top: 0.4rem; }
   .ds-table .num { text-align: left; }
 }
 
-/* Linha da fila de hoje. Mesmo alvo grande da tabela, mas em lista:
-   hora, cliente e serviço · barbeiro. O preço saiu — dar baixa num
-   atendimento não depende de quanto ele custa.                    */
+/* Linha da fila de hoje: 44px, o alvo de lista do HIG.
+   O preço saiu — dar baixa num atendimento não depende dele. */
 .ds-row {
   display: flex;
   align-items: center;
   gap: 1rem;
   width: 100%;
-  padding: 0.7rem 1.25rem;
-  border-bottom: 1px solid var(--ds-line);
+  min-height: 44px;
+  padding: 0.5rem 12px;
   text-align: left;
-  transition: background 0.15s var(--ds-ease);
+  box-shadow: inset 0 -1px 0 0 var(--ds-line);
+  transition: background 0.12s var(--ds-ease);
 }
-.ds-row:last-child { border-bottom: 0; }
-.ds-row:hover { background: var(--ds-sunken); }
-.ds-row.is-off { opacity: 0.55; }
-.ds-row__sub { color: var(--ds-ink-3); font-size: var(--ds-t4); }
+.ds-row:last-child { box-shadow: none; }
+.ds-row:hover { background: var(--ds-paper); }
+.ds-row.is-off { opacity: 0.5; }
+.ds-row__sub { color: var(--ds-ink-2); font-size: var(--ds-t4); }
 
 /* ---------- Campos ---------- */
 
 .ds-label {
   display: block;
-  margin-bottom: 0.35rem;
+  margin-bottom: 0.3rem;
   font-size: var(--ds-t4);
-  font-weight: 500;
   color: var(--ds-ink-2);
 }
 
 .ds-input {
   width: 100%;
-  padding: 0.55rem 0.75rem;
+  min-height: 36px;
+  padding: 0.4rem 10px;
   background: var(--ds-surface);
-  border: 1px solid var(--ds-line-2);
-  border-radius: 0;
+  border: 0;
+  border-radius: var(--ds-r-field);
+  box-shadow: inset 0 0 0 1px var(--ds-line-2);
   color: var(--ds-ink);
   font-family: inherit;
   font-size: var(--ds-t3);
-  transition: border-color 0.18s var(--ds-ease);
+  letter-spacing: var(--ds-tr-14);
+  transition: box-shadow 0.15s var(--ds-ease);
 }
 .ds-input::placeholder { color: var(--ds-ink-3); }
-.ds-input:focus { outline: none; border-color: var(--ds-ink); box-shadow: inset 0 0 0 1px var(--ds-ink); }
+.ds-input:focus { outline: none; box-shadow: inset 0 0 0 2px var(--ds-accent); }
 
-/* Erro sem segunda cor: o traço engrossa em tinta e a mensagem
-   entra em peso 600. Cor é privilégio da ação primária.        */
-.ds-input.has-error { border-color: var(--ds-ink); box-shadow: inset 0 0 0 1px var(--ds-ink); }
+/* Erro: o acento É o estado crítico pela regra do projeto, então
+   ele aparece aqui legitimamente — no mesmo hue, escurecido.   */
+.ds-input.has-error { box-shadow: inset 0 0 0 2px var(--ds-accent); }
 
 select.ds-input {
   appearance: none;
-  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='12' viewBox='0 0 24 24' fill='none' stroke='%2355534E' stroke-width='2'%3E%3Cpath d='M6 9l6 6 6-6'/%3E%3C/svg%3E");
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='12' viewBox='0 0 24 24' fill='none' stroke='%236B6862' stroke-width='2'%3E%3Cpath d='M6 9l6 6 6-6'/%3E%3C/svg%3E");
   background-repeat: no-repeat;
-  background-position: right 0.7rem center;
-  padding-right: 2rem;
+  background-position: right 0.6rem center;
+  padding-right: 1.9rem;
 }
 
 .ds-error {
@@ -365,45 +455,58 @@ select.ds-input {
   margin-top: 0.25rem;
   font-size: var(--ds-t4);
   font-weight: 600;
-  color: var(--ds-ink);
+  color: var(--ds-accent-text);
   opacity: 0;
 }
 .ds-error.is-visible { opacity: 1; }
 
-/* Interruptor. O estado "ligado" é comunicado por preenchimento
-   em tinta e pela posição do botão — não por cor de marca.      */
+/* Interruptor: proporções do switch do macOS (38×22, botão 18,
+   curso 16). O estado ligado é preenchimento em TINTA — o azul do
+   iOS, repetido em N linhas, competiria com a ação da tela.    */
 .ds-switch {
   appearance: none;
   position: relative;
   width: 38px;
-  height: 21px;
+  height: 22px;
   flex-shrink: 0;
-  background: var(--ds-sunken);
-  border: 1px solid var(--ds-line-2);
+  background: var(--ds-fill);
+  border: 0;
   border-radius: 999px;
   cursor: pointer;
-  transition: background 0.2s var(--ds-ease), border-color 0.2s var(--ds-ease);
+  transition: background 0.2s var(--ds-ease);
 }
 .ds-switch::after {
   content: '';
   position: absolute;
   top: 2px; left: 2px;
-  width: 15px; height: 15px;
+  width: 18px; height: 18px;
   border-radius: 50%;
-  background: var(--ds-ink-3);
-  transition: transform 0.2s var(--ds-ease), background 0.2s var(--ds-ease);
+  background: #fff;
+  box-shadow: 0 1px 2px rgba(0, 0, 0, 0.18);
+  transition: transform 0.2s var(--ds-ease);
 }
-.ds-switch:checked { background: var(--ds-ink); border-color: var(--ds-ink); }
-.ds-switch:checked::after { transform: translateX(17px); background: var(--ds-surface); }
+.ds-switch:checked { background: var(--ds-ink); }
+.ds-switch:checked::after { transform: translateX(16px); }
 
 /* ---------- Barra de proporção ---------- */
 
-.ds-meter { height: 4px; background: var(--ds-sunken); overflow: hidden; }
-.ds-meter__fill {
-  height: 100%;
-  background: var(--ds-ink-3);
-  width: 0;
-  transition: width 0.6s var(--ds-ease);
+.ds-meter { height: 4px; border-radius: 2px; background: var(--ds-fill); overflow: hidden; }
+.ds-meter__fill { height: 100%; background: var(--ds-ink-2); width: 0; }
+
+/* ---------- Barra superior (só no mobile) ----------
+   Único lugar da folha com backdrop-filter: é caro, e numa agenda
+   que rola muito o custo aparece em máquina fraca.            */
+
+.ds-bar {
+  position: sticky;
+  top: 0;
+  z-index: 40;
+  height: 52px;
+  background: var(--ds-paper);
+  background: rgba(250, 249, 247, 0.8);
+  -webkit-backdrop-filter: saturate(1.8) blur(20px);
+  backdrop-filter: saturate(1.8) blur(20px);
+  border-bottom: 1px solid var(--ds-line);
 }
 
 /* ---------- Agenda Geral (grade) ---------- */
@@ -420,7 +523,7 @@ select.ds-input {
   top: 0;
   z-index: 3;
   background: var(--ds-surface);
-  border-bottom: 1px solid var(--ds-line-2);
+  border-bottom: 1px solid var(--ds-line);
 }
 
 .cal-head__cell {
@@ -430,7 +533,7 @@ select.ds-input {
   font-size: var(--ds-t3);
 }
 .cal-head__cell:first-child { border-left: 0; }
-.cal-head__cell .apoio { color: var(--ds-ink-3); font-size: var(--ds-t4); }
+.cal-head__cell .apoio { color: var(--ds-ink-2); font-size: var(--ds-t4); }
 
 .cal-body {
   display: grid;
@@ -446,7 +549,7 @@ select.ds-input {
   padding-right: 0.55rem;
   text-align: right;
   font-size: var(--ds-t4);
-  color: var(--ds-ink-3);
+  color: var(--ds-ink-2);
   font-variant-numeric: tabular-nums;
   transform: translateY(-6px);
 }
@@ -474,25 +577,24 @@ select.ds-input {
   position: absolute;
   padding: 0.3rem 0.5rem;
   overflow: hidden;
-  border: 1px solid var(--ds-line-2);
+  border-radius: var(--ds-r-field);
   border-left: 3px solid var(--ds-ink-3);
-  background: var(--ds-sunken);
+  background: var(--ds-fill);
   color: var(--ds-ink);
   text-align: left;
   cursor: pointer;
-  transition: border-color 0.15s var(--ds-ease), background 0.15s var(--ds-ease);
+  transition: background 0.12s var(--ds-ease), border-color 0.12s var(--ds-ease);
 }
-.cal-event:hover { border-color: var(--ds-ink); border-left-color: var(--ds-ink); background: var(--ds-surface); z-index: 2; }
-.cal-event__hora { font-size: var(--ds-t4); color: var(--ds-ink-3); font-variant-numeric: tabular-nums; line-height: 1.2; }
-.cal-event__nome { font-size: var(--ds-t3); font-weight: 500; line-height: 1.25; }
+.cal-event:hover { background: var(--ds-fill-2); border-left-color: var(--ds-ink); z-index: 2; }
+.cal-event__hora { font-size: var(--ds-t4); color: var(--ds-ink-2); font-variant-numeric: tabular-nums; line-height: 1.2; }
+.cal-event__nome { font-size: var(--ds-t3); font-weight: 600; line-height: 1.25; }
+.cal-event.is-concluido { opacity: 0.45; }
 
 /* Na semana o bloco é estreito (uma coluna por dia, dividida em
    faixas quando há sobreposição) e baixo: o texto encolhe para
    caber hora, inicial do barbeiro e primeiro nome do cliente.   */
 .cal-event--compacto { padding: 0.2rem 0.35rem; }
-.cal-event--compacto .cal-event__hora { line-height: 1.15; }
 .cal-event--compacto .cal-event__nome { font-size: var(--ds-t4); line-height: 1.15; }
-.cal-event.is-concluido { opacity: 0.5; }
 
 /* Linha do "agora" — o único estado crítico do painel e o
    segundo (e último) lugar onde o acento aparece.         */
@@ -517,7 +619,13 @@ select.ds-input {
 
 .ds-modal { position: fixed; inset: 0; z-index: 80; }
 .ds-modal[hidden] { display: none !important; }
-.ds-modal__backdrop { position: absolute; inset: 0; background: rgba(22, 22, 26, 0.35); }
+.ds-modal__backdrop {
+  position: absolute;
+  inset: 0;
+  background: rgba(28, 27, 25, 0.28);
+  -webkit-backdrop-filter: blur(4px);
+  backdrop-filter: blur(4px);
+}
 .ds-modal__wrap { position: relative; height: 100%; display: grid; place-items: center; padding: 1rem; overflow-y: auto; }
 
 .ds-modal__card {
@@ -525,8 +633,8 @@ select.ds-input {
   width: 100%;
   max-width: 30rem;
   background: var(--ds-surface);
-  border: 1px solid var(--ds-line-2);
-  box-shadow: 0 24px 60px -30px rgba(22, 22, 26, 0.35);
+  border-radius: var(--ds-r-card);
+  box-shadow: rgba(0, 0, 0, 0.22) 3px 5px 30px 0;
   margin: auto;
 }
 
@@ -544,10 +652,13 @@ select.ds-input {
 }
 .ds-toast {
   padding: 0.7rem 0.9rem;
-  background: var(--ds-ink);
-  color: var(--ds-paper);
+  border-radius: var(--ds-r-field);
+  background: rgba(28, 27, 25, 0.92);
+  -webkit-backdrop-filter: blur(20px);
+  backdrop-filter: blur(20px);
+  color: #fff;
   font-size: var(--ds-t3);
-  box-shadow: 0 16px 36px -20px rgba(22, 22, 26, 0.6);
+  box-shadow: 0 16px 36px -20px rgba(0, 0, 0, 0.6);
   pointer-events: auto;
 }
 .ds-toast.is-out { opacity: 0; transition: opacity 0.2s var(--ds-ease); }
@@ -558,9 +669,8 @@ select.ds-input {
 
 /* ---------- Gráficos ----------
    O painel hoje só desenha o ranking. As classes de linha e barra
-   continuam definidas — em neutro — porque charts.js segue exportando
-   esses construtores e nada deveria renderizar sem estilo caso um
-   deles volte a ser usado.                                          */
+   continuam definidas — em neutro — porque charts.js segue
+   exportando esses construtores.                               */
 
 .chart-svg  { display: block; width: 100%; overflow: visible; }
 .chart-grid { stroke: var(--ds-line); stroke-width: 1; }
@@ -569,16 +679,16 @@ select.ds-input {
 .chart-dot--atual { fill: var(--ds-ink); }
 .chart-bar  { fill: var(--ds-line-2); }
 .chart-bar--atual { fill: var(--ds-ink-3); }
-.chart-label { fill: var(--ds-ink-3); font-size: 12px; }
+.chart-label { fill: var(--ds-ink-2); font-size: 12px; }
 
 /* ---------- Ranking (barras horizontais) ---------- */
 
 .rank-row { display: grid; grid-template-columns: 1fr auto; gap: 0.25rem 1rem; align-items: baseline; }
-.rank-track { grid-column: 1 / -1; height: 4px; background: var(--ds-sunken); overflow: hidden; }
+.rank-track { grid-column: 1 / -1; height: 4px; border-radius: 2px; background: var(--ds-fill); overflow: hidden; }
 /* A barra é a única coisa da lista que dá a MAGNITUDE relativa de
    relance — a lista já vem ordenada e com os valores, mas "R$ 380
    contra R$ 55" se lê como proporção, não como par de números.   */
-.rank-fill { height: 100%; background: var(--ds-ink-2); width: 0; }
+.rank-fill { height: 100%; border-radius: 2px; background: var(--ds-ink-2); width: 0; }
 
 /* ---------- Estado vazio ----------
    Uma frase. Sem ícone, sem título display, sem segunda linha
@@ -612,9 +722,7 @@ select.ds-input {
   }
 }
 
-/* ---------- Barra lateral como gaveta no mobile ----------
-   No desktop ela é fixa; abaixo de 1024px vira uma gaveta que
-   desliza por cima do conteúdo, com um véu clicável atrás.    */
+/* ---------- Barra lateral como gaveta no mobile ---------- */
 @media (max-width: 1023px) {
   .ds-sidebar {
     position: fixed;
@@ -623,16 +731,19 @@ select.ds-input {
     left: 0;
     width: 264px;
     z-index: 70;
+    background: var(--ds-surface);
     transform: translateX(-100%);
     transition: transform 0.28s var(--ds-ease);
   }
-  .ds-sidebar.is-open { transform: none; box-shadow: 0 0 50px rgba(22, 22, 26, 0.25); }
+  .ds-sidebar.is-open { transform: none; box-shadow: 0 0 50px rgba(0, 0, 0, 0.18); }
 }
 
 #ds-scrim {
   position: fixed;
   inset: 0;
   z-index: 65;
-  background: rgba(22, 22, 26, 0.3);
+  background: rgba(28, 27, 25, 0.28);
+  -webkit-backdrop-filter: blur(4px);
+  backdrop-filter: blur(4px);
 }
 #ds-scrim[hidden] { display: none; }

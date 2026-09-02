@@ -97,8 +97,8 @@ CN.charts = (function () {
     var idGrad = 'grad-linha-' + (++seqGradiente);
     var defs = el('defs');
     var grad = el('linearGradient', { id: idGrad, x1: '0', y1: '0', x2: '0', y2: '1' });
-    grad.appendChild(el('stop', { offset: '0%',   'stop-color': '#8A8781', 'stop-opacity': '0.28' }));
-    grad.appendChild(el('stop', { offset: '100%', 'stop-color': '#8A8781', 'stop-opacity': '0' }));
+    grad.appendChild(el('stop', { offset: '0%',   'stop-color': '#8A867E', 'stop-opacity': '0.28' }));
+    grad.appendChild(el('stop', { offset: '100%', 'stop-color': '#8A867E', 'stop-opacity': '0' }));
     defs.appendChild(grad);
     svg.appendChild(defs);
 
@@ -219,8 +219,8 @@ CN.charts = (function () {
     var idGrad = 'grad-spark-' + (++seqGradiente);
     var defs = el('defs');
     var grad = el('linearGradient', { id: idGrad, x1: '0', y1: '0', x2: '0', y2: '1' });
-    grad.appendChild(el('stop', { offset: '0%',   'stop-color': '#8A8781', 'stop-opacity': '0.3' }));
-    grad.appendChild(el('stop', { offset: '100%', 'stop-color': '#8A8781', 'stop-opacity': '0' }));
+    grad.appendChild(el('stop', { offset: '0%',   'stop-color': '#8A867E', 'stop-opacity': '0.3' }));
+    grad.appendChild(el('stop', { offset: '100%', 'stop-color': '#8A867E', 'stop-opacity': '0' }));
     defs.appendChild(grad);
     svg.appendChild(defs);
 
@@ -228,7 +228,7 @@ CN.charts = (function () {
     svg.appendChild(el('path', { class: 'chart-line', d: d, 'stroke-width': '1.5' }));
     svg.appendChild(el('circle', {
       class: 'chart-dot--atual', cx: px(valores.length - 1), cy: py(valores[valores.length - 1]),
-      r: 3, fill: '#16161A'
+      r: 3, fill: '#1C1B19'
     }));
 
     container.appendChild(svg);

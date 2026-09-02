@@ -419,7 +419,7 @@ CN.dashboard = (function () {
       var folga = b.folga === dow;
       return '' +
         '<div class="cal-head__cell">' +
-          '<span class="font-medium">' + CN.util.escapar(b.nome.split(' ')[0]) + '</span>' +
+          '<span class="font-semibold">' + CN.util.escapar(b.nome.split(' ')[0]) + '</span>' +
           (folga ? '<span class="apoio"> · folga</span>' : '') +
         '</div>';
     }).join('');
@@ -698,7 +698,7 @@ CN.dashboard = (function () {
                agendamento usa 'destaque' para pré-selecionar o serviço
                de quem chega por ?barbeiro=. Sem cor, só em rótulo.    */
             (s.destaque
-              ? '<span class="ds-eyebrow" style="margin-left:.5rem">' + CN.util.escapar(s.destaque) + '</span>'
+              ? '<span style="margin-left:.5rem;color:var(--ds-ink-2)">' + CN.util.escapar(s.destaque) + '</span>'
               : '') +
           '</td>' +
 

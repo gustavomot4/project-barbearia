@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8" />
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
-<meta name="theme-color" content="#FBFAF8" />
+<meta name="theme-color" content="#FAF9F7" />
 
 <title>Casa Navalha — Barbearia na Vila Madalena, São Paulo</title>
 <meta name="description" content="Barbearia clássica na Vila Madalena desde 2014. Corte, barba e coloração, com preço e duração à vista. Agende online." />
@@ -14,14 +14,15 @@
 <meta property="og:description" content="Barbearia clássica na Vila Madalena desde 2014." />
 <meta property="og:image" content="https://images.unsplash.com/photo-1503951914875-452162b0f3f1?auto=format&fit=crop&w=1200&q=80" />
 
-<link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 64 64'%3E%3Crect width='64' height='64' fill='%23FBFAF8'/%3E%3Ctext x='32' y='44' font-family='Inter,Helvetica,sans-serif' font-size='30' font-weight='600' fill='%2316161A' text-anchor='middle'%3ECN%3C/text%3E%3C/svg%3E" />
+<!-- Favicon: o mesmo poste de barbeiro da marca, desenhado inline -->
+<link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24'%3E%3Cdefs%3E%3CclipPath id='p'%3E%3Crect x='7' y='2' width='10' height='20' rx='5'/%3E%3C/clipPath%3E%3C/defs%3E%3Crect width='24' height='24' fill='%23FAF9F7'/%3E%3Cg clip-path='url(%23p)' stroke='%238E2C26' stroke-width='2.6'%3E%3Cpath d='M1 14 13 2M1 20 13 8M1 26 13 14'/%3E%3C/g%3E%3Crect x='7' y='2' width='10' height='20' rx='5' fill='none' stroke='%238E2C26' stroke-width='1.5'/%3E%3C/svg%3E" />
 
-<!-- Duas famílias no projeto inteiro: Inter em tudo, e a serifada
-     só nos títulos daqui, que é onde a marca ainda precisa de voz.
-     Anton saiu — era ela que produzia a caixa alta pesada. -->
+<!-- UMA família no projeto inteiro. Inter com o eixo de OPTICAL SIZE
+     ligado: é o equivalente livre da troca SF Pro Text / SF Pro Display
+     que a Apple faz conforme o tamanho do tipo cresce. -->
 <link rel="preconnect" href="https://fonts.googleapis.com" />
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
-<link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:wght@600&family=Inter:wght@400;500;600&display=swap" rel="stylesheet" />
+<link href="https://fonts.googleapis.com/css2?family=Inter:opsz,wght@14..32,400;14..32,600&display=swap" rel="stylesheet" />
 
 <script src="https://cdn.tailwindcss.com"></script>
 <script>
@@ -30,7 +31,7 @@
     theme: {
       extend: {
         fontFamily: {
-          sans: ['Inter', 'system-ui', '-apple-system', 'Segoe UI', 'sans-serif']
+          sans: ['Inter', '-apple-system', 'BlinkMacSystemFont', '"Segoe UI"', 'Roboto', '"Helvetica Neue"', 'Arial', 'sans-serif']
         }
       }
     }
@@ -44,85 +45,99 @@
 
 <!-- ══════════════════════════════════════════════════════════════
      CABEÇALHO
-     Uma marca e UM botão de agendar. Antes eram seis chamadas
-     douradas para a mesma página, mais dez micro-links nos cartões
-     e um botão flutuante de WhatsApp: dez pontos de destaque
-     disputando a mesma decisão fazem com que nenhum seja "a" ação.
-
-     O botão não tem breakpoint: a versão anterior era
-     `hidden sm:inline-flex` e simplesmente não existia no celular.
+     Vidro translúcido com os valores medidos no apple.com:
+     backdrop-filter: saturate(1.8) blur(20px).
+     Uma marca e UM botão de agendar — sem breakpoint: a versão
+     anterior era `hidden sm:` e sumia no celular.
      ══════════════════════════════════════════════════════════════ -->
 <header class="topo">
   <div class="topo__interno">
-    <a href="#inicio" class="marca">Casa Navalha</a>
+    <a href="#inicio" class="marca" aria-label="Casa Navalha — início">
+      <!-- Poste de barbeiro reduzido a um símbolo geométrico -->
+      <svg class="marca__mark" width="22" height="22" viewBox="0 0 24 24" fill="none" aria-hidden="true">
+        <defs><clipPath id="cn-pole-topo"><rect x="7.25" y="2.25" width="9.5" height="19.5" rx="4.75" /></clipPath></defs>
+        <g clip-path="url(#cn-pole-topo)" stroke="currentColor" stroke-width="2.4">
+          <path d="M1 14 13 2M1 20 13 8M1 26 13 14" />
+        </g>
+        <rect x="7.25" y="2.25" width="9.5" height="19.5" rx="4.75" stroke="currentColor" stroke-width="1.5" />
+      </svg>
+      <span class="marca__nome">Casa Navalha</span>
+    </a>
+
     <a href="agendar.html" class="btn btn--primary">Agendar</a>
   </div>
 </header>
 
-<main id="inicio" class="shell">
+<main id="inicio">
 
-  <!-- Identidade em uma linha. O manifesto serifado de quatro linhas
-       saiu: ocupava a dobra inteira sem dizer preço, horário nem
-       endereço — que é o que decide "marco aqui ou procuro outra". -->
+  <!-- Abertura centralizada, no padrão de página de produto da Apple:
+       uma frase grande e nada mais. O manifesto serifado de quatro
+       linhas saiu no redesenho anterior; agora sai também a serifada. -->
   <section class="secao">
-    <h1 class="serif t1">Barbearia clássica na Vila&nbsp;Madalena, desde 2014.</h1>
+    <div class="shell text-center">
+      <h1 class="t-display prosa mx-auto">Barbearia clássica na Vila&nbsp;Madalena, desde 2014.</h1>
+    </div>
   </section>
 
   <!-- ══════════════════════════════════════════════════════════
        SERVIÇOS — a informação herói da página
+       Lista agrupada: um cartão arredondado, separadores recuados
+       até onde o conteúdo começa. É o padrão de lista da Apple.
        ══════════════════════════════════════════════════════════ -->
-  <section id="servicos" class="secao">
-    <p class="rotulo">Serviços</p>
-    <div id="services-list" class="mt-4"></div>
+  <section id="servicos" class="bloco">
+    <div class="shell">
+      <h2 class="t2 bloco__titulo">Serviços</h2>
+      <div id="services-list" class="card lista"></div>
+    </div>
   </section>
 
   <!-- ══════════════════════════════════════════════════════════
        EQUIPE
        ══════════════════════════════════════════════════════════ -->
-  <section id="equipe" class="secao">
-    <p class="rotulo">Equipe</p>
-    <div id="barbers-list" class="mt-4"></div>
+  <section id="equipe" class="bloco">
+    <div class="shell">
+      <h2 class="t2 bloco__titulo">Equipe</h2>
+      <div id="barbers-list" class="card lista" style="--recuo:5.1rem"></div>
+    </div>
   </section>
 
   <!-- ══════════════════════════════════════════════════════════
        TRABALHO
        ══════════════════════════════════════════════════════════ -->
-  <section id="galeria" class="secao">
-    <p class="rotulo">Trabalho</p>
-    <div id="gallery-grid" class="galeria mt-4"></div>
+  <section id="galeria" class="bloco">
+    <div class="shell">
+      <h2 class="t2 bloco__titulo">Trabalho</h2>
+      <div id="gallery-grid" class="galeria"></div>
+    </div>
   </section>
 
   <!-- ══════════════════════════════════════════════════════════
        ONDE E QUANDO
-       O "mapa" estilizado com pino pulsante saiu: não era navegável
-       e a capacidade real — traçar rota — vive no endereço clicável.
        ══════════════════════════════════════════════════════════ -->
-  <section id="contato" class="secao">
-    <p class="rotulo">Onde e quando</p>
+  <section id="contato" class="bloco">
+    <div class="shell">
+      <h2 class="t2 bloco__titulo">Onde e quando</h2>
 
-    <div class="mt-4 grid gap-8 sm:grid-cols-2">
-      <div>
-        <p>
-          <a href="https://www.google.com/maps/search/?api=1&query=Rua+Harmonia+412+Vila+Madalena+Sao+Paulo"
-             target="_blank" rel="noopener" class="underline underline-offset-4">
-            Rua Harmonia, 412 — Vila Madalena
-          </a>
-        </p>
-        <p class="fraco mt-1">A 400 m do metrô Fradique Coutinho</p>
+      <div class="card p-6 sm:p-7 grid gap-8 sm:grid-cols-2">
+        <div>
+          <p>
+            <a href="https://www.google.com/maps/search/?api=1&query=Rua+Harmonia+412+Vila+Madalena+Sao+Paulo"
+               target="_blank" rel="noopener" class="link">
+              Rua Harmonia, 412 — Vila Madalena
+            </a>
+          </p>
+          <p class="fraco mt-1">A 400 m do metrô Fradique Coutinho</p>
 
-        <p class="mt-5 tnum">
-          <a href="tel:+551140028922" class="underline underline-offset-4">(11) 4002-8922</a>
-        </p>
-        <p class="mt-1 tnum">
-          <a href="https://wa.me/5511940028922?text=Ol%C3%A1%21%20Gostaria%20de%20saber%20mais%20sobre%20a%20Casa%20Navalha."
-             target="_blank" rel="noopener" class="underline underline-offset-4">WhatsApp (11) 94002-8922</a>
-        </p>
-        <p class="mt-1">
-          <a href="mailto:contato@casanavalha.com.br" class="underline underline-offset-4">contato@casanavalha.com.br</a>
-        </p>
+          <p class="mt-5 tnum"><a href="tel:+551140028922" class="link">(11) 4002-8922</a></p>
+          <p class="mt-1 tnum">
+            <a href="https://wa.me/5511940028922?text=Ol%C3%A1%21%20Gostaria%20de%20saber%20mais%20sobre%20a%20Casa%20Navalha."
+               target="_blank" rel="noopener" class="link">WhatsApp (11) 94002-8922</a>
+          </p>
+          <p class="mt-1"><a href="mailto:contato@casanavalha.com.br" class="link">contato@casanavalha.com.br</a></p>
+        </div>
+
+        <dl id="hours-list" class="tnum"></dl>
       </div>
-
-      <dl id="hours-list" class="tnum"></dl>
     </div>
   </section>
 </main>
@@ -135,7 +150,7 @@
 <footer class="rodape">
   <div class="shell flex flex-wrap items-center justify-between gap-3">
     <p>© <span id="year">2026</span> Casa Navalha · protótipo</p>
-    <a href="dashboard.html" class="underline underline-offset-4">Área do proprietário</a>
+    <a href="dashboard.html" class="link">Área do proprietário</a>
   </div>
 </footer>
 
