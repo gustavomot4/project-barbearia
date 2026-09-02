@@ -60,7 +60,7 @@ CN.SERVICOS_PADRAO = [
   {
     id: 'corte-classico',
     nome: 'Corte Clássico',
-    desc: 'Tesoura e máquina, lavagem, finalização com pomada e toalha quente.',
+    desc: 'Máquina e tesoura, sem degradê. Inclui lavagem.',
     preco: 55,
     duracao: 40,
     ativo: true
@@ -68,7 +68,7 @@ CN.SERVICOS_PADRAO = [
   {
     id: 'corte-navalhado',
     nome: 'Corte Navalhado',
-    desc: 'Degradê fechado na navalha, contorno milimétrico e acabamento em pente fino.',
+    desc: 'Degradê fechado na navalha e contorno definido.',
     preco: 70,
     duracao: 50,
     ativo: true
@@ -76,7 +76,7 @@ CN.SERVICOS_PADRAO = [
   {
     id: 'barba-terapia',
     nome: 'Barba Terapia',
-    desc: 'Toalha quente, óleo pré-barba, navalha em duas passadas e bálsamo calmante.',
+    desc: 'Só barba: navalha em duas passadas, sem corte.',
     preco: 45,
     duracao: 30,
     ativo: true
@@ -84,7 +84,7 @@ CN.SERVICOS_PADRAO = [
   {
     id: 'combo-imperio',
     nome: 'Combo Império',
-    desc: 'Corte completo + barba terapia. O ritual inteiro, com bebida por nossa conta.',
+    desc: 'Corte Clássico + Barba Terapia numa sessão só.',
     preco: 95,
     duracao: 70,
     destaque: 'Mais pedido',
@@ -93,7 +93,7 @@ CN.SERVICOS_PADRAO = [
   {
     id: 'pigmentacao',
     nome: 'Pigmentação & Disfarce',
-    desc: 'Correção de falhas na barba ou disfarce de fios brancos com efeito natural.',
+    desc: 'Cobre falhas na barba ou fios brancos. Não corta.',
     preco: 40,
     duracao: 30,
     ativo: true
@@ -101,7 +101,7 @@ CN.SERVICOS_PADRAO = [
   {
     id: 'platinado',
     nome: 'Platinado Premium',
-    desc: 'Descoloração global, matização e tratamento de reconstrução no mesmo dia.',
+    desc: 'Descoloração global com matização e reconstrução.',
     preco: 190,
     duracao: 120,
     ativo: true
@@ -110,7 +110,13 @@ CN.SERVICOS_PADRAO = [
 
 /* ---------- Equipe ----------
    'folga' usa o mesmo padrão de dia da semana do JS.
-   'cor' identifica o barbeiro na grade da Agenda Geral.      */
+
+   'cor' NÃO pinta mais nada: no redesenho a Agenda Geral passou a
+   identificar o barbeiro pelo nome da coluna (visão de dia) e pela
+   inicial dentro do bloco (visão de semana), porque quatro matizes
+   competindo com a ação primária quebravam a regra de um acento só.
+   O campo continua no registro porque store.js o repassa em
+   financeiro().porBarbeiro — e store.js está congelado.          */
 CN.BARBEIROS_PADRAO = [
   {
     id: 'rafael',
@@ -175,37 +181,14 @@ CN.BARBEIROS_PADRAO = [
 CN.SERVICOS  = CN.SERVICOS_PADRAO;
 CN.BARBEIROS = CN.BARBEIROS_PADRAO;
 
-/* ---------- Galeria ---------- */
+/* ---------- Galeria ----------
+   Só fotos de RESULTADO: as de ambiente e de ferramenta saíram no
+   redesenho. Quem está decidindo marcar quer ver o corte, não a
+   cadeira. O site mostra as três primeiras.                      */
 CN.GALERIA = [
-  { src: 'https://images.unsplash.com/photo-1503951914875-452162b0f3f1?auto=format&fit=crop&w=800&q=80', legenda: 'Clássico executivo',  span: 'lg:col-span-2 lg:row-span-2', ratio: 'aspect-square' },
-  { src: 'https://images.unsplash.com/photo-1599351431202-1e0f0137899a?auto=format&fit=crop&w=700&q=80', legenda: 'Degradê na navalha', span: '', ratio: 'aspect-square' },
-  { src: 'https://images.unsplash.com/photo-1596728325488-58c87691e9af?auto=format&fit=crop&w=700&q=80', legenda: 'Ferramentas da casa', span: '', ratio: 'aspect-square' },
-  { src: 'https://images.unsplash.com/photo-1621605815971-fbc98d665033?auto=format&fit=crop&w=700&q=80', legenda: 'A cadeira de 1962',  span: '', ratio: 'aspect-square' },
-  /* O último item ocupa a linha inteira no mobile (2 colunas) para não
-     sobrar buraco na grade; no desktop volta a ser um quadrado normal. */
-  { src: 'https://images.unsplash.com/photo-1567894340315-735d7c361db0?auto=format&fit=crop&w=700&q=80', legenda: 'Barba desenhada',    span: 'col-span-2 lg:col-span-1', ratio: 'aspect-[2/1] lg:aspect-square' }
-];
-
-/* ---------- Depoimentos ---------- */
-CN.DEPOIMENTOS = [
-  {
-    nome: 'Marcos Vinícius',
-    detalhe: 'Cliente há 6 anos',
-    nota: 5,
-    texto: 'Já testei meia dúzia de barbearias caras na região. Nenhuma acerta o degradê como o Diego. E o horário é o horário — nunca esperei mais de cinco minutos.'
-  },
-  {
-    nome: 'Thiago Nakamura',
-    detalhe: 'Primeira visita em março',
-    nota: 5,
-    texto: 'Cheguei achando que era só cortar o cabelo. Saí de lá com a barba desenhada, café na mão e a sensação de ter tirado uma tarde de folga em quarenta minutos.'
-  },
-  {
-    nome: 'Rodrigo Bastos',
-    detalhe: 'Cliente há 2 anos',
-    nota: 5,
-    texto: 'Fiz platinado com o Léo depois de ter queimado o cabelo em outro lugar. Ele preferiu fazer em duas sessões pra não danificar. Isso é profissionalismo.'
-  }
+  { src: 'https://images.unsplash.com/photo-1503951914875-452162b0f3f1?auto=format&fit=crop&w=800&q=80', legenda: 'Clássico executivo' },
+  { src: 'https://images.unsplash.com/photo-1599351431202-1e0f0137899a?auto=format&fit=crop&w=700&q=80', legenda: 'Degradê na navalha' },
+  { src: 'https://images.unsplash.com/photo-1567894340315-735d7c361db0?auto=format&fit=crop&w=700&q=80', legenda: 'Barba desenhada' }
 ];
 
 /* ---------- Base financeira simulada ----------

@@ -42,9 +42,9 @@ CN.charts = (function () {
       tip.className = 'chart-tip';
       tip.style.cssText =
         'position:absolute;pointer-events:none;opacity:0;transition:opacity .15s;' +
-        'padding:6px 9px;background:#17161A;border:1px solid rgba(201,162,74,.35);' +
-        'font-size:11px;white-space:nowrap;transform:translate(-50%,-115%);z-index:5;' +
-        'box-shadow:0 10px 24px -12px rgba(0,0,0,.9)';
+        'padding:6px 9px;background:var(--ds-ink);color:var(--ds-paper);border:0;' +
+        'font-size:12px;white-space:nowrap;transform:translate(-50%,-115%);z-index:5;' +
+        'box-shadow:0 10px 24px -14px rgba(22,22,26,.6)';
       container.appendChild(tip);
     }
     return tip;
@@ -97,8 +97,8 @@ CN.charts = (function () {
     var idGrad = 'grad-linha-' + (++seqGradiente);
     var defs = el('defs');
     var grad = el('linearGradient', { id: idGrad, x1: '0', y1: '0', x2: '0', y2: '1' });
-    grad.appendChild(el('stop', { offset: '0%',   'stop-color': '#C9A24A', 'stop-opacity': '0.28' }));
-    grad.appendChild(el('stop', { offset: '100%', 'stop-color': '#C9A24A', 'stop-opacity': '0' }));
+    grad.appendChild(el('stop', { offset: '0%',   'stop-color': '#8A8781', 'stop-opacity': '0.28' }));
+    grad.appendChild(el('stop', { offset: '100%', 'stop-color': '#8A8781', 'stop-opacity': '0' }));
     defs.appendChild(grad);
     svg.appendChild(defs);
 
@@ -133,9 +133,9 @@ CN.charts = (function () {
         fill: 'transparent', style: 'cursor:pointer'
       });
       faixa.addEventListener('mouseenter', function () {
-        mostrarTooltip(tip, cx, cy, '<strong style="color:#E8CE8A">' +
+        mostrarTooltip(tip, cx, cy, '<strong>' +
           (opts.formatar ? opts.formatar(d.valor) : CN.util.moeda(d.valor)) +
-          '</strong><br><span style="color:#A79F94">' + CN.util.escapar(d.rotuloLongo || d.rotulo) + '</span>');
+          '</strong><br><span style="opacity:.7">' + CN.util.escapar(d.rotuloLongo || d.rotulo) + '</span>');
       });
       faixa.addEventListener('mouseleave', function () { esconderTooltip(tip); });
       svg.appendChild(faixa);
@@ -178,9 +178,9 @@ CN.charts = (function () {
       });
       barra.addEventListener('mouseenter', function () {
         mostrarTooltip(tip, x + larguraBarra / 2, y,
-          '<strong style="color:#E8CE8A">' +
+          '<strong>' +
           (opts.formatar ? opts.formatar(d.valor) : CN.util.moeda(d.valor)) +
-          '</strong><br><span style="color:#A79F94">' + CN.util.escapar(d.rotuloLongo || d.rotulo) + '</span>');
+          '</strong><br><span style="opacity:.7">' + CN.util.escapar(d.rotuloLongo || d.rotulo) + '</span>');
       });
       barra.addEventListener('mouseleave', function () { esconderTooltip(tip); });
       svg.appendChild(barra);
@@ -219,8 +219,8 @@ CN.charts = (function () {
     var idGrad = 'grad-spark-' + (++seqGradiente);
     var defs = el('defs');
     var grad = el('linearGradient', { id: idGrad, x1: '0', y1: '0', x2: '0', y2: '1' });
-    grad.appendChild(el('stop', { offset: '0%',   'stop-color': '#C9A24A', 'stop-opacity': '0.3' }));
-    grad.appendChild(el('stop', { offset: '100%', 'stop-color': '#C9A24A', 'stop-opacity': '0' }));
+    grad.appendChild(el('stop', { offset: '0%',   'stop-color': '#8A8781', 'stop-opacity': '0.3' }));
+    grad.appendChild(el('stop', { offset: '100%', 'stop-color': '#8A8781', 'stop-opacity': '0' }));
     defs.appendChild(grad);
     svg.appendChild(defs);
 
@@ -228,7 +228,7 @@ CN.charts = (function () {
     svg.appendChild(el('path', { class: 'chart-line', d: d, 'stroke-width': '1.5' }));
     svg.appendChild(el('circle', {
       class: 'chart-dot--atual', cx: px(valores.length - 1), cy: py(valores[valores.length - 1]),
-      r: 3, fill: '#E8CE8A'
+      r: 3, fill: '#16161A'
     }));
 
     container.appendChild(svg);
@@ -242,7 +242,7 @@ CN.charts = (function () {
   function ranking(container, itens, opts) {
     opts = opts || {};
     if (!itens.length) {
-      container.innerHTML = '<p class="ds-empty" style="padding:1.75rem">' +
+      container.innerHTML = '<p class="ds-empty" style="padding:1.5rem">' +
         CN.util.escapar(opts.vazio || 'Sem dados no período.') + '</p>';
       return;
     }
@@ -251,22 +251,20 @@ CN.charts = (function () {
 
     container.innerHTML = itens.map(function (i) {
       return '' +
-        '<div class="rank-row" style="--cor:' + (i.cor || '#C9A24A') + '">' +
-          '<span style="font-size:.8125rem">' + CN.util.escapar(i.rotulo) + '</span>' +
-          '<span class="tnum" style="font-size:.8125rem;color:#C9A24A">' +
+        '<div class="rank-row">' +
+          '<span style="font-size:var(--ds-t3)">' + CN.util.escapar(i.rotulo) + '</span>' +
+          '<span class="tnum forte" style="font-size:var(--ds-t3)">' +
             (opts.formatar ? opts.formatar(i.valor) : CN.util.moeda(i.valor)) +
           '</span>' +
-          (i.extra ? '<span style="grid-column:1/-1;font-size:10px;color:#6E675E;margin-top:-2px">' + CN.util.escapar(i.extra) + '</span>' : '') +
-          '<span class="rank-track"><span class="rank-fill" data-largura="' + ((i.valor / max) * 100).toFixed(1) + '"></span></span>' +
+          (i.extra ? '<span style="grid-column:1/-1;font-size:var(--ds-t4);color:var(--ds-ink-3);margin-top:-2px">' + CN.util.escapar(i.extra) + '</span>' : '') +
+          '<span class="rank-track"><span class="rank-fill" style="width:' +
+            ((i.valor / max) * 100).toFixed(1) + '%"></span></span>' +
         '</div>';
     }).join('');
-
-    /* Anima o preenchimento no próximo quadro */
-    requestAnimationFrame(function () {
-      Array.prototype.forEach.call(container.querySelectorAll('.rank-fill'), function (f) {
-        f.style.width = f.dataset.largura + '%';
-      });
-    });
+    /* A largura vai direto no HTML. A versão anterior a aplicava num
+       requestAnimationFrame para animar o preenchimento, mas quando o
+       contêiner era redesenhado no mesmo quadro (troca de rota chama
+       CN.charts.redesenhar) as barras nasciam e morriam em zero.    */
   }
 
   /* ══════════════════════════════════════════════════════════

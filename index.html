@@ -3,45 +3,35 @@
 <head>
 <meta charset="UTF-8" />
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
-<meta name="theme-color" content="#0A0A0B" />
+<meta name="theme-color" content="#FBFAF8" />
 
-<title>Casa Navalha — Barbearia &amp; Clube | Vila Madalena, São Paulo</title>
-<meta name="description" content="Casa Navalha: barbearia clássica com alma contemporânea. Corte, barba e ritual na Vila Madalena desde 2014." />
+<title>Casa Navalha — Barbearia na Vila Madalena, São Paulo</title>
+<meta name="description" content="Barbearia clássica na Vila Madalena desde 2014. Corte, barba e coloração, com preço e duração à vista. Agende online." />
 
 <!-- Open Graph (compartilhamento em redes / WhatsApp) -->
 <meta property="og:type" content="website" />
-<meta property="og:title" content="Casa Navalha — Barbearia &amp; Clube" />
-<meta property="og:description" content="Onde o corte vira ritual." />
-<meta property="og:image" content="https://images.unsplash.com/photo-1585747860715-2ba37e788b70?auto=format&fit=crop&w=1200&q=80" />
+<meta property="og:title" content="Casa Navalha — Barbearia" />
+<meta property="og:description" content="Barbearia clássica na Vila Madalena desde 2014." />
+<meta property="og:image" content="https://images.unsplash.com/photo-1503951914875-452162b0f3f1?auto=format&fit=crop&w=1200&q=80" />
 
-<!-- Favicon: monograma "CN" gerado inline (sem requisição externa) -->
-<link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 64 64'%3E%3Crect width='64' height='64' fill='%230A0A0B'/%3E%3Ctext x='32' y='45' font-family='Georgia,serif' font-size='32' font-weight='700' fill='%23C9A24A' text-anchor='middle'%3ECN%3C/text%3E%3C/svg%3E" />
+<link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 64 64'%3E%3Crect width='64' height='64' fill='%23FBFAF8'/%3E%3Ctext x='32' y='44' font-family='Inter,Helvetica,sans-serif' font-size='30' font-weight='600' fill='%2316161A' text-anchor='middle'%3ECN%3C/text%3E%3C/svg%3E" />
 
-<!-- Tipografia -->
+<!-- Duas famílias no projeto inteiro: Inter em tudo, e a serifada
+     só nos títulos daqui, que é onde a marca ainda precisa de voz.
+     Anton saiu — era ela que produzia a caixa alta pesada. -->
 <link rel="preconnect" href="https://fonts.googleapis.com" />
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
-<link href="https://fonts.googleapis.com/css2?family=Anton&family=Cormorant+Garamond:ital,wght@0,400;0,600;1,400;1,600&family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet" />
+<link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:wght@600&family=Inter:wght@400;500;600&display=swap" rel="stylesheet" />
 
-<!-- Tailwind via CDN: zero build, 100% compatível com GitHub Pages -->
 <script src="https://cdn.tailwindcss.com"></script>
 <script>
-  /* Tokens de design da marca expostos como utilitários Tailwind */
+  /* Tailwind só para layout; a aparência vem de assets/css/styles.css */
   tailwind.config = {
     theme: {
       extend: {
-        colors: {
-          ink:  { DEFAULT: '#0A0A0B', 800: '#0F0F11', 700: '#141416', 600: '#1A191C', 500: '#232227' },
-          bone: { DEFAULT: '#EDE6DA', dim: '#A79F94', faint: '#6E675E' },
-          gold: { DEFAULT: '#C9A24A', light: '#E8CE8A', deep: '#8A6A22' },
-          wine: '#5E241F'
-        },
         fontFamily: {
-          display: ['Anton', 'Haettenschweiler', 'Impact', 'sans-serif'],
-          serif:   ['"Cormorant Garamond"', 'Georgia', 'serif'],
-          sans:    ['Inter', 'system-ui', '-apple-system', 'sans-serif']
-        },
-        letterSpacing: { ultra: '0.34em', mega: '0.5em' },
-        maxWidth: { shell: '1240px' }
+          sans: ['Inter', 'system-ui', '-apple-system', 'Segoe UI', 'sans-serif']
+        }
       }
     }
   }
@@ -50,411 +40,104 @@
 <link rel="stylesheet" href="assets/css/styles.css" />
 </head>
 
-<body class="bg-ink text-bone font-sans antialiased selection:bg-gold selection:text-ink">
+<body class="font-sans antialiased">
 
 <!-- ══════════════════════════════════════════════════════════════
-     BARRA DE AVISO — reforça a ideia de agenda viva
+     CABEÇALHO
+     Uma marca e UM botão de agendar. Antes eram seis chamadas
+     douradas para a mesma página, mais dez micro-links nos cartões
+     e um botão flutuante de WhatsApp: dez pontos de destaque
+     disputando a mesma decisão fazem com que nenhum seja "a" ação.
+
+     O botão não tem breakpoint: a versão anterior era
+     `hidden sm:inline-flex` e simplesmente não existia no celular.
      ══════════════════════════════════════════════════════════════ -->
-<div class="relative z-30 bg-ink-800 border-b border-white/5 text-[11px] sm:text-xs">
-  <div class="pole h-[2px] w-full"></div>
-  <div class="max-w-shell mx-auto px-5 py-2.5 flex items-center justify-center gap-3 text-bone-dim">
-    <span class="hidden sm:inline-block w-1.5 h-1.5 bg-gold rotate-45"></span>
-    <p class="tracking-[0.18em] uppercase text-center">
-      Agenda de <span class="text-gold" id="ticker-month">—</span> aberta ·
-      <span class="text-bone" id="ticker-slots">—</span> horários livres esta semana
-    </p>
+<header class="topo">
+  <div class="topo__interno">
+    <a href="#inicio" class="marca">Casa Navalha</a>
+    <a href="agendar.html" class="btn btn--primary">Agendar</a>
   </div>
-</div>
-
-<!-- ══════════════════════════════════════════════════════════════
-     HEADER
-     ══════════════════════════════════════════════════════════════ -->
-<header id="site-header" class="sticky top-0 z-50 transition-all duration-500">
-  <div class="max-w-shell mx-auto px-5">
-    <div class="flex items-center justify-between h-[70px] lg:h-[86px]">
-
-      <!-- Marca -->
-      <a href="#inicio" class="group flex items-center gap-3 shrink-0" aria-label="Casa Navalha — início">
-        <span class="relative grid place-items-center w-10 h-10 border border-gold/40 group-hover:border-gold transition-colors">
-          <span class="font-serif font-semibold text-gold text-lg leading-none">CN</span>
-          <span class="absolute -bottom-px left-1/2 -translate-x-1/2 w-0 h-px bg-gold transition-all duration-500 group-hover:w-full"></span>
-        </span>
-        <span class="leading-none">
-          <span class="block font-display text-lg lg:text-xl tracking-[0.14em] uppercase">Casa Navalha</span>
-          <span class="block text-[9px] lg:text-[10px] tracking-ultra uppercase text-bone-faint mt-1">Barbearia &amp; Clube</span>
-        </span>
-      </a>
-
-      <!-- Navegação desktop -->
-      <nav class="hidden lg:flex items-center gap-9" aria-label="Navegação principal">
-        <a href="#servicos" class="nav-link">Serviços</a>
-        <a href="#equipe"   class="nav-link">Equipe</a>
-        <a href="#galeria"  class="nav-link">Galeria</a>
-        <a href="#contato"  class="nav-link">Contato</a>
-      </nav>
-
-      <div class="flex items-center gap-2 sm:gap-3">
-        <a href="agendar.html" class="btn-gold hidden sm:inline-flex items-center gap-2 px-5 py-3 bg-gold text-ink font-semibold text-[11px] tracking-[0.2em] uppercase">
-          Agendar agora
-        </a>
-
-        <!-- Botão do menu mobile -->
-        <button type="button" id="menu-toggle" aria-expanded="false" aria-controls="mobile-menu"
-                class="lg:hidden relative w-11 h-11 grid place-items-center border border-white/10" aria-label="Abrir menu">
-          <span class="burger"></span>
-        </button>
-      </div>
-    </div>
-  </div>
-  <div class="h-px bg-gradient-to-r from-transparent via-gold/25 to-transparent"></div>
 </header>
 
-<!-- Menu mobile em tela cheia -->
-<div id="mobile-menu" class="fixed inset-0 z-[45] lg:hidden invisible opacity-0 transition-all duration-400">
-  <div class="absolute inset-0 bg-ink/[0.97] backdrop-blur-md"></div>
-  <nav class="relative h-full flex flex-col justify-center px-8" aria-label="Navegação mobile">
-    <a href="#servicos" class="m-link" style="--i:0">Serviços</a>
-    <a href="#equipe"   class="m-link" style="--i:1">Equipe</a>
-    <a href="#galeria"  class="m-link" style="--i:2">Galeria</a>
-    <a href="#contato"  class="m-link" style="--i:3">Contato</a>
-    <a href="agendar.html" class="m-link !text-gold" style="--i:4">Agendar &rarr;</a>
-    <div class="m-link !text-base !font-sans !tracking-normal mt-8 pt-8 border-t border-white/10" style="--i:5">
-      <p class="text-[10px] tracking-ultra uppercase text-bone-faint mb-2">Reservas por telefone</p>
-      <a href="tel:+551140028922" class="font-serif text-2xl text-gold">(11) 4002-8922</a>
-    </div>
-  </nav>
-</div>
+<main id="inicio" class="shell">
 
-<main>
-<!-- ══════════════════════════════════════════════════════════════
-     HERO
-     ══════════════════════════════════════════════════════════════ -->
-<section id="inicio" class="relative min-h-[calc(100svh-110px)] flex items-center overflow-hidden">
+  <!-- Identidade em uma linha. O manifesto serifado de quatro linhas
+       saiu: ocupava a dobra inteira sem dizer preço, horário nem
+       endereço — que é o que decide "marco aqui ou procuro outra". -->
+  <section class="secao">
+    <h1 class="serif t1">Barbearia clássica na Vila&nbsp;Madalena, desde 2014.</h1>
+  </section>
 
-  <!-- Imagem de fundo com camadas de escurecimento -->
-  <div class="absolute inset-0 -z-10">
-    <img data-src="https://images.unsplash.com/photo-1585747860715-2ba37e788b70?auto=format&fit=crop&w=1900&q=80"
-         alt="Interior da barbearia Casa Navalha" class="w-full h-full object-cover object-center opacity-[0.42] scale-105" />
-    <div class="absolute inset-0 bg-gradient-to-r from-ink via-ink/85 to-ink/40"></div>
-    <div class="absolute inset-0 bg-gradient-to-t from-ink via-transparent to-ink/70"></div>
-  </div>
+  <!-- ══════════════════════════════════════════════════════════
+       SERVIÇOS — a informação herói da página
+       ══════════════════════════════════════════════════════════ -->
+  <section id="servicos" class="secao">
+    <p class="rotulo">Serviços</p>
+    <div id="services-list" class="mt-4"></div>
+  </section>
 
-  <div class="max-w-shell mx-auto px-5 w-full py-16 lg:py-24">
-    <div class="max-w-3xl">
+  <!-- ══════════════════════════════════════════════════════════
+       EQUIPE
+       ══════════════════════════════════════════════════════════ -->
+  <section id="equipe" class="secao">
+    <p class="rotulo">Equipe</p>
+    <div id="barbers-list" class="mt-4"></div>
+  </section>
 
-      <p class="reveal flex items-center gap-4 mb-7" style="--d:0ms">
-        <span class="w-10 h-px bg-gold"></span>
-        <span class="text-[10px] sm:text-[11px] tracking-ultra uppercase text-gold">Desde 2014 · Vila Madalena</span>
-      </p>
+  <!-- ══════════════════════════════════════════════════════════
+       TRABALHO
+       ══════════════════════════════════════════════════════════ -->
+  <section id="galeria" class="secao">
+    <p class="rotulo">Trabalho</p>
+    <div id="gallery-grid" class="galeria mt-4"></div>
+  </section>
 
-      <h1 class="font-display uppercase leading-[0.86] mb-7">
-        <span class="reveal block text-[clamp(2.9rem,11vw,6.6rem)]" style="--d:80ms">Onde o corte</span>
-        <span class="reveal block text-[clamp(2.9rem,11vw,6.6rem)] text-outline" style="--d:180ms">vira ritual</span>
-      </h1>
+  <!-- ══════════════════════════════════════════════════════════
+       ONDE E QUANDO
+       O "mapa" estilizado com pino pulsante saiu: não era navegável
+       e a capacidade real — traçar rota — vive no endereço clicável.
+       ══════════════════════════════════════════════════════════ -->
+  <section id="contato" class="secao">
+    <p class="rotulo">Onde e quando</p>
 
-      <p class="reveal font-serif text-xl sm:text-2xl lg:text-[1.7rem] italic text-bone-dim leading-relaxed max-w-xl mb-10" style="--d:280ms">
-        Navalha quente, toalha úmida e o tempo certo. Não vendemos corte de cabelo —
-        vendemos os quarenta minutos em que você não precisa ser nada além de você.
-      </p>
-
-      <div class="reveal flex flex-col sm:flex-row gap-3 sm:gap-4 mb-14" style="--d:380ms">
-        <a href="agendar.html" class="btn-gold group inline-flex items-center justify-center gap-3 px-8 py-4 bg-gold text-ink font-semibold text-xs tracking-[0.22em] uppercase">
-          Agendar agora
-          <svg class="transition-transform duration-300 group-hover:translate-x-1" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M5 12h14M13 6l6 6-6 6"/></svg>
-        </a>
-        <a href="#servicos" class="inline-flex items-center justify-center gap-3 px-8 py-4 border border-bone/20 hover:border-gold hover:text-gold text-xs tracking-[0.22em] uppercase transition-colors duration-300">
-          Ver serviços
-        </a>
-      </div>
-
-      <!-- Prova social -->
-      <dl class="reveal grid grid-cols-3 gap-5 sm:gap-10 max-w-lg border-t border-white/10 pt-8" style="--d:460ms">
-        <div>
-          <dd class="font-display text-3xl sm:text-4xl text-gold" data-count="11" data-suffix="k+">0</dd>
-          <dt class="text-[10px] tracking-[0.2em] uppercase text-bone-faint mt-1.5">Cortes feitos</dt>
-        </div>
-        <div>
-          <dd class="font-display text-3xl sm:text-4xl text-gold" data-count="4.9" data-decimals="1">0</dd>
-          <dt class="text-[10px] tracking-[0.2em] uppercase text-bone-faint mt-1.5">No Google</dt>
-        </div>
-        <div>
-          <dd class="font-display text-3xl sm:text-4xl text-gold" data-count="11" data-suffix=" anos">0</dd>
-          <dt class="text-[10px] tracking-[0.2em] uppercase text-bone-faint mt-1.5">De ofício</dt>
-        </div>
-      </dl>
-    </div>
-  </div>
-
-  <!-- Indicador de rolagem -->
-  <a href="#servicos" class="hidden lg:flex absolute bottom-8 left-1/2 -translate-x-1/2 flex-col items-center gap-3 text-bone-faint hover:text-gold transition-colors" aria-label="Rolar para serviços">
-    <span class="text-[9px] tracking-ultra uppercase">Role</span>
-    <span class="scroll-line"></span>
-  </a>
-</section>
-
-<!-- ══════════════════════════════════════════════════════════════
-     SERVIÇOS
-     ══════════════════════════════════════════════════════════════ -->
-<section id="servicos" class="relative py-24 lg:py-36 border-t border-white/5">
-  <div class="max-w-shell mx-auto px-5">
-
-    <div class="flex flex-col lg:flex-row lg:items-end justify-between gap-8 mb-14 lg:mb-20">
-      <div class="max-w-2xl">
-        <p class="reveal section-eyebrow">O cardápio</p>
-        <h2 class="reveal font-display uppercase text-[clamp(2.2rem,6.5vw,4.2rem)] leading-[0.95] mt-5" style="--d:80ms">
-          Serviços da<br /><span class="text-gold">casa</span>
-        </h2>
-      </div>
-      <p class="reveal font-serif text-lg italic text-bone-dim max-w-sm lg:text-right" style="--d:160ms">
-        Preços fechados, sem surpresa no caixa. O tempo indicado é o tempo real reservado só para você.
-      </p>
-    </div>
-
-    <!-- Grade preenchida por assets/js/ui.js -->
-    <div id="services-grid" class="grid sm:grid-cols-2 lg:grid-cols-3 gap-px bg-white/[0.07] border border-white/[0.07]"></div>
-
-    <p class="reveal mt-10 text-center text-sm text-bone-faint">
-      Todos os serviços incluem bebida cortesia — café, água com gás ou cerveja artesanal.
-    </p>
-  </div>
-</section>
-
-<!-- ══════════════════════════════════════════════════════════════
-     EQUIPE
-     ══════════════════════════════════════════════════════════════ -->
-<section id="equipe" class="relative py-24 lg:py-36 bg-ink-800 border-y border-white/5">
-  <div class="max-w-shell mx-auto px-5">
-
-    <div class="text-center max-w-2xl mx-auto mb-14 lg:mb-20">
-      <p class="reveal section-eyebrow justify-center">Quem segura a tesoura</p>
-      <h2 class="reveal font-display uppercase text-[clamp(2.2rem,6.5vw,4.2rem)] leading-[0.95] mt-5" style="--d:80ms">
-        A <span class="text-gold">equipe</span>
-      </h2>
-      <p class="reveal font-serif text-lg italic text-bone-dim mt-6" style="--d:160ms">
-        Quatro profissionais, quatro assinaturas diferentes. Escolha quem combina com a sua cabeça.
-      </p>
-    </div>
-
-    <div id="barbers-grid" class="grid sm:grid-cols-2 lg:grid-cols-4 gap-5 lg:gap-6"></div>
-  </div>
-</section>
-
-<!-- ══════════════════════════════════════════════════════════════
-     COMO FUNCIONA + CHAMADA PARA O AGENDAMENTO
-     Ponte entre o institucional e a página de reserva.
-     ══════════════════════════════════════════════════════════════ -->
-<section class="relative py-24 lg:py-32 overflow-hidden">
-  <div class="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[900px] h-[700px] max-w-full rounded-full bg-gold/[0.05] blur-[130px] -z-10"></div>
-
-  <div class="max-w-shell mx-auto px-5">
-    <div class="text-center max-w-2xl mx-auto mb-14">
-      <p class="reveal section-eyebrow justify-center">Sem telefone, sem espera</p>
-      <h2 class="reveal font-display uppercase text-[clamp(2rem,5.5vw,3.6rem)] leading-[0.95] mt-5" style="--d:80ms">
-        Reserve em <span class="text-gold">40 segundos</span>
-      </h2>
-    </div>
-
-    <ol class="grid sm:grid-cols-3 gap-px bg-white/[0.07] border border-white/[0.07] mb-12">
-      <li class="reveal bg-ink p-8 text-center" style="--d:0ms">
-        <span class="mx-auto mb-5 grid place-items-center w-12 h-12 border border-gold/30 font-display text-xl text-gold">1</span>
-        <h3 class="font-display uppercase text-lg tracking-wide">Escolha o ritual</h3>
-        <p class="mt-3 text-sm text-bone-dim leading-relaxed">Serviço, barbeiro, dia e horário — tudo com preço e duração à vista.</p>
-      </li>
-      <li class="reveal bg-ink p-8 text-center" style="--d:90ms">
-        <span class="mx-auto mb-5 grid place-items-center w-12 h-12 border border-gold/30 font-display text-xl text-gold">2</span>
-        <h3 class="font-display uppercase text-lg tracking-wide">Confirme</h3>
-        <p class="mt-3 text-sm text-bone-dim leading-relaxed">Só nome e WhatsApp. Você recebe o código da reserva na hora.</p>
-      </li>
-      <li class="reveal bg-ink p-8 text-center" style="--d:180ms">
-        <span class="mx-auto mb-5 grid place-items-center w-12 h-12 border border-gold/30 font-display text-xl text-gold">3</span>
-        <h3 class="font-display uppercase text-lg tracking-wide">Apareça</h3>
-        <p class="mt-3 text-sm text-bone-dim leading-relaxed">Chegue 5 minutos antes. O café já está pronto quando você senta.</p>
-      </li>
-    </ol>
-
-    <div class="reveal text-center" style="--d:240ms">
-      <a href="agendar.html" class="btn-gold group inline-flex items-center gap-3 px-10 py-5 bg-gold text-ink font-semibold text-xs tracking-[0.22em] uppercase">
-        Abrir a agenda
-        <svg class="transition-transform duration-300 group-hover:translate-x-1" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M5 12h14M13 6l6 6-6 6"/></svg>
-      </a>
-      <p class="mt-5 text-xs text-bone-faint">Cancelamento gratuito até 3 horas antes do horário.</p>
-    </div>
-  </div>
-</section>
-
-<!-- ══════════════════════════════════════════════════════════════
-     GALERIA
-     ══════════════════════════════════════════════════════════════ -->
-<section id="galeria" class="relative py-24 lg:py-36 bg-ink-800 border-y border-white/5">
-  <div class="max-w-shell mx-auto px-5">
-    <div class="flex flex-col sm:flex-row sm:items-end justify-between gap-6 mb-12 lg:mb-16">
+    <div class="mt-4 grid gap-8 sm:grid-cols-2">
       <div>
-        <p class="reveal section-eyebrow">Portfólio</p>
-        <h2 class="reveal font-display uppercase text-[clamp(2.2rem,6.5vw,4.2rem)] leading-[0.95] mt-5" style="--d:80ms">
-          O <span class="text-gold">trabalho</span>
-        </h2>
-      </div>
-      <p class="reveal font-serif text-lg italic text-bone-dim max-w-xs" style="--d:160ms">
-        Nenhum filtro. Fotos tiradas na cadeira, no fim do atendimento.
-      </p>
-    </div>
+        <p>
+          <a href="https://www.google.com/maps/search/?api=1&query=Rua+Harmonia+412+Vila+Madalena+Sao+Paulo"
+             target="_blank" rel="noopener" class="underline underline-offset-4">
+            Rua Harmonia, 412 — Vila Madalena
+          </a>
+        </p>
+        <p class="fraco mt-1">A 400 m do metrô Fradique Coutinho</p>
 
-    <div id="gallery-grid" class="grid grid-cols-2 lg:grid-cols-4 gap-3 lg:gap-4"></div>
-  </div>
-</section>
-
-<!-- ══════════════════════════════════════════════════════════════
-     DEPOIMENTOS
-     ══════════════════════════════════════════════════════════════ -->
-<section class="py-24 lg:py-32">
-  <div class="max-w-shell mx-auto px-5">
-    <div class="text-center mb-14">
-      <p class="reveal section-eyebrow justify-center">Na palavra de quem senta</p>
-      <h2 class="reveal font-display uppercase text-[clamp(2rem,5.5vw,3.4rem)] leading-[0.95] mt-5" style="--d:80ms">
-        Depoimentos
-      </h2>
-    </div>
-    <div id="testimonials-grid" class="grid md:grid-cols-3 gap-5"></div>
-  </div>
-</section>
-
-<!-- ══════════════════════════════════════════════════════════════
-     CONTATO / LOCALIZAÇÃO
-     ══════════════════════════════════════════════════════════════ -->
-<section id="contato" class="relative py-24 lg:py-36 bg-ink-800 border-t border-white/5">
-  <div class="max-w-shell mx-auto px-5 grid lg:grid-cols-2 gap-12 lg:gap-20 items-start">
-
-    <div>
-      <p class="reveal section-eyebrow">Onde nos achar</p>
-      <h2 class="reveal font-display uppercase text-[clamp(2.2rem,6vw,3.8rem)] leading-[0.95] mt-5 mb-9" style="--d:80ms">
-        Passe <span class="text-gold">aqui</span>
-      </h2>
-
-      <div class="reveal grid gap-7" style="--d:160ms">
-        <div class="flex gap-4">
-          <span class="shrink-0 grid place-items-center w-10 h-10 border border-gold/30 text-gold">
-            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7"><path d="M20 10c0 6-8 12-8 12s-8-6-8-12a8 8 0 0116 0z"/><circle cx="12" cy="10" r="3"/></svg>
-          </span>
-          <div>
-            <p class="text-[10px] tracking-ultra uppercase text-bone-faint mb-1.5">Endereço</p>
-            <p class="text-bone leading-relaxed">Rua Harmonia, 412 — Vila Madalena<br />São Paulo · SP · 05435-000</p>
-          </div>
-        </div>
-
-        <div class="flex gap-4">
-          <span class="shrink-0 grid place-items-center w-10 h-10 border border-gold/30 text-gold">
-            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7"><circle cx="12" cy="12" r="9"/><path d="M12 7v5l3.5 2"/></svg>
-          </span>
-          <div class="w-full">
-            <p class="text-[10px] tracking-ultra uppercase text-bone-faint mb-2.5">Funcionamento</p>
-            <dl id="hours-list" class="grid gap-1.5 text-sm max-w-xs"></dl>
-          </div>
-        </div>
-
-        <div class="flex gap-4">
-          <span class="shrink-0 grid place-items-center w-10 h-10 border border-gold/30 text-gold">
-            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7"><path d="M22 16.9v3a2 2 0 01-2.2 2 19.8 19.8 0 01-8.6-3 19.5 19.5 0 01-6-6 19.8 19.8 0 01-3-8.7A2 2 0 014.1 2h3a2 2 0 012 1.7c.1 1 .4 1.9.7 2.8a2 2 0 01-.5 2.1L8.1 9.9a16 16 0 006 6l1.3-1.2a2 2 0 012.1-.5c.9.3 1.8.6 2.8.7a2 2 0 011.7 2z"/></svg>
-          </span>
-          <div>
-            <p class="text-[10px] tracking-ultra uppercase text-bone-faint mb-1.5">Contato</p>
-            <a href="tel:+551140028922" class="block text-bone hover:text-gold transition-colors">(11) 4002-8922</a>
-            <a href="https://wa.me/5511940028922" target="_blank" rel="noopener" class="block text-bone hover:text-gold transition-colors">WhatsApp — (11) 94002-8922</a>
-          </div>
-        </div>
+        <p class="mt-5 tnum">
+          <a href="tel:+551140028922" class="underline underline-offset-4">(11) 4002-8922</a>
+        </p>
+        <p class="mt-1 tnum">
+          <a href="https://wa.me/5511940028922?text=Ol%C3%A1%21%20Gostaria%20de%20saber%20mais%20sobre%20a%20Casa%20Navalha."
+             target="_blank" rel="noopener" class="underline underline-offset-4">WhatsApp (11) 94002-8922</a>
+        </p>
+        <p class="mt-1">
+          <a href="mailto:contato@casanavalha.com.br" class="underline underline-offset-4">contato@casanavalha.com.br</a>
+        </p>
       </div>
 
-      <a href="agendar.html" class="btn-gold reveal mt-11 inline-flex items-center gap-3 px-8 py-4 bg-gold text-ink font-semibold text-xs tracking-[0.22em] uppercase" style="--d:240ms">
-        Reservar um horário
-      </a>
+      <dl id="hours-list" class="tnum"></dl>
     </div>
-
-    <!-- "Mapa" estilizado — sem iframe externo, carrega instantâneo -->
-    <div class="reveal relative aspect-[4/5] sm:aspect-[4/3] lg:aspect-[4/5] border border-white/10 overflow-hidden" style="--d:200ms">
-      <img data-src="https://images.unsplash.com/photo-1622286342621-4bd786c2447c?auto=format&fit=crop&w=1000&q=80"
-           alt="Fachada da Casa Navalha" class="absolute inset-0 w-full h-full object-cover opacity-40" />
-      <div class="absolute inset-0 bg-gradient-to-t from-ink via-ink/40 to-transparent"></div>
-      <div class="absolute inset-0 map-grid opacity-30"></div>
-
-      <div class="absolute left-1/2 top-1/2 -translate-x-1/2 -translate-y-1/2">
-        <span class="relative grid place-items-center w-14 h-14">
-          <span class="absolute inset-0 border border-gold/50 rounded-full pulse-ring"></span>
-          <span class="absolute inset-3 border border-gold/70 rounded-full"></span>
-          <span class="w-2.5 h-2.5 bg-gold rounded-full"></span>
-        </span>
-      </div>
-
-      <div class="absolute bottom-0 inset-x-0 p-6">
-        <p class="font-display uppercase text-2xl tracking-wide">Vila Madalena</p>
-        <p class="text-sm text-bone-dim mt-1">A 400 m do metrô Fradique Coutinho</p>
-        <a href="https://www.google.com/maps/search/?api=1&query=Rua+Harmonia+412+Vila+Madalena+Sao+Paulo"
-           target="_blank" rel="noopener"
-           class="mt-4 inline-flex items-center gap-2 text-[11px] tracking-[0.2em] uppercase text-gold hover:gap-3 transition-all">
-          Traçar rota
-          <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M5 12h14M13 6l6 6-6 6"/></svg>
-        </a>
-      </div>
-    </div>
-  </div>
-</section>
+  </section>
 </main>
 
 <!-- ══════════════════════════════════════════════════════════════
      RODAPÉ
+     "Área do proprietário" é a única porta navegável de todo o site
+     para o painel — sem ela o dono depende de digitar a URL na mão.
      ══════════════════════════════════════════════════════════════ -->
-<footer class="border-t border-white/10 bg-ink">
-  <div class="max-w-shell mx-auto px-5 py-14 lg:py-16">
-    <div class="grid md:grid-cols-[1.4fr_1fr_1fr] gap-10 lg:gap-16">
-      <div>
-        <div class="flex items-center gap-3 mb-5">
-          <span class="grid place-items-center w-10 h-10 border border-gold/40">
-            <span class="font-serif font-semibold text-gold text-lg leading-none">CN</span>
-          </span>
-          <span class="font-display text-lg tracking-[0.14em] uppercase">Casa Navalha</span>
-        </div>
-        <p class="font-serif text-lg italic text-bone-dim max-w-sm leading-relaxed">
-          "Um bom corte não muda a sua vida. Muda a semana. E às vezes a semana é o que precisa mudar."
-        </p>
-        <div class="flex gap-3 mt-7">
-          <a href="#" class="social" aria-label="Instagram"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6"><rect x="3" y="3" width="18" height="18" rx="5"/><circle cx="12" cy="12" r="4"/><circle cx="17.5" cy="6.5" r="1" fill="currentColor" stroke="none"/></svg></a>
-          <a href="#" class="social" aria-label="Facebook"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6"><path d="M15 3h-2.5A3.5 3.5 0 009 6.5V9H6v3.5h3V21h3.5v-8.5H15L15.5 9h-3V6.8c0-.5.4-.8.9-.8H15V3z"/></svg></a>
-          <a href="https://wa.me/5511940028922" target="_blank" rel="noopener" class="social" aria-label="WhatsApp"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6"><path d="M21 11.5a8.4 8.4 0 01-12.6 7.3L3 20.5l1.8-5.3A8.5 8.5 0 1121 11.5z"/><path d="M8.5 9.5c0 3.5 2.5 6 6 6"/></svg></a>
-        </div>
-      </div>
-
-      <nav aria-label="Rodapé — navegação">
-        <p class="text-[10px] tracking-ultra uppercase text-gold mb-5">Navegue</p>
-        <ul class="grid gap-3 text-sm text-bone-dim">
-          <li><a href="#servicos" class="hover:text-gold transition-colors">Serviços</a></li>
-          <li><a href="#equipe"   class="hover:text-gold transition-colors">Equipe</a></li>
-          <li><a href="#galeria"  class="hover:text-gold transition-colors">Galeria</a></li>
-          <li><a href="agendar.html" class="hover:text-gold transition-colors">Agendar horário</a></li>
-          <li><a href="dashboard.html" class="hover:text-gold transition-colors">Área do proprietário</a></li>
-        </ul>
-      </nav>
-
-      <div>
-        <p class="text-[10px] tracking-ultra uppercase text-gold mb-5">Visite</p>
-        <p class="text-sm text-bone-dim leading-relaxed">
-          Rua Harmonia, 412<br />Vila Madalena — São Paulo<br /><br />
-          <a href="tel:+551140028922" class="hover:text-gold transition-colors">(11) 4002-8922</a><br />
-          <a href="mailto:contato@casanavalha.com.br" class="hover:text-gold transition-colors">contato@casanavalha.com.br</a>
-        </p>
-      </div>
-    </div>
-
-    <div class="mt-14 pt-7 border-t border-white/[0.07] flex flex-col sm:flex-row items-center justify-between gap-4 text-[11px] text-bone-faint">
-      <p>© <span id="year">2026</span> Casa Navalha Barbearia. Todos os direitos reservados.</p>
-      <p class="tracking-[0.14em] uppercase">Site institucional · protótipo</p>
-    </div>
+<footer class="rodape">
+  <div class="shell flex flex-wrap items-center justify-between gap-3">
+    <p>© <span id="year">2026</span> Casa Navalha · protótipo</p>
+    <a href="dashboard.html" class="underline underline-offset-4">Área do proprietário</a>
   </div>
 </footer>
-
-<!-- Botão flutuante do WhatsApp -->
-<a href="https://wa.me/5511940028922?text=Ol%C3%A1%21%20Gostaria%20de%20saber%20mais%20sobre%20a%20Casa%20Navalha."
-   target="_blank" rel="noopener" aria-label="Falar no WhatsApp"
-   class="fixed bottom-5 right-5 z-30 grid place-items-center w-14 h-14 bg-gold text-ink shadow-[0_10px_36px_-8px_rgba(201,162,74,.7)] hover:scale-105 active:scale-95 transition-transform duration-300">
-  <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M21 11.5a8.4 8.4 0 01-12.6 7.3L3 20.5l1.8-5.3A8.5 8.5 0 1121 11.5z"/><path d="M8.5 9.5c0 3.5 2.5 6 6 6"/></svg>
-</a>
 
 <!-- ── Scripts do institucional ── -->
 <script src="assets/js/data.js"></script>

@@ -6,6 +6,10 @@
    institucional. Aceita pré-seleção pela URL:
      agendar.html?servico=combo-imperio
      agendar.html?barbeiro=diego
+
+   O motor de horários (CN.slots), a checagem de conflito e a
+   gravação (CN.store.criar) não mudaram: o redesenho é de
+   composição e de hierarquia, não de regra.
    ============================================================ */
 
 window.CN = window.CN || {};
@@ -15,12 +19,7 @@ CN.booking = (function () {
   var $  = function (s, c) { return (c || document).querySelector(s); };
   var $$ = function (s, c) { return Array.prototype.slice.call((c || document).querySelectorAll(s)); };
 
-  var ETAPAS = [
-    { n: 1, rotulo: 'Serviço' },
-    { n: 2, rotulo: 'Barbeiro' },
-    { n: 3, rotulo: 'Horário' },
-    { n: 4, rotulo: 'Dados' }
-  ];
+  var TOTAL_ETAPAS = 4;
 
   /* Estado do formulário em andamento */
   var estado = {
@@ -31,42 +30,15 @@ CN.booking = (function () {
     hora: null,
     nome: '',
     telefone: '',
-    obs: '',
-    lembrete: true
+    obs: ''
   };
 
   var ultimaReserva = null;   /* usado pelo modal de confirmação */
 
   /* ══════════════════════════════════════════════════════════
-     TRILHA DE PROGRESSO
-     ══════════════════════════════════════════════════════════ */
-  function renderStepper() {
-    var alvo = $('#stepper');
-    if (!alvo) return;
-
-    alvo.innerHTML = ETAPAS.map(function (e, i) {
-      var classe = e.n < estado.etapa ? 'is-done'
-                 : e.n === estado.etapa ? 'is-current' : '';
-
-      var conteudo = e.n < estado.etapa
-        ? '<svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M20 6L9 17l-5-5"/></svg>'
-        : e.n;
-
-      var item = '' +
-        '<li class="stepper-item flex items-center ' + classe + '"' +
-        (e.n === estado.etapa ? ' aria-current="step"' : '') + '>' +
-          '<span class="stepper-node">' + conteudo + '</span>' +
-          '<span class="stepper-label hidden sm:inline">' + e.rotulo + '</span>' +
-        '</li>';
-
-      /* Barra de ligação entre os nós (não vai depois do último) */
-      var barra = i < ETAPAS.length - 1 ? '<li class="stepper-bar" aria-hidden="true"></li>' : '';
-      return item + barra;
-    }).join('');
-  }
-
-  /* ══════════════════════════════════════════════════════════
      ETAPA 1 — SERVIÇOS
+     Preço e duração numa linha só. O marcador circular de seleção
+     saiu: a borda em tinta já diz qual está escolhido.
      ══════════════════════════════════════════════════════════ */
   function renderServicos() {
     var alvo = $('#svc-list');
@@ -75,24 +47,21 @@ CN.booking = (function () {
     var lista = CN.catalogo.servicosAtivos();
 
     if (!lista.length) {
-      alvo.innerHTML = vazio('Nenhum serviço disponível no momento. Fale com a barbearia pelo WhatsApp.');
+      alvo.innerHTML = vazio('Nenhum serviço disponível. Fale com a barbearia pelo telefone acima.');
       return;
     }
 
     alvo.innerHTML = lista.map(function (s) {
       var sel = estado.servicoId === s.id;
       return '' +
-        '<button type="button" class="opt p-4 sm:p-5 ' + (sel ? 'is-selected' : '') + '" data-servico="' + s.id + '" aria-pressed="' + sel + '">' +
-          '<span class="flex items-center gap-4">' +
-            '<span class="opt-dot" aria-hidden="true"></span>' +
-            '<span class="flex-1 min-w-0 text-left">' +
-              '<span class="flex items-center gap-2 flex-wrap">' +
-                '<span class="font-medium text-bone">' + CN.util.escapar(s.nome) + '</span>' +
-                (s.destaque ? '<span class="px-1.5 py-0.5 bg-gold/15 text-gold text-[9px] tracking-[0.14em] uppercase">' + CN.util.escapar(s.destaque) + '</span>' : '') +
-              '</span>' +
-              '<span class="block text-xs text-bone-faint mt-1">' + s.duracao + ' min</span>' +
-            '</span>' +
-            '<span class="font-serif text-xl font-semibold text-gold shrink-0">' + CN.util.moeda(s.preco) + '</span>' +
+        '<button type="button" class="opt ' + (sel ? 'is-selected' : '') + '" data-servico="' + s.id + '" aria-pressed="' + sel + '">' +
+          '<span class="flex items-baseline justify-between gap-4">' +
+            '<span class="font-medium">' + CN.util.escapar(s.nome) + '</span>' +
+            '<span class="tnum font-semibold shrink-0">' + CN.util.moeda(s.preco) + '</span>' +
+          '</span>' +
+          '<span class="flex items-baseline justify-between gap-4 fraco mt-0.5">' +
+            '<span>' + (s.destaque ? CN.util.escapar(s.destaque) : '') + '</span>' +
+            '<span class="shrink-0">' + s.duracao + ' min</span>' +
           '</span>' +
         '</button>';
     }).join('');
@@ -112,12 +81,13 @@ CN.booking = (function () {
     }
     estado.servicoId = id;
     renderServicos();
-    atualizarResumo();
-    atualizarBotoes();
+    atualizarBarra();
   }
 
   /* ══════════════════════════════════════════════════════════
      ETAPA 2 — BARBEIROS
+     Foto, nome e especialidade. A nota saiu: 5.0 / 4.9 / 4.9 / 4.8
+     não desempata escolha nenhuma.
      ══════════════════════════════════════════════════════════ */
   function renderBarbeiros() {
     var alvo = $('#barber-list');
@@ -126,20 +96,14 @@ CN.booking = (function () {
     alvo.innerHTML = CN.catalogo.barbeirosAtivos().map(function (b) {
       var sel = estado.barbeiroId === b.id;
       return '' +
-        '<button type="button" class="opt p-4 ' + (sel ? 'is-selected' : '') + '" data-barbeiro="' + b.id + '" aria-pressed="' + sel + '">' +
-          '<span class="flex items-center gap-4">' +
-            '<span class="relative shrink-0 w-14 h-14 overflow-hidden bg-ink-600">' +
-              '<img data-src="' + b.foto + '" alt="" class="w-full h-full object-cover" loading="lazy" />' +
+        '<button type="button" class="opt ' + (sel ? 'is-selected' : '') + '" data-barbeiro="' + b.id + '" aria-pressed="' + sel + '">' +
+          '<span class="flex items-center gap-3">' +
+            '<img data-src="' + b.foto + '" alt="" class="barbeiro__foto" style="width:44px;height:44px" loading="lazy" />' +
+            '<span class="min-w-0">' +
+              '<span class="block font-medium truncate">' + CN.util.escapar(b.nome) + '</span>' +
+              '<span class="block fraco truncate">' + CN.util.escapar(b.especialidade) +
+                ' · folga ' + CN.DIAS_SEMANA[b.folga].toLowerCase() + '</span>' +
             '</span>' +
-            '<span class="flex-1 min-w-0 text-left">' +
-              '<span class="block font-medium text-bone truncate">' + CN.util.escapar(b.nome) + '</span>' +
-              '<span class="block text-xs text-bone-faint mt-0.5 truncate">' + CN.util.escapar(b.especialidade) + '</span>' +
-              '<span class="inline-flex items-center gap-1 text-[10px] text-gold mt-1.5">' +
-                '<svg width="9" height="9" viewBox="0 0 24 24" fill="currentColor"><path d="M12 2l2.9 6.3 6.9.8-5.1 4.7 1.4 6.8L12 17.3 5.9 20.6l1.4-6.8L2.2 9.1l6.9-.8z"/></svg>' +
-                b.nota.toFixed(1) +
-              '</span>' +
-            '</span>' +
-            '<span class="opt-dot shrink-0" aria-hidden="true"></span>' +
           '</span>' +
         '</button>';
     }).join('');
@@ -161,8 +125,7 @@ CN.booking = (function () {
     }
     estado.barbeiroId = id;
     renderBarbeiros();
-    atualizarResumo();
-    atualizarBotoes();
+    atualizarBarra();
   }
 
   /* ══════════════════════════════════════════════════════════
@@ -195,9 +158,9 @@ CN.booking = (function () {
     var alvo = $('#date-strip');
     if (!alvo || !estado.barbeiroId) return;
 
-    var barbeiro = CN.util.barbeiroPorId(estado.barbeiroId);
     var hoje = new Date();
     var html = '';
+    var mesAnterior = null;
 
     for (var i = 0; i < CN.CONFIG.janelaDias; i++) {
       var dia = CN.util.addDias(hoje, i);
@@ -212,18 +175,22 @@ CN.booking = (function () {
                     .some(function (s) { return s.disponivel; });
       }
 
+      /* O mês só é impresso quando muda: repetido 21 vezes era ruído,
+         mas apagado por completo faria alguém marcar 3 de outubro
+         achando que era 3 de setembro.                             */
+      var mes = dia.getMonth();
+      var mostraMes = mes !== mesAnterior;
+      mesAnterior = mes;
+
       var sel = estado.data === iso;
-      var titulo = !trabalha
-        ? (CN.slots.expediente(iso) ? barbeiro.nome.split(' ')[0] + ' folga neste dia' : 'Barbearia fechada')
-        : (temVaga ? 'Ver horários' : 'Agenda cheia');
 
       html += '' +
         '<button type="button" class="day-chip ' + (sel ? 'is-selected' : '') + '"' +
           ' data-data="' + iso + '"' + (temVaga ? '' : ' disabled') +
-          ' title="' + CN.util.escapar(titulo) + '" aria-pressed="' + sel + '">' +
+          ' aria-pressed="' + sel + '">' +
           '<span class="day-chip__dow">' + (i === 0 ? 'Hoje' : CN.DIAS_CURTO[dia.getDay()]) + '</span>' +
           '<span class="day-chip__num">' + dia.getDate() + '</span>' +
-          '<span class="day-chip__mon">' + CN.MESES_CURTO[dia.getMonth()] + '</span>' +
+          '<span class="day-chip__mes">' + (mostraMes ? CN.MESES_CURTO[mes] : '') + '</span>' +
         '</button>';
     }
 
@@ -235,8 +202,7 @@ CN.booking = (function () {
         estado.hora = null;
         renderDatas();
         renderHorarios();
-        atualizarResumo();
-        atualizarBotoes();
+        atualizarBarra();
       });
     });
 
@@ -247,22 +213,31 @@ CN.booking = (function () {
 
   function renderHorarios() {
     var alvo = $('#slot-grid');
-    var legenda = $('#slot-sub');
+    var pergunta = $('#pergunta-horario');
+    var sub = $('#slot-sub');
     if (!alvo) return;
 
+    var servico = CN.util.servicoPorId(estado.servicoId);
+    var barbeiro = CN.util.barbeiroPorId(estado.barbeiroId);
+
+    /* A pergunta carrega o barbeiro — assim ele não precisa de uma
+       linha própria de resumo.                                    */
+    if (pergunta && barbeiro) {
+      pergunta.textContent = 'Quando fica bom com o ' + barbeiro.nome.split(' ')[0] + '?';
+    }
+
+    /* Duração e término: a etapa 1 está oculta agora, então este é o
+       único lugar do fluxo onde o cliente vê quanto tempo reserva. */
+    if (sub && servico) {
+      sub.textContent = servico.nome + ' · ' + servico.duracao + ' min';
+    }
+
     if (!estado.data) {
-      alvo.innerHTML = vazio('Escolha uma data acima para ver os horários livres.');
+      alvo.innerHTML = vazio('Escolha uma data acima.');
       return;
     }
 
-    var servico = CN.util.servicoPorId(estado.servicoId);
     var lista = CN.slots.listar(estado.data, estado.barbeiroId, servico.duracao);
-    var barbeiro = CN.util.barbeiroPorId(estado.barbeiroId);
-
-    if (legenda) {
-      legenda.textContent = barbeiro.nome.split(' ')[0] + ' · ' +
-        CN.util.dataExtenso(estado.data) + ' · bloco de ' + servico.duracao + ' min';
-    }
 
     if (!lista.length) {
       alvo.innerHTML = vazio('Sem expediente nesta data. Tente outro dia.');
@@ -280,7 +255,6 @@ CN.booking = (function () {
       return '' +
         '<button type="button" class="slot ' + (sel ? 'is-selected' : '') + '"' +
           ' data-hora="' + s.hora + '"' + (s.disponivel ? '' : ' disabled') +
-          ' title="' + CN.util.escapar(s.disponivel ? 'Disponível' : s.motivo) + '"' +
           ' aria-pressed="' + sel + '">' + s.hora + '</button>';
     }).join('');
 
@@ -288,25 +262,25 @@ CN.booking = (function () {
       btn.addEventListener('click', function () {
         estado.hora = btn.dataset.hora;
         renderHorarios();
-        atualizarResumo();
-        atualizarBotoes();
+        atualizarBarra();
       });
     });
   }
 
   function vazio(texto) {
-    return '<p class="col-span-full py-8 text-center text-sm text-bone-faint border border-dashed border-white/10">' +
-             CN.util.escapar(texto) + '</p>';
+    return '<p class="vazio">' + CN.util.escapar(texto) + '</p>';
   }
 
   /* ══════════════════════════════════════════════════════════
      ETAPA 4 — DADOS DO CLIENTE
+     O checkbox de lembrete saiu: o campo era escrito e lido por
+     nada em todo o projeto, e um site estático não manda WhatsApp.
+     Era uma promessa que o sistema não pode cumprir.
      ══════════════════════════════════════════════════════════ */
   function iniciarFormulario() {
     var nome = $('#f-nome');
     var tel = $('#f-tel');
     var obs = $('#f-obs');
-    var lembrete = $('#f-lembrete');
     if (!nome || !tel) return;
 
     /* Máscara aplicada enquanto digita, preservando a posição do cursor
@@ -317,17 +291,16 @@ CN.booking = (function () {
       if (noFim) tel.setSelectionRange(tel.value.length, tel.value.length);
       estado.telefone = tel.value;
       limparErro('telefone');
-      atualizarBotoes();
+      atualizarBarra();
     });
 
     nome.addEventListener('input', function () {
       estado.nome = nome.value;
       limparErro('nome');
-      atualizarBotoes();
+      atualizarBarra();
     });
 
     obs.addEventListener('input', function () { estado.obs = obs.value; });
-    lembrete.addEventListener('change', function () { estado.lembrete = lembrete.checked; });
 
     /* Enter no formulário confirma em vez de recarregar a página */
     $('#client-form').addEventListener('submit', function (e) {
@@ -377,55 +350,62 @@ CN.booking = (function () {
   }
 
   /* ══════════════════════════════════════════════════════════
-     RESUMO (lateral no desktop, barra fixa no mobile)
+     BARRA DE AÇÃO
+     Um botão primário, e o resumo como legenda dele. O botão
+     desabilitado DIZ o que falta — uma placa colorida apagada
+     não comunica nada.
      ══════════════════════════════════════════════════════════ */
-  function atualizarResumo() {
+  function atualizarBarra() {
     var servico  = estado.servicoId  ? CN.util.servicoPorId(estado.servicoId)   : null;
     var barbeiro = estado.barbeiroId ? CN.util.barbeiroPorId(estado.barbeiroId) : null;
 
-    var linhas = [
-      { rotulo: 'Serviço',  valor: servico  ? servico.nome  : null },
-      { rotulo: 'Barbeiro', valor: barbeiro ? barbeiro.nome : null },
-      { rotulo: 'Data',     valor: estado.data ? CN.util.dataExtenso(estado.data) : null },
-      { rotulo: 'Horário',  valor: estado.hora && servico
-          ? estado.hora + ' — ' + CN.util.paraHora(CN.util.minutos(estado.hora) + servico.duracao)
-          : null }
-    ];
+    var prev = $('#btn-prev');
+    var next = $('#btn-next');
+    var rotulo = $('#btn-next-label');
+    var resumo = $('#barra-resumo');
+    if (!prev || !next) return;
 
-    var alvo = $('#summary');
-    if (alvo) {
-      alvo.innerHTML = linhas.map(function (l) {
-        var preenchido = !!l.valor;
-        return '' +
-          '<div class="flex items-start justify-between gap-4 pb-3 border-b border-white/[0.06] last:border-0">' +
-            '<dt class="text-[10px] tracking-[0.18em] uppercase text-bone-faint shrink-0 pt-0.5">' + l.rotulo + '</dt>' +
-            '<dd class="text-right ' + (preenchido ? 'text-bone' : 'text-bone-faint') + '">' +
-              (preenchido ? CN.util.escapar(l.valor) : '—') +
-            '</dd>' +
-          '</div>';
-      }).join('');
+    prev.disabled = estado.etapa === 1;
+
+    var pode = podeAvancar();
+    next.disabled = !pode;
+
+    /* Rótulo do botão: quando dá para avançar, é a ação;
+       quando não dá, é a instrução do que falta.        */
+    var faltas = {
+      1: 'Escolha um serviço',
+      2: 'Escolha um barbeiro',
+      3: estado.data ? 'Escolha um horário' : 'Escolha um dia',
+      4: 'Preencha seus dados'
+    };
+    rotulo.textContent = pode
+      ? (estado.etapa === TOTAL_ETAPAS ? 'Confirmar agendamento' : 'Continuar')
+      : faltas[estado.etapa];
+
+    /* Legenda da barra: o que já foi escolhido, ou a objeção que
+       ainda precisa ser derrubada.                             */
+    if (resumo) {
+      if (!servico) {
+        resumo.textContent = 'Sem cartão · cancele pelo telefone até 3h antes';
+      } else {
+        var partes = [servico.nome];
+        if (barbeiro && estado.etapa > 2) partes.push(barbeiro.nome.split(' ')[0]);
+        if (estado.data && estado.hora) partes.push(CN.util.dataCurta(estado.data) + ' ' + estado.hora);
+        resumo.innerHTML = '<strong>' + CN.util.moeda(servico.preco) + '</strong> · ' +
+                           CN.util.escapar(partes.join(' · '));
+      }
     }
 
-    var total = $('#summary-total');
-    if (total) total.textContent = servico ? CN.util.moeda(servico.preco) : '—';
+    /* Revisão da etapa 4 — aparece uma vez, onde revisar é decisão */
+    var revisao = $('#revisao');
+    if (revisao && servico && barbeiro && estado.data && estado.hora) {
+      revisao.textContent =
+        servico.nome + ' com ' + barbeiro.nome.split(' ')[0] + ' · ' +
+        CN.util.dataExtenso(estado.data) + ', ' + estado.hora + ' · ' +
+        CN.util.moeda(servico.preco);
+    }
 
-    atualizarBarraMobile(servico, barbeiro);
-  }
-
-  function atualizarBarraMobile(servico, barbeiro) {
-    var barra = $('#booking-bar');
-    if (!barra) return;
-
-    barra.classList.toggle('translate-y-full', !servico);
-    if (!servico) return;
-
-    $('#bar-title').textContent = servico.nome;
-    $('#bar-sub').textContent = [
-      barbeiro ? barbeiro.nome.split(' ')[0] : null,
-      estado.data ? CN.util.dataCurta(estado.data) : null,
-      estado.hora
-    ].filter(Boolean).join(' · ') || (servico.duracao + ' min');
-    $('#bar-total').textContent = CN.util.moeda(servico.preco);
+    $('#etapa-contador').textContent = 'Etapa ' + estado.etapa + ' de ' + TOTAL_ETAPAS;
   }
 
   /* ══════════════════════════════════════════════════════════
@@ -439,50 +419,28 @@ CN.booking = (function () {
     return false;
   }
 
-  function atualizarBotoes() {
-    var prev = $('#btn-prev');
-    var next = $('#btn-next');
-    var rotulo = $('#btn-next-label');
-    if (!prev || !next) return;
-
-    prev.disabled = estado.etapa === 1;
-    next.disabled = !podeAvancar();
-    rotulo.textContent = estado.etapa === 4 ? 'Confirmar agendamento' : 'Continuar';
-  }
-
-  function irPara(n, voltando) {
-    estado.etapa = Math.min(4, Math.max(1, n));
+  function irPara(n) {
+    estado.etapa = Math.min(TOTAL_ETAPAS, Math.max(1, n));
 
     $$('.step').forEach(function (s) {
-      var ativa = Number(s.dataset.step) === estado.etapa;
-      s.classList.toggle('hidden', !ativa);
-      s.classList.toggle('is-back', !!voltando);
-      if (ativa) {
-        /* Reinicia a animação de entrada da etapa */
-        s.style.animation = 'none';
-        void s.offsetWidth;
-        s.style.animation = '';
-      }
+      s.classList.toggle('hidden', Number(s.dataset.step) !== estado.etapa);
     });
 
     if (estado.etapa === 3) { garantirDataPadrao(); renderDatas(); renderHorarios(); }
 
-    renderStepper();
-    /* Sempre depois de garantirDataPadrao(): a data escolhida
-       automaticamente precisa aparecer no resumo na hora. */
-    atualizarResumo();
-    atualizarBotoes();
+    atualizarBarra();
+    window.scrollTo({ top: 0, behavior: 'smooth' });
   }
 
   function avancar() {
-    if (estado.etapa === 4) { confirmar(); return; }
+    if (estado.etapa === TOTAL_ETAPAS) { confirmar(); return; }
     if (!podeAvancar()) return;
-    irPara(estado.etapa + 1, false);
+    irPara(estado.etapa + 1);
   }
 
   function voltar() {
     if (estado.etapa === 1) return;
-    irPara(estado.etapa - 1, true);
+    irPara(estado.etapa - 1);
   }
 
   /* ══════════════════════════════════════════════════════════
@@ -490,7 +448,7 @@ CN.booking = (function () {
      ══════════════════════════════════════════════════════════ */
   function confirmar() {
     if (!validarCliente(true)) {
-      CN.ui.toast('Confira os campos destacados.', 'error');
+      CN.ui.toast('Confira os campos destacados.');
       return;
     }
 
@@ -502,8 +460,8 @@ CN.booking = (function () {
       .some(function (s) { return s.hora === estado.hora && s.disponivel; });
 
     if (!aindaLivre) {
-      CN.ui.toast('Esse horário acabou de ser ocupado. Escolha outro.', 'error');
-      irPara(3, true);
+      CN.ui.toast('Esse horário acabou de ser ocupado. Escolha outro.');
+      irPara(3);
       renderHorarios();
       return;
     }
@@ -518,7 +476,10 @@ CN.booking = (function () {
       cliente: estado.nome.trim(),
       telefone: estado.telefone,
       obs: estado.obs.trim(),
-      lembrete: estado.lembrete
+      /* O campo continua no registro para não mudar a forma gravada
+         no localStorage, mas o cliente não recebe mais a promessa de
+         um lembrete que este sistema não tem como enviar. */
+      lembrete: true
     });
 
     abrirModal(ultimaReserva);
@@ -526,32 +487,28 @@ CN.booking = (function () {
 
   /* ══════════════════════════════════════════════════════════
      MODAL DE SUCESSO
+     Herói: data e hora. Ação primária: WhatsApp — é o único
+     caminho pelo qual a reserva chega à barbearia num protótipo
+     estático, já que o localStorage não atravessa dispositivos.
      ══════════════════════════════════════════════════════════ */
   function abrirModal(reserva) {
     var modal = $('#confirm-modal');
-    var card = $('#confirm-card');
     var servico = CN.util.servicoPorId(reserva.servicoId);
     var barbeiro = CN.util.barbeiroPorId(reserva.barbeiroId);
+    var d = CN.util.fromISO(reserva.data);
 
-    $('#confirm-msg').textContent =
-      reserva.cliente.split(' ')[0] + ', seu horário está reservado. ' +
-      'Chegue com 5 minutos de folga — o café fica por nossa conta.';
+    $('#confirm-quando').textContent =
+      CN.DIAS_CURTO[d.getDay()] + ', ' + d.getDate() + ' ' + CN.MESES_CURTO[d.getMonth()] +
+      ' · ' + reserva.hora;
 
-    $('#confirm-details').innerHTML = [
-      { r: 'Serviço',  v: servico.nome + ' · ' + servico.duracao + ' min' },
-      { r: 'Barbeiro', v: barbeiro.nome },
-      { r: 'Quando',   v: CN.util.dataExtenso(reserva.data) + ' às ' + reserva.hora },
-      { r: 'Valor',    v: CN.util.moeda(reserva.preco) + ' (pago no balcão)' },
-      { r: 'Local',    v: CN.CONFIG.endereco }
-    ].map(function (l) {
-      return '' +
-        '<div class="flex items-start justify-between gap-4">' +
-          '<dt class="text-[10px] tracking-[0.18em] uppercase text-bone-faint shrink-0 pt-0.5">' + l.r + '</dt>' +
-          '<dd class="text-right text-bone">' + CN.util.escapar(l.v) + '</dd>' +
-        '</div>';
-    }).join('');
+    $('#confirm-detalhe').textContent =
+      servico.nome + ' com ' + barbeiro.nome.split(' ')[0] + ' · ' +
+      CN.util.moeda(reserva.preco) + ' no balcão';
 
-    $('#confirm-code').textContent = reserva.codigo;
+    var mapa = $('#confirm-mapa');
+    mapa.textContent = CN.CONFIG.endereco;
+    mapa.href = 'https://www.google.com/maps/search/?api=1&query=' +
+                encodeURIComponent(CN.CONFIG.endereco);
 
     /* Mensagem pronta para o WhatsApp da barbearia */
     var texto =
@@ -564,36 +521,12 @@ CN.booking = (function () {
 
     $('#confirm-wa').href = 'https://wa.me/' + CN.CONFIG.whatsapp + '?text=' + encodeURIComponent(texto);
 
-    montarParticulas();
     CN.ui.abrirOverlay(modal);
-    requestAnimationFrame(function () { card.classList.add('is-in'); });
   }
 
   function fecharModal() {
-    var modal = $('#confirm-modal');
-    var card = $('#confirm-card');
-    card.classList.remove('is-in');
-    setTimeout(function () {
-      CN.ui.fecharOverlay(modal);
-      reiniciar();
-    }, 320);
-  }
-
-  /* Estilhaços dourados que saem do selo de sucesso */
-  function montarParticulas() {
-    var burst = $('#burst');
-    if (!burst) return;
-    var total = 16;
-    var html = '';
-    for (var i = 0; i < total; i++) {
-      var ang = (Math.PI * 2 * i) / total;
-      var dist = 60 + Math.random() * 55;
-      html += '<span class="spark" style="' +
-        '--x:' + (Math.cos(ang) * dist).toFixed(1) + 'px;' +
-        '--y:' + (Math.sin(ang) * dist).toFixed(1) + 'px;' +
-        'animation-delay:' + (0.7 + Math.random() * 0.18).toFixed(2) + 's"></span>';
-    }
-    burst.innerHTML = html;
+    CN.ui.fecharOverlay($('#confirm-modal'));
+    reiniciar();
   }
 
   /* Arquivo .ics para o cliente jogar na agenda do celular */
@@ -645,7 +578,7 @@ CN.booking = (function () {
     document.body.removeChild(a);
     setTimeout(function () { URL.revokeObjectURL(url); }, 1000);
 
-    CN.ui.toast('Arquivo de calendário baixado.', 'info');
+    CN.ui.toast('Arquivo de calendário baixado.');
   }
 
   /* Limpa o formulário para um novo agendamento */
@@ -663,8 +596,7 @@ CN.booking = (function () {
 
     renderServicos();
     renderBarbeiros();
-    irPara(1, true);
-    window.scrollTo({ top: 0, behavior: 'smooth' });
+    irPara(1);
   }
 
   /* ══════════════════════════════════════════════════════════
@@ -695,21 +627,19 @@ CN.booking = (function () {
       etapaInicial = 3;
     }
 
-    if (etapaInicial > 1) irPara(etapaInicial, false);
+    if (etapaInicial > 1) irPara(etapaInicial);
   }
 
   /* ══════════════════════════════════════════════════════════
      INICIALIZAÇÃO
      ══════════════════════════════════════════════════════════ */
   function init() {
-    if (!$('#stepper')) return;   /* não estamos na página de agendamento */
+    if (!$('#btn-next')) return;   /* não estamos na página de agendamento */
 
-    renderStepper();
     renderServicos();
     renderBarbeiros();
     iniciarFormulario();
-    atualizarResumo();
-    atualizarBotoes();
+    atualizarBarra();
 
     $('#btn-next').addEventListener('click', avancar);
     $('#btn-prev').addEventListener('click', voltar);

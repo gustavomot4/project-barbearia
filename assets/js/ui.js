@@ -6,6 +6,15 @@
 
    Todos os renderizadores são tolerantes à ausência do seu
    contêiner, então o mesmo script serve às duas páginas.
+
+   O que saiu daqui no redesenho, e por quê:
+   - depoimentos: os três tinham nota 5, o dado não separava nada;
+   - ticker de vagas livres: somava 4 barbeiros × 7 dias e não
+     respondia "tem horário para mim na quinta às 18h";
+   - contadores animados do hero: nenhum deles muda a decisão de
+     marcar ou não;
+   - menu mobile em tela cheia e navegação por âncora: eram o
+     remédio para uma página longa que deixou de existir.
    ============================================================ */
 
 window.CN = window.CN || {};
@@ -15,13 +24,11 @@ CN.ui = (function () {
   var $  = function (sel, ctx) { return (ctx || document).querySelector(sel); };
   var $$ = function (sel, ctx) { return Array.prototype.slice.call((ctx || document).querySelectorAll(sel)); };
 
-  var observadorReveal = null;
-
   /* ══════════════════════════════════════════════════════════
      IMAGENS — carregamento tardio + degradação elegante
-     Se uma foto do Unsplash não carregar (offline, bloqueio de
-     rede), trocamos por uma textura da marca em vez de deixar
-     o ícone de imagem quebrada.
+     Se uma foto não carregar (offline, bloqueio de rede),
+     trocamos por um fundo neutro em vez de deixar o ícone de
+     imagem quebrada.
      ══════════════════════════════════════════════════════════ */
   function prepararImagem(img) {
     img.addEventListener('error', function () {
@@ -30,10 +37,6 @@ CN.ui = (function () {
       if (pai && !pai.classList.contains('img-fallback')) {
         pai.classList.add('img-fallback');
       }
-    }, { once: true });
-
-    img.addEventListener('load', function () {
-      img.dataset.loaded = 'true';
     }, { once: true });
   }
 
@@ -73,251 +76,62 @@ CN.ui = (function () {
   }
 
   /* ══════════════════════════════════════════════════════════
-     APARIÇÃO NO SCROLL
-     ══════════════════════════════════════════════════════════ */
-  function iniciarReveal() {
-    if (!('IntersectionObserver' in window)) {
-      $$('.reveal').forEach(function (el) { el.classList.add('is-in'); });
-      return;
-    }
-
-    observadorReveal = new IntersectionObserver(function (entradas) {
-      entradas.forEach(function (e) {
-        if (e.isIntersecting) {
-          e.target.classList.add('is-in');
-          observadorReveal.unobserve(e.target);
-        }
-      });
-    }, { threshold: 0.12, rootMargin: '0px 0px -60px 0px' });
-
-    observarReveals();
-  }
-
-  /* Reaplicado sempre que injetamos HTML novo na página */
-  function observarReveals(raiz) {
-    if (!observadorReveal) {
-      $$('.reveal', raiz).forEach(function (el) { el.classList.add('is-in'); });
-      return;
-    }
-    $$('.reveal', raiz).forEach(function (el) {
-      if (!el.classList.contains('is-in')) observadorReveal.observe(el);
-    });
-  }
-
-  /* ══════════════════════════════════════════════════════════
-     CONTADORES DO HERO
-     ══════════════════════════════════════════════════════════ */
-  function iniciarContadores() {
-    var alvos = $$('[data-count]');
-    if (!alvos.length) return;
-
-    if (!('IntersectionObserver' in window)) {
-      alvos.forEach(function (el) { el.textContent = el.dataset.count + (el.dataset.suffix || ''); });
-      return;
-    }
-
-    var obs = new IntersectionObserver(function (entradas) {
-      entradas.forEach(function (e) {
-        if (!e.isIntersecting) return;
-        animarNumero(e.target);
-        obs.unobserve(e.target);
-      });
-    }, { threshold: 0.6 });
-
-    alvos.forEach(function (el) { obs.observe(el); });
-  }
-
-  function animarNumero(el) {
-    var destino = parseFloat(el.dataset.count);
-    var casas = parseInt(el.dataset.decimals || '0', 10);
-    var sufixo = el.dataset.suffix || '';
-    var duracao = 1400;
-    var inicio = performance.now();
-
-    function passo(agora) {
-      var p = Math.min((agora - inicio) / duracao, 1);
-      /* easeOutExpo — desacelera bonito no fim */
-      var e = p === 1 ? 1 : 1 - Math.pow(2, -10 * p);
-      var valor = destino * e;
-      el.textContent = (casas ? valor.toFixed(casas) : Math.round(valor)) + sufixo;
-      if (p < 1) requestAnimationFrame(passo);
-    }
-    requestAnimationFrame(passo);
-  }
-
-  /* ══════════════════════════════════════════════════════════
-     HEADER + MENU MOBILE + SEÇÃO ATIVA
-     ══════════════════════════════════════════════════════════ */
-  function iniciarHeader() {
-    var header = $('#site-header');
-    if (!header) return;
-
-    var aoRolar = function () {
-      header.classList.toggle('is-stuck', window.scrollY > 20);
-    };
-    window.addEventListener('scroll', aoRolar, { passive: true });
-    aoRolar();
-
-    /* Destaca no menu a seção visível (só o institucional tem âncoras) */
-    var secoes = ['inicio', 'servicos', 'equipe', 'galeria', 'contato'];
-    if ('IntersectionObserver' in window) {
-      var obs = new IntersectionObserver(function (entradas) {
-        entradas.forEach(function (e) {
-          if (!e.isIntersecting) return;
-          $$('.nav-link').forEach(function (l) {
-            l.classList.toggle('is-active', l.getAttribute('href') === '#' + e.target.id);
-          });
-        });
-      }, { rootMargin: '-45% 0px -50% 0px' });
-
-      secoes.forEach(function (id) {
-        var el = document.getElementById(id);
-        if (el) obs.observe(el);
-      });
-    }
-  }
-
-  function iniciarMenuMobile() {
-    var botao = $('#menu-toggle');
-    var menu = $('#mobile-menu');
-    if (!botao || !menu) return;
-
-    function alternar(abrir) {
-      var estaAberto = typeof abrir === 'boolean' ? abrir : !menu.classList.contains('is-open');
-      menu.classList.toggle('is-open', estaAberto);
-      botao.setAttribute('aria-expanded', String(estaAberto));
-      botao.setAttribute('aria-label', estaAberto ? 'Fechar menu' : 'Abrir menu');
-      document.body.classList.toggle('is-locked', estaAberto);
-      var header = $('#site-header');
-      if (header) header.classList.toggle('is-menu-open', estaAberto);
-    }
-
-    botao.addEventListener('click', function () { alternar(); });
-
-    /* Fecha ao escolher um destino */
-    $$('#mobile-menu a, #mobile-menu button').forEach(function (el) {
-      el.addEventListener('click', function () { alternar(false); });
-    });
-
-    document.addEventListener('keydown', function (e) {
-      if (e.key === 'Escape' && menu.classList.contains('is-open')) alternar(false);
-    });
-  }
-
-  /* ══════════════════════════════════════════════════════════
-     RENDERIZAÇÃO DAS SEÇÕES DO INSTITUCIONAL
+     SEÇÕES DO INSTITUCIONAL
      ══════════════════════════════════════════════════════════ */
 
+  /* O cardápio é a informação herói da página: nome, uma linha de
+     diferença, preço e duração. A linha inteira é o link — assim o
+     deep link ?servico= continua existindo sem um micro-botão
+     "Agendar" repetido seis vezes.                              */
   function renderServicos() {
-    var alvo = $('#services-grid');
+    var alvo = $('#services-list');
     if (!alvo) return;
 
-    alvo.innerHTML = CN.catalogo.servicosAtivos().map(function (s, i) {
-      var tag = s.destaque
-        ? '<span class="svc-card__tag">' + CN.util.escapar(s.destaque) + '</span>'
-        : '';
-
-      /* Leva direto ao fluxo de reserva com o serviço já escolhido */
+    alvo.innerHTML = CN.catalogo.servicosAtivos().map(function (s) {
       return '' +
-        '<a href="agendar.html?servico=' + encodeURIComponent(s.id) + '" class="svc-card bracket reveal" style="--d:' + (i * 70) + 'ms">' +
-          tag +
-          '<div class="flex items-start justify-between gap-4">' +
-            '<div class="min-w-0">' +
-              '<h3 class="font-display uppercase text-xl tracking-wide leading-tight">' + CN.util.escapar(s.nome) + '</h3>' +
-              '<p class="mt-3 text-sm text-bone-dim leading-relaxed">' + CN.util.escapar(s.desc) + '</p>' +
-            '</div>' +
-          '</div>' +
-          '<div class="mt-7 flex items-end justify-between gap-4 pt-5 border-t border-white/[0.08]">' +
-            '<div>' +
-              '<span class="svc-card__price">' + CN.util.moeda(s.preco) + '</span>' +
-              '<span class="block text-[10px] tracking-[0.2em] uppercase text-bone-faint mt-1.5">' + s.duracao + ' minutos</span>' +
-            '</div>' +
-            '<span class="inline-flex items-center gap-1.5 text-[10px] tracking-[0.2em] uppercase text-gold">' +
-              'Agendar' +
-              '<svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M5 12h14M13 6l6 6-6 6"/></svg>' +
-            '</span>' +
-          '</div>' +
+        '<a href="agendar.html?servico=' + encodeURIComponent(s.id) + '" class="svc-linha">' +
+          '<span class="svc-linha__nome">' + CN.util.escapar(s.nome) + '</span>' +
+          '<span class="svc-linha__preco">' + CN.util.moeda(s.preco) + '</span>' +
+          '<span class="svc-linha__desc">' + CN.util.escapar(s.desc) + '</span>' +
+          '<span class="svc-linha__dur">' + s.duracao + ' min</span>' +
+        '</a>';
+    }).join('');
+  }
+
+  /* Foto, nome, especialidade e folga.
+     A folga fica: no agendamento o motivo de um dia bloqueado só
+     existe como atributo title, que não abre no toque — sem ela o
+     cliente que só pode na segunda conclui "agenda cheia" e sai. */
+  function renderBarbeiros() {
+    var alvo = $('#barbers-list');
+    if (!alvo) return;
+
+    alvo.innerHTML = CN.catalogo.barbeirosAtivos().map(function (b) {
+      return '' +
+        '<a href="agendar.html?barbeiro=' + encodeURIComponent(b.id) + '" class="barbeiro">' +
+          '<img data-src="' + b.foto + '" alt="" class="barbeiro__foto" loading="lazy" />' +
+          '<span class="min-w-0">' +
+            '<span class="block font-medium">' + CN.util.escapar(b.nome) + '</span>' +
+            '<span class="block apoio" style="font-size:var(--t4)">' + CN.util.escapar(b.especialidade) + '</span>' +
+            '<span class="block fraco">Folga ' + CN.DIAS_SEMANA[b.folga].toLowerCase() + '</span>' +
+          '</span>' +
         '</a>';
     }).join('');
 
-    observarReveals(alvo);
-  }
-
-  function renderBarbeiros() {
-    var alvo = $('#barbers-grid');
-    if (!alvo) return;
-
-    alvo.innerHTML = CN.catalogo.barbeirosAtivos().map(function (b, i) {
-      return '' +
-        '<article class="barber-card bracket reveal border border-white/10 bg-ink" style="--d:' + (i * 80) + 'ms">' +
-          '<div class="relative aspect-[3/4] overflow-hidden bg-ink-600">' +
-            '<img data-src="' + b.foto + '" alt="' + CN.util.escapar(b.nome) + '" class="w-full h-full object-cover" loading="lazy" />' +
-            '<div class="absolute inset-0 bg-gradient-to-t from-ink via-ink/10 to-transparent"></div>' +
-            '<span class="absolute top-3 right-3 inline-flex items-center gap-1 px-2 py-1 bg-ink/80 backdrop-blur text-[10px] text-gold">' +
-              '<svg width="10" height="10" viewBox="0 0 24 24" fill="currentColor"><path d="M12 2l2.9 6.3 6.9.8-5.1 4.7 1.4 6.8L12 17.3 5.9 20.6l1.4-6.8L2.2 9.1l6.9-.8z"/></svg>' +
-              b.nota.toFixed(1) +
-            '</span>' +
-            '<div class="absolute bottom-0 inset-x-0 p-4">' +
-              '<p class="text-[9px] tracking-ultra uppercase text-gold mb-1">' + CN.util.escapar(b.especialidade) + '</p>' +
-              '<h3 class="font-display uppercase text-xl leading-none">' + CN.util.escapar(b.nome) + '</h3>' +
-            '</div>' +
-          '</div>' +
-          '<div class="p-5">' +
-            '<p class="text-sm text-bone-dim leading-relaxed min-h-[3.4rem]">' + CN.util.escapar(b.bio) + '</p>' +
-            '<div class="mt-4 pt-4 border-t border-white/[0.08] flex items-center justify-between text-[10px] tracking-[0.16em] uppercase">' +
-              '<span class="text-bone-faint">' + b.atendimentos.toLocaleString('pt-BR') + '+ atendimentos</span>' +
-              '<a href="agendar.html?barbeiro=' + encodeURIComponent(b.id) + '" class="text-gold hover:underline underline-offset-4">Agendar</a>' +
-            '</div>' +
-            '<p class="mt-3 text-[10px] tracking-[0.14em] uppercase text-bone-faint">Folga: ' + CN.DIAS_SEMANA[b.folga].toLowerCase() + '</p>' +
-          '</div>' +
-        '</article>';
-    }).join('');
-
     ativarLazy(alvo);
-    observarReveals(alvo);
   }
 
+  /* Três fotos de resultado. As de ambiente e ferramenta saíram:
+     quem decide marcar quer ver o corte, não a cadeira.        */
   function renderGaleria() {
     var alvo = $('#gallery-grid');
     if (!alvo) return;
 
-    alvo.innerHTML = CN.GALERIA.map(function (g, i) {
-      return '' +
-        '<figure class="gal-item reveal ' + g.span + ' ' + g.ratio + '" style="--d:' + (i * 60) + 'ms">' +
-          '<img data-src="' + g.src + '" alt="' + CN.util.escapar(g.legenda) + '" class="w-full h-full object-cover" loading="lazy" />' +
-          '<figcaption>' + CN.util.escapar(g.legenda) + '</figcaption>' +
-        '</figure>';
+    alvo.innerHTML = CN.GALERIA.slice(0, 3).map(function (g) {
+      return '<img data-src="' + g.src + '" alt="' + CN.util.escapar(g.legenda) + '" loading="lazy" />';
     }).join('');
 
     ativarLazy(alvo);
-    observarReveals(alvo);
-  }
-
-  function renderDepoimentos() {
-    var alvo = $('#testimonials-grid');
-    if (!alvo) return;
-
-    alvo.innerHTML = CN.DEPOIMENTOS.map(function (d, i) {
-      var estrelas = '';
-      for (var s = 0; s < d.nota; s++) {
-        estrelas += '<svg width="12" height="12" viewBox="0 0 24 24" fill="currentColor"><path d="M12 2l2.9 6.3 6.9.8-5.1 4.7 1.4 6.8L12 17.3 5.9 20.6l1.4-6.8L2.2 9.1l6.9-.8z"/></svg>';
-      }
-
-      return '' +
-        '<blockquote class="bracket reveal p-7 border border-white/10 bg-ink-800 flex flex-col" style="--d:' + (i * 90) + 'ms">' +
-          '<div class="flex gap-1 text-gold mb-5">' + estrelas + '</div>' +
-          '<p class="font-serif text-lg italic leading-relaxed text-bone flex-1">' + CN.util.escapar(d.texto) + '</p>' +
-          '<footer class="mt-6 pt-5 border-t border-white/[0.08] flex items-center gap-3">' +
-            '<span class="grid place-items-center w-10 h-10 border border-gold/30 font-serif text-gold text-sm">' + CN.util.iniciais(d.nome) + '</span>' +
-            '<span>' +
-              '<cite class="not-italic block text-sm text-bone">' + CN.util.escapar(d.nome) + '</cite>' +
-              '<span class="block text-[10px] tracking-[0.16em] uppercase text-bone-faint mt-0.5">' + CN.util.escapar(d.detalhe) + '</span>' +
-            '</span>' +
-          '</footer>' +
-        '</blockquote>';
-    }).join('');
-
-    observarReveals(alvo);
   }
 
   function renderHorarios() {
@@ -346,50 +160,35 @@ CN.ui = (function () {
         ? CN.DIAS_CURTO[g.dias[0]] + ' – ' + CN.DIAS_CURTO[g.dias[g.dias.length - 1]]
         : CN.DIAS_SEMANA[g.dias[0]];
       var ehHoje = g.dias.indexOf(hojeDow) !== -1;
-      var fechado = g.texto === 'Fechado';
 
+      /* O dia de hoje é marcado por PESO, não por cor: cor aqui
+         gastaria o acento numa informação que não é ação.      */
       return '' +
-        '<div class="flex items-center justify-between gap-4 ' + (ehHoje ? 'text-gold' : 'text-bone-dim') + '">' +
-          '<dt class="flex items-center gap-2">' +
-            (ehHoje ? '<span class="w-1.5 h-1.5 bg-gold rotate-45"></span>' : '') +
-            rotulo +
-          '</dt>' +
-          '<dd class="' + (fechado ? 'text-bone-faint' : '') + ' tabular-nums">' + g.texto + '</dd>' +
+        '<div class="flex items-center justify-between gap-4 py-1' + (ehHoje ? ' font-semibold' : '') + '">' +
+          '<dt>' + rotulo + '</dt>' +
+          '<dd class="tnum">' + g.texto + '</dd>' +
         '</div>';
     }).join('');
   }
 
-  /* Barra superior: mês corrente + vagas livres reais na semana */
-  function renderTicker() {
-    var mes = $('#ticker-month');
-    var vagas = $('#ticker-slots');
-    if (mes) mes.textContent = CN.MESES[new Date().getMonth()];
-    if (vagas) vagas.textContent = CN.slots.totalLivresNaSemana();
-  }
-
   /* ══════════════════════════════════════════════════════════
      TOASTS
+     Sem ícone e sem cor por tipo: a frase já diz o que aconteceu.
      ══════════════════════════════════════════════════════════ */
-  function toast(mensagem, tipo) {
+  function toast(mensagem) {
     var area = $('#toasts');
     if (!area) return;
 
-    var icones = {
-      sucesso: '<svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M20 6L9 17l-5-5"/></svg>',
-      error:   '<svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="9"/><path d="M12 8v5M12 16v.01"/></svg>',
-      info:    '<svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="9"/><path d="M12 11v5M12 8v.01"/></svg>'
-    };
-
     var el = document.createElement('div');
-    el.className = 'toast toast--' + (tipo || 'sucesso');
+    el.className = 'toast';
     el.setAttribute('role', 'status');
-    el.innerHTML = '<span class="shrink-0 text-gold">' + (icones[tipo] || icones.sucesso) + '</span><span>' + CN.util.escapar(mensagem) + '</span>';
+    el.textContent = mensagem;
     area.appendChild(el);
 
     setTimeout(function () {
       el.classList.add('is-out');
-      el.addEventListener('animationend', function () { el.remove(); }, { once: true });
-    }, 3600);
+      setTimeout(function () { el.remove(); }, 220);
+    }, 3400);
   }
 
   /* ══════════════════════════════════════════════════════════
@@ -398,7 +197,6 @@ CN.ui = (function () {
   function abrirOverlay(el) {
     el.classList.remove('hidden');
     document.body.classList.add('is-locked');
-    void el.offsetWidth;   /* força reflow para a transição de entrada rodar */
   }
 
   function fecharOverlay(el) {
@@ -416,22 +214,12 @@ CN.ui = (function () {
     var ano = $('#year');
     if (ano) ano.textContent = new Date().getFullYear();
 
-    iniciarHeader();
-    iniciarMenuMobile();
-
     renderServicos();
     renderBarbeiros();
     renderGaleria();
-    renderDepoimentos();
     renderHorarios();
-    renderTicker();
 
-    iniciarReveal();
-    iniciarContadores();
     ativarLazy();
-
-    /* O ticker acompanha novas reservas */
-    CN.store.aoMudar(renderTicker);
   }
 
   return {
@@ -440,8 +228,6 @@ CN.ui = (function () {
     toast: toast,
     abrirOverlay: abrirOverlay,
     fecharOverlay: fecharOverlay,
-    observarReveals: observarReveals,
-    ativarLazy: ativarLazy,
-    renderTicker: renderTicker
+    ativarLazy: ativarLazy
   };
 })();
