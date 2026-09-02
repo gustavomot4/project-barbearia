@@ -1,0 +1,304 @@
+<!DOCTYPE html>
+<html lang="pt-BR" class="scroll-smooth">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
+<meta name="theme-color" content="#0A0A0B" />
+
+<title>Agendar horário — Casa Navalha</title>
+<meta name="description" content="Reserve seu horário na Casa Navalha em menos de 40 segundos. Escolha serviço, barbeiro, dia e hora." />
+<meta name="robots" content="noindex" />
+
+<link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 64 64'%3E%3Crect width='64' height='64' fill='%230A0A0B'/%3E%3Ctext x='32' y='45' font-family='Georgia,serif' font-size='32' font-weight='700' fill='%23C9A24A' text-anchor='middle'%3ECN%3C/text%3E%3C/svg%3E" />
+
+<link rel="preconnect" href="https://fonts.googleapis.com" />
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+<link href="https://fonts.googleapis.com/css2?family=Anton&family=Cormorant+Garamond:ital,wght@0,400;0,600;1,400;1,600&family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet" />
+
+<script src="https://cdn.tailwindcss.com"></script>
+<script>
+  tailwind.config = {
+    theme: {
+      extend: {
+        colors: {
+          ink:  { DEFAULT: '#0A0A0B', 800: '#0F0F11', 700: '#141416', 600: '#1A191C', 500: '#232227' },
+          bone: { DEFAULT: '#EDE6DA', dim: '#A79F94', faint: '#6E675E' },
+          gold: { DEFAULT: '#C9A24A', light: '#E8CE8A', deep: '#8A6A22' },
+          wine: '#5E241F'
+        },
+        fontFamily: {
+          display: ['Anton', 'Haettenschweiler', 'Impact', 'sans-serif'],
+          serif:   ['"Cormorant Garamond"', 'Georgia', 'serif'],
+          sans:    ['Inter', 'system-ui', '-apple-system', 'sans-serif']
+        },
+        letterSpacing: { ultra: '0.34em', mega: '0.5em' },
+        maxWidth: { shell: '1240px' }
+      }
+    }
+  }
+</script>
+
+<link rel="stylesheet" href="assets/css/styles.css" />
+</head>
+
+<body class="bg-ink text-bone font-sans antialiased selection:bg-gold selection:text-ink">
+
+<!-- ══════════════════════════════════════════════════════════════
+     HEADER ENXUTO — a página de reserva não repete o menu do site
+     ══════════════════════════════════════════════════════════════ -->
+<header id="site-header" class="sticky top-0 z-50 bg-ink/90 backdrop-blur-md transition-all duration-500">
+  <div class="pole h-[2px] w-full"></div>
+  <div class="max-w-shell mx-auto px-5">
+    <div class="flex items-center justify-between h-[70px] lg:h-[80px] gap-4">
+
+      <a href="index.html" class="group flex items-center gap-3 shrink-0" aria-label="Voltar ao site da Casa Navalha">
+        <span class="relative grid place-items-center w-10 h-10 border border-gold/40 group-hover:border-gold transition-colors">
+          <span class="font-serif font-semibold text-gold text-lg leading-none">CN</span>
+        </span>
+        <span class="leading-none hidden sm:block">
+          <span class="block font-display text-lg tracking-[0.14em] uppercase">Casa Navalha</span>
+          <span class="block text-[9px] tracking-ultra uppercase text-bone-faint mt-1">Barbearia &amp; Clube</span>
+        </span>
+      </a>
+
+      <div class="flex items-center gap-2 sm:gap-4">
+        <a href="tel:+551140028922"
+           class="hidden sm:inline-flex items-center gap-2 text-[11px] tracking-[0.18em] uppercase text-bone-dim hover:text-gold transition-colors">
+          <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7"><path d="M22 16.9v3a2 2 0 01-2.2 2 19.8 19.8 0 01-8.6-3 19.5 19.5 0 01-6-6 19.8 19.8 0 01-3-8.7A2 2 0 014.1 2h3a2 2 0 012 1.7c.1 1 .4 1.9.7 2.8a2 2 0 01-.5 2.1L8.1 9.9a16 16 0 006 6l1.3-1.2a2 2 0 012.1-.5c.9.3 1.8.6 2.8.7a2 2 0 011.7 2z"/></svg>
+          (11) 4002-8922
+        </a>
+        <a href="index.html"
+           class="inline-flex items-center gap-2 px-4 py-2.5 border border-white/10 hover:border-gold/50 hover:text-gold text-[11px] tracking-[0.18em] uppercase text-bone-dim transition-colors">
+          <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M19 12H5M11 18l-6-6 6-6"/></svg>
+          <span class="hidden sm:inline">Voltar ao site</span>
+          <span class="sm:hidden">Site</span>
+        </a>
+      </div>
+    </div>
+  </div>
+  <div class="h-px bg-gradient-to-r from-transparent via-gold/25 to-transparent"></div>
+</header>
+
+<main class="relative overflow-hidden">
+  <div class="absolute top-0 left-1/2 -translate-x-1/2 w-[900px] h-[800px] max-w-full rounded-full bg-gold/[0.045] blur-[130px] -z-10"></div>
+
+  <div class="max-w-shell mx-auto px-5 py-12 lg:py-20">
+
+    <!-- Título da página -->
+    <div class="text-center max-w-2xl mx-auto mb-10 lg:mb-14">
+      <p class="section-eyebrow justify-center">Reserve seu horário</p>
+      <h1 class="font-display uppercase text-[clamp(2.2rem,6.5vw,4rem)] leading-[0.95] mt-5">
+        Agende em <span class="text-gold">40 segundos</span>
+      </h1>
+      <p class="mt-5 text-sm text-bone-dim">
+        Pagamento no balcão · Cancelamento gratuito até 3h antes
+      </p>
+    </div>
+
+    <div class="grid lg:grid-cols-[1fr_360px] gap-6 lg:gap-8 items-start">
+
+      <!-- ─── Coluna do formulário ───
+           min-w-0 é essencial: sem isso o grid item assume min-width:auto
+           e a faixa de datas estoura a largura em vez de rolar internamente. -->
+      <div class="min-w-0 border border-white/10 bg-ink-700/60 backdrop-blur-sm">
+
+        <!-- Trilha de progresso -->
+        <div class="px-5 sm:px-8 pt-7 pb-6 border-b border-white/10">
+          <ol id="stepper" class="flex items-center" aria-label="Etapas do agendamento"></ol>
+        </div>
+
+        <div class="px-5 sm:px-8 py-8 sm:py-10 min-h-[430px]">
+
+          <!-- ETAPA 1 · Serviço -->
+          <section class="step" data-step="1" aria-label="Etapa 1: escolha do serviço">
+            <h2 class="step-title">Qual serviço você quer?</h2>
+            <p class="step-sub">Selecione um dos serviços abaixo para continuar.</p>
+            <div id="svc-list" class="mt-7 grid gap-2.5"></div>
+          </section>
+
+          <!-- ETAPA 2 · Barbeiro -->
+          <section class="step hidden" data-step="2" aria-label="Etapa 2: escolha do barbeiro">
+            <h2 class="step-title">Com quem você quer cortar?</h2>
+            <p class="step-sub">Cada barbeiro tem sua especialidade — e sua própria agenda.</p>
+            <div id="barber-list" class="mt-7 grid sm:grid-cols-2 gap-3"></div>
+          </section>
+
+          <!-- ETAPA 3 · Data e horário -->
+          <section class="step hidden" data-step="3" aria-label="Etapa 3: data e horário">
+            <h2 class="step-title">Quando fica bom pra você?</h2>
+            <p class="step-sub" id="slot-sub">Escolha o dia e depois um horário livre.</p>
+
+            <div class="mt-7">
+              <p class="field-label">Data</p>
+              <div id="date-strip" class="mt-3 flex gap-2.5 overflow-x-auto no-scrollbar snap-x pb-2 -mx-1 px-1"></div>
+            </div>
+
+            <div class="mt-8">
+              <div class="flex items-center justify-between flex-wrap gap-3">
+                <p class="field-label">Horários</p>
+                <div class="flex items-center gap-4 text-[10px] tracking-[0.15em] uppercase text-bone-faint">
+                  <span class="flex items-center gap-1.5"><i class="w-2.5 h-2.5 border border-gold/60"></i>Livre</span>
+                  <span class="flex items-center gap-1.5"><i class="w-2.5 h-2.5 bg-white/10"></i>Ocupado</span>
+                </div>
+              </div>
+              <div id="slot-grid" class="mt-3 grid grid-cols-3 sm:grid-cols-4 lg:grid-cols-5 gap-2"></div>
+            </div>
+          </section>
+
+          <!-- ETAPA 4 · Dados do cliente -->
+          <section class="step hidden" data-step="4" aria-label="Etapa 4: seus dados">
+            <h2 class="step-title">Só falta você.</h2>
+            <p class="step-sub">Usamos seus dados apenas para confirmar e lembrar do horário.</p>
+
+            <form id="client-form" class="mt-7 grid gap-5" novalidate>
+              <div>
+                <label for="f-nome" class="field-label">Nome completo <span class="text-gold">*</span></label>
+                <input id="f-nome" name="nome" type="text" autocomplete="name" placeholder="Ex.: Rafael Moreira" class="field" />
+                <p class="field-error" data-error-for="nome"></p>
+              </div>
+
+              <div>
+                <label for="f-tel" class="field-label">WhatsApp <span class="text-gold">*</span></label>
+                <input id="f-tel" name="telefone" type="tel" inputmode="numeric" autocomplete="tel"
+                       placeholder="(11) 99999-9999" maxlength="15" class="field" />
+                <p class="field-error" data-error-for="telefone"></p>
+              </div>
+
+              <div>
+                <label for="f-obs" class="field-label">Observação <span class="text-bone-faint normal-case tracking-normal">(opcional)</span></label>
+                <textarea id="f-obs" name="obs" rows="3" placeholder="Ex.: máquina 2 nas laterais, sem degradê muito alto." class="field resize-none"></textarea>
+              </div>
+
+              <label class="flex items-start gap-3 cursor-pointer group">
+                <input type="checkbox" id="f-lembrete" checked class="check-mark" />
+                <span class="text-sm text-bone-dim group-hover:text-bone transition-colors">
+                  Quero receber um lembrete no WhatsApp 2 horas antes.
+                </span>
+              </label>
+            </form>
+          </section>
+        </div>
+
+        <!-- Navegação do fluxo -->
+        <div class="px-5 sm:px-8 py-5 border-t border-white/10 flex items-center justify-between gap-4">
+          <button type="button" id="btn-prev"
+                  class="inline-flex items-center gap-2 px-5 py-3 text-[11px] tracking-[0.2em] uppercase text-bone-dim hover:text-bone disabled:opacity-25 disabled:pointer-events-none transition-colors">
+            <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M19 12H5M11 18l-6-6 6-6"/></svg>
+            Voltar
+          </button>
+
+          <button type="button" id="btn-next"
+                  class="btn-gold inline-flex items-center gap-2.5 px-7 py-3.5 bg-gold text-ink font-semibold text-[11px] tracking-[0.2em] uppercase disabled:opacity-30 disabled:pointer-events-none">
+            <span id="btn-next-label">Continuar</span>
+            <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M5 12h14M13 6l6 6-6 6"/></svg>
+          </button>
+        </div>
+      </div>
+
+      <!-- ─── Resumo lateral (desktop) ─── -->
+      <aside class="hidden lg:block sticky top-28 border border-gold/20 bg-ink-800">
+        <div class="pole h-[3px] w-full"></div>
+        <div class="p-7">
+          <p class="text-[10px] tracking-ultra uppercase text-gold mb-6">Seu agendamento</p>
+          <dl id="summary" class="grid gap-4 text-sm"></dl>
+
+          <div class="mt-7 pt-6 border-t border-dashed border-white/15 flex items-end justify-between">
+            <span class="text-[10px] tracking-[0.2em] uppercase text-bone-faint">Total</span>
+            <span id="summary-total" class="font-display text-3xl text-gold">—</span>
+          </div>
+
+          <p class="mt-6 flex items-start gap-2.5 text-xs text-bone-faint leading-relaxed">
+            <svg class="shrink-0 mt-0.5 text-gold" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7"><circle cx="12" cy="12" r="9"/><path d="M12 8v5M12 16.5v.01"/></svg>
+            Pagamento no balcão. Cancelamento gratuito até 3h antes do horário.
+          </p>
+        </div>
+      </aside>
+    </div>
+  </div>
+</main>
+
+<!-- Rodapé enxuto -->
+<footer class="border-t border-white/10 bg-ink mt-8">
+  <div class="max-w-shell mx-auto px-5 py-8 flex flex-col sm:flex-row items-center justify-between gap-4 text-[11px] text-bone-faint">
+    <p>© <span id="year">2026</span> Casa Navalha Barbearia · Rua Harmonia, 412 — Vila Madalena</p>
+    <p class="tracking-[0.14em] uppercase">Protótipo · dados salvos no seu navegador</p>
+  </div>
+</footer>
+
+<!-- Barra-resumo fixa (mobile) -->
+<div id="booking-bar" class="fixed bottom-0 inset-x-0 z-30 lg:hidden translate-y-full transition-transform duration-500 bg-ink-700/95 backdrop-blur-md border-t border-gold/25">
+  <div class="px-5 py-3 flex items-center justify-between gap-4">
+    <div class="min-w-0">
+      <p id="bar-title" class="text-xs text-bone truncate">—</p>
+      <p id="bar-sub" class="text-[10px] tracking-[0.15em] uppercase text-bone-faint truncate mt-0.5">—</p>
+    </div>
+    <span id="bar-total" class="font-display text-xl text-gold shrink-0">—</span>
+  </div>
+</div>
+
+<!-- ══════════════════════════════════════════════════════════════
+     MODAL DE CONFIRMAÇÃO
+     ══════════════════════════════════════════════════════════════ -->
+<div id="confirm-modal" class="overlay fixed inset-0 z-[60] hidden" role="dialog" aria-modal="true" aria-labelledby="confirm-title">
+  <div class="absolute inset-0 bg-ink/90 backdrop-blur-md" data-close-modal></div>
+
+  <div class="relative h-full grid place-items-center p-4 overflow-y-auto">
+    <div id="confirm-card" class="relative w-full max-w-md border border-gold/30 bg-ink-800 opacity-0 translate-y-6 scale-[0.97] transition-all duration-500 my-auto">
+      <div class="pole h-[3px] w-full"></div>
+
+      <!-- Partículas douradas do "sucesso" -->
+      <div id="burst" class="pointer-events-none absolute top-20 left-1/2 -translate-x-1/2"></div>
+
+      <div class="p-7 sm:p-9 text-center">
+        <!-- Selo de sucesso animado -->
+        <svg id="success-seal" class="mx-auto mb-6" width="74" height="74" viewBox="0 0 74 74" fill="none" aria-hidden="true">
+          <circle class="ring" cx="37" cy="37" r="33" stroke="#C9A24A" stroke-width="1.5" stroke-linecap="round" />
+          <path class="tick" d="M24 38.5l9 9 17.5-19" stroke="#C9A24A" stroke-width="2.6" stroke-linecap="round" stroke-linejoin="round" />
+        </svg>
+
+        <p class="text-[10px] tracking-ultra uppercase text-gold mb-3">Confirmado</p>
+        <h2 id="confirm-title" class="font-display uppercase text-3xl sm:text-4xl leading-none mb-3">Até já!</h2>
+        <p class="text-sm text-bone-dim leading-relaxed mb-7" id="confirm-msg">—</p>
+
+        <dl id="confirm-details" class="text-left grid gap-3 text-sm border-y border-dashed border-white/15 py-6 mb-6"></dl>
+
+        <p class="text-[10px] tracking-[0.2em] uppercase text-bone-faint">Código da reserva</p>
+        <p id="confirm-code" class="font-display text-2xl tracking-[0.2em] text-gold mt-1.5 mb-7">—</p>
+
+        <div class="grid gap-2.5">
+          <a id="confirm-wa" href="#" target="_blank" rel="noopener"
+             class="btn-gold inline-flex items-center justify-center gap-2.5 px-6 py-3.5 bg-gold text-ink font-semibold text-[11px] tracking-[0.2em] uppercase">
+            Enviar no WhatsApp
+          </a>
+          <div class="grid grid-cols-2 gap-2.5">
+            <button type="button" id="confirm-ics"
+                    class="px-4 py-3 border border-white/15 hover:border-gold/50 text-[10px] tracking-[0.18em] uppercase text-bone-dim hover:text-bone transition-colors">
+              Add. agenda
+            </button>
+            <button type="button" data-close-modal
+                    class="px-4 py-3 border border-white/15 hover:border-gold/50 text-[10px] tracking-[0.18em] uppercase text-bone-dim hover:text-bone transition-colors">
+              Novo agendamento
+            </button>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- Área de notificações (toasts) -->
+<div id="toasts" class="fixed bottom-5 left-1/2 -translate-x-1/2 z-[70] w-[min(94vw,26rem)] grid gap-2 pointer-events-none"></div>
+
+<!-- ── Scripts do agendamento ── -->
+<script src="assets/js/data.js"></script>
+<script src="assets/js/store.js"></script>
+<script src="assets/js/ui.js"></script>
+<script src="assets/js/booking.js"></script>
+<script>
+  document.addEventListener('DOMContentLoaded', function () {
+    CN.ui.init();       /* header, lazy, toasts, reveal */
+    CN.booking.init();  /* fluxo de 4 etapas */
+  });
+</script>
+</body>
+</html>

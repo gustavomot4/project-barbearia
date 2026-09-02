@@ -1,0 +1,741 @@
+/* ============================================================
+   CASA NAVALHA — Design system do PAINEL (dashboard.html)
+   Folha independente do site institucional. A identidade é a
+   mesma (grafite, dourado, madeira de lei), mas a linguagem é
+   de ferramenta interna: mais densa, mais sóbria, menos
+   cinematográfica.
+   ============================================================ */
+
+:root {
+  /* Superfícies — do mais fundo ao mais alto */
+  --ds-bg:        #0A0A0B;   /* fundo da aplicação */
+  --ds-rail:      #08080A;   /* barra lateral */
+  --ds-surface:   #101012;   /* cartões */
+  --ds-raised:    #17161A;   /* cartões em hover / cabeçalhos */
+  --ds-sunken:    #0C0C0E;   /* campos e áreas recuadas */
+
+  /* Traços */
+  --ds-line:      rgba(255, 255, 255, 0.07);
+  --ds-line-2:    rgba(255, 255, 255, 0.12);
+  --ds-gold-line: rgba(201, 162, 74, 0.28);
+
+  /* Texto */
+  --ds-text:      #EDE6DA;
+  --ds-dim:       #A79F94;
+  --ds-faint:     #6E675E;
+
+  /* Marca */
+  --ds-gold:      #C9A24A;
+  --ds-gold-lt:   #E8CE8A;
+  --ds-gold-dk:   #8A6A22;
+
+  /* Semânticos */
+  --ds-ok:        #7FBF8A;
+  --ds-warn:      #D8B25F;
+  --ds-danger:    #C97C72;
+  --ds-info:      #8FA9C4;
+
+  --ds-ease: cubic-bezier(0.22, 0.61, 0.36, 1);
+}
+
+/* ---------- Base ---------- */
+
+body {
+  background: var(--ds-bg);
+  color: var(--ds-text);
+  -webkit-tap-highlight-color: transparent;
+}
+
+/* Números sempre alinhados em colunas — detalhe que separa um ERP
+   sério de um site com tabela.                                    */
+.tnum { font-variant-numeric: tabular-nums; font-feature-settings: 'tnum' 1; }
+
+:focus-visible { outline: 1px solid var(--ds-gold); outline-offset: 2px; }
+
+::-webkit-scrollbar { width: 10px; height: 10px; }
+::-webkit-scrollbar-track { background: var(--ds-bg); }
+::-webkit-scrollbar-thumb { background: #26242B; border: 2px solid var(--ds-bg); border-radius: 8px; }
+::-webkit-scrollbar-thumb:hover { background: var(--ds-gold-dk); }
+
+.no-scrollbar { scrollbar-width: none; -ms-overflow-style: none; }
+.no-scrollbar::-webkit-scrollbar { display: none; }
+
+body.is-locked { overflow: hidden; }
+
+/* ---------- Madeira de lei ----------
+   Faixa fina usada como assinatura da marca no painel: topo da
+   barra lateral, borda superior dos cartões em destaque.        */
+.wood {
+  background:
+    linear-gradient(180deg, rgba(0, 0, 0, 0.30), rgba(0, 0, 0, 0.62)),
+    repeating-linear-gradient(
+      92deg,
+      #3E2C1D 0px, #4A3722 3px, #2F2116 7px,
+      #513C25 12px, #33241A 16px, #452F1E 21px, #382718 26px
+    );
+  background-blend-mode: normal;
+}
+
+/* Filete dourado + madeira no topo dos cartões de destaque */
+.edge-gold { box-shadow: inset 0 2px 0 0 var(--ds-gold); }
+
+/* ---------- Barra lateral ---------- */
+
+.ds-sidebar {
+  background: var(--ds-rail);
+  border-right: 1px solid var(--ds-line);
+}
+
+.ds-nav-item {
+  position: relative;
+  display: flex;
+  align-items: center;
+  gap: 0.85rem;
+  width: 100%;
+  padding: 0.72rem 1.15rem;
+  color: var(--ds-dim);
+  font-size: 0.8125rem;
+  letter-spacing: 0.03em;
+  text-align: left;
+  transition: color 0.22s var(--ds-ease), background 0.22s var(--ds-ease);
+}
+.ds-nav-item svg { flex-shrink: 0; opacity: 0.75; transition: opacity 0.22s; }
+
+/* Marcador dourado que desliza na borda esquerda */
+.ds-nav-item::before {
+  content: '';
+  position: absolute;
+  left: 0; top: 50%;
+  width: 2px; height: 0;
+  background: var(--ds-gold);
+  transform: translateY(-50%);
+  transition: height 0.28s var(--ds-ease);
+}
+.ds-nav-item:hover { color: var(--ds-text); background: rgba(255, 255, 255, 0.03); }
+.ds-nav-item:hover svg { opacity: 1; }
+
+.ds-nav-item.is-active {
+  color: var(--ds-text);
+  background: linear-gradient(90deg, rgba(201, 162, 74, 0.11), transparent 70%);
+  font-weight: 500;
+}
+.ds-nav-item.is-active::before { height: 62%; }
+.ds-nav-item.is-active svg { opacity: 1; color: var(--ds-gold); }
+
+/* Contador ao lado do item (ex.: agendamentos de hoje) */
+.ds-nav-badge {
+  margin-left: auto;
+  min-width: 20px;
+  padding: 1px 6px;
+  border-radius: 999px;
+  background: rgba(201, 162, 74, 0.16);
+  color: var(--ds-gold);
+  font-size: 10px;
+  font-weight: 600;
+  text-align: center;
+}
+
+/* ---------- Cartões ---------- */
+
+.ds-card {
+  background: var(--ds-surface);
+  border: 1px solid var(--ds-line);
+}
+.ds-card--hover { transition: border-color 0.25s var(--ds-ease), transform 0.25s var(--ds-ease); }
+.ds-card--hover:hover { border-color: var(--ds-gold-line); }
+
+.ds-card__head {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 1rem;
+  padding: 1.1rem 1.35rem;
+  border-bottom: 1px solid var(--ds-line);
+}
+.ds-card__title {
+  font-size: 0.8125rem;
+  font-weight: 600;
+  letter-spacing: 0.02em;
+}
+.ds-card__sub { font-size: 11px; color: var(--ds-faint); margin-top: 2px; }
+
+/* Rótulo em versalete usado como "olho" das seções */
+.ds-eyebrow {
+  font-size: 9px;
+  letter-spacing: 0.26em;
+  text-transform: uppercase;
+  color: var(--ds-faint);
+}
+
+/* ---------- KPIs ---------- */
+
+.ds-kpi__label {
+  font-size: 9px;
+  letter-spacing: 0.24em;
+  text-transform: uppercase;
+  color: var(--ds-faint);
+}
+.ds-kpi__value {
+  font-family: 'Anton', Impact, sans-serif;
+  font-size: clamp(1.7rem, 3.4vw, 2.4rem);
+  line-height: 1.05;
+  letter-spacing: 0.01em;
+  color: var(--ds-text);
+  margin-top: 0.5rem;
+}
+.ds-kpi__value--gold { color: var(--ds-gold); }
+.ds-kpi__foot { font-size: 11px; color: var(--ds-faint); margin-top: 0.35rem; }
+
+/* Selo de variação percentual */
+.ds-delta {
+  display: inline-flex;
+  align-items: center;
+  gap: 3px;
+  padding: 2px 7px;
+  font-size: 10px;
+  font-weight: 600;
+  letter-spacing: 0.04em;
+  border: 1px solid currentColor;
+}
+.ds-delta--up   { color: var(--ds-ok); }
+.ds-delta--down { color: var(--ds-danger); }
+.ds-delta--flat { color: var(--ds-faint); }
+
+/* Nota "(Simulado via localStorage)" — presente mas discreta */
+.ds-sim {
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+  font-size: 10px;
+  letter-spacing: 0.04em;
+  color: var(--ds-faint);
+  font-style: italic;
+}
+.ds-sim::before {
+  content: '';
+  width: 5px; height: 5px;
+  background: var(--ds-gold);
+  transform: rotate(45deg);
+  opacity: 0.65;
+}
+
+/* ---------- Botões ---------- */
+
+.ds-btn {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.5rem;
+  padding: 0.6rem 1.05rem;
+  border: 1px solid var(--ds-line-2);
+  background: transparent;
+  color: var(--ds-dim);
+  font-size: 11px;
+  font-weight: 500;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  white-space: nowrap;
+  transition: all 0.22s var(--ds-ease);
+}
+.ds-btn:hover { color: var(--ds-text); border-color: var(--ds-gold-line); background: rgba(255, 255, 255, 0.03); }
+.ds-btn:active { transform: scale(0.98); }
+.ds-btn:disabled { opacity: 0.35; pointer-events: none; }
+
+/* Sólido dourado — ação principal (ex.: ADICIONAR NOVO SERVIÇO) */
+.ds-btn--gold {
+  position: relative;
+  overflow: hidden;
+  isolation: isolate;
+  background: var(--ds-gold);
+  border-color: var(--ds-gold);
+  color: #0A0A0B;
+  font-weight: 700;
+  letter-spacing: 0.14em;
+}
+.ds-btn--gold::after {
+  content: '';
+  position: absolute;
+  inset: 0;
+  z-index: -1;
+  background: linear-gradient(105deg, transparent 34%, rgba(255, 255, 255, 0.5) 50%, transparent 66%);
+  transform: translateX(-125%);
+  transition: transform 0.7s var(--ds-ease);
+}
+.ds-btn--gold:hover {
+  background: var(--ds-gold-lt);
+  border-color: var(--ds-gold-lt);
+  color: #0A0A0B;
+  box-shadow: 0 10px 28px -12px rgba(201, 162, 74, 0.8);
+}
+.ds-btn--gold:hover::after { transform: translateX(125%); }
+
+/* Contorno dourado — ações de linha da tabela ("Editar") */
+.ds-btn--outline {
+  border-color: var(--ds-gold-line);
+  color: var(--ds-gold);
+}
+.ds-btn--outline:hover {
+  background: rgba(201, 162, 74, 0.1);
+  border-color: var(--ds-gold);
+  color: var(--ds-gold-lt);
+}
+
+.ds-btn--danger:hover { color: #F0A9A0; border-color: #8E4038; background: rgba(142, 64, 56, 0.12); }
+.ds-btn--ok:hover     { color: #93D6A0; border-color: #3E7A4A; background: rgba(62, 122, 74, 0.12); }
+
+.ds-btn--sm { padding: 0.42rem 0.7rem; font-size: 10px; letter-spacing: 0.08em; }
+.ds-btn--icon { padding: 0.55rem; }
+
+/* ---------- Pílulas de filtro / abas ---------- */
+
+.ds-chip {
+  padding: 0.45rem 0.85rem;
+  border: 1px solid var(--ds-line-2);
+  color: var(--ds-dim);
+  font-size: 10px;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+  transition: all 0.22s var(--ds-ease);
+}
+.ds-chip:hover { color: var(--ds-text); border-color: var(--ds-gold-line); }
+.ds-chip.is-active {
+  background: var(--ds-gold);
+  border-color: var(--ds-gold);
+  color: #0A0A0B;
+  font-weight: 700;
+}
+
+/* ---------- Tabela ---------- */
+
+.ds-table { width: 100%; border-collapse: collapse; font-size: 0.8125rem; }
+
+.ds-table thead th {
+  position: sticky;
+  top: 0;
+  z-index: 1;
+  padding: 0.75rem 1rem;
+  background: var(--ds-raised);
+  border-bottom: 1px solid var(--ds-line-2);
+  color: var(--ds-faint);
+  font-size: 9px;
+  font-weight: 600;
+  letter-spacing: 0.2em;
+  text-transform: uppercase;
+  text-align: left;
+  white-space: nowrap;
+}
+
+.ds-table tbody td {
+  padding: 0.9rem 1rem;
+  border-bottom: 1px solid var(--ds-line);
+  vertical-align: middle;
+}
+.ds-table tbody tr { transition: background 0.18s var(--ds-ease); }
+.ds-table tbody tr:hover { background: rgba(255, 255, 255, 0.025); }
+.ds-table tbody tr:last-child td { border-bottom: 0; }
+
+/* Linha de serviço desativado fica visivelmente apagada */
+.ds-table tbody tr.is-off { opacity: 0.45; }
+
+.ds-table .num { text-align: right; font-variant-numeric: tabular-nums; }
+
+/* Empilha a tabela em cartões no celular, sem rolagem horizontal */
+@media (max-width: 720px) {
+  .ds-table thead { display: none; }
+  .ds-table tbody tr {
+    display: grid;
+    grid-template-columns: 1fr auto;
+    gap: 0.35rem 1rem;
+    padding: 1rem;
+    border-bottom: 1px solid var(--ds-line);
+  }
+  .ds-table tbody td { padding: 0; border: 0; }
+  .ds-table tbody td[data-rotulo]::before {
+    content: attr(data-rotulo);
+    display: block;
+    font-size: 9px;
+    letter-spacing: 0.2em;
+    text-transform: uppercase;
+    color: var(--ds-faint);
+    margin-bottom: 2px;
+  }
+  .ds-table td.col-acoes { grid-column: 1 / -1; margin-top: 0.5rem; }
+  .ds-table .num { text-align: left; }
+}
+
+/* ---------- Selos de status ---------- */
+
+.ds-badge {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.35rem;
+  padding: 0.2rem 0.55rem;
+  border: 1px solid currentColor;
+  font-size: 9px;
+  font-weight: 600;
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+  white-space: nowrap;
+}
+.ds-badge::before { content: ''; width: 5px; height: 5px; background: currentColor; border-radius: 50%; }
+.ds-badge--ativo     { color: var(--ds-ok); }
+.ds-badge--inativo   { color: var(--ds-faint); }
+.ds-badge--agendado  { color: var(--ds-gold); }
+.ds-badge--concluido { color: var(--ds-ok); }
+.ds-badge--cancelado { color: var(--ds-danger); }
+
+/* ---------- Campos ---------- */
+
+.ds-label {
+  display: block;
+  margin-bottom: 0.45rem;
+  font-size: 9px;
+  letter-spacing: 0.2em;
+  text-transform: uppercase;
+  color: var(--ds-dim);
+}
+
+.ds-input {
+  width: 100%;
+  padding: 0.7rem 0.9rem;
+  background: var(--ds-sunken);
+  border: 1px solid var(--ds-line-2);
+  border-radius: 0;
+  color: var(--ds-text);
+  font-family: inherit;
+  font-size: 0.875rem;
+  transition: border-color 0.22s var(--ds-ease), background 0.22s var(--ds-ease);
+}
+.ds-input::placeholder { color: var(--ds-faint); }
+.ds-input:focus { outline: none; border-color: var(--ds-gold); background: var(--ds-raised); }
+.ds-input.has-error { border-color: #A2493F; }
+
+select.ds-input {
+  appearance: none;
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='12' viewBox='0 0 24 24' fill='none' stroke='%23A79F94' stroke-width='2'%3E%3Cpath d='M6 9l6 6 6-6'/%3E%3C/svg%3E");
+  background-repeat: no-repeat;
+  background-position: right 0.8rem center;
+  padding-right: 2.2rem;
+}
+
+.ds-error {
+  min-height: 0.95rem;
+  margin-top: 0.3rem;
+  font-size: 0.7rem;
+  color: #E39289;
+  opacity: 0;
+  transition: opacity 0.2s;
+}
+.ds-error.is-visible { opacity: 1; }
+
+/* Interruptor de status */
+.ds-switch {
+  appearance: none;
+  position: relative;
+  width: 38px;
+  height: 20px;
+  flex-shrink: 0;
+  background: var(--ds-sunken);
+  border: 1px solid var(--ds-line-2);
+  cursor: pointer;
+  transition: all 0.25s var(--ds-ease);
+}
+.ds-switch::after {
+  content: '';
+  position: absolute;
+  top: 2px; left: 2px;
+  width: 14px; height: 14px;
+  background: var(--ds-faint);
+  transition: all 0.25s var(--ds-ease);
+}
+.ds-switch:checked { background: rgba(201, 162, 74, 0.18); border-color: var(--ds-gold); }
+.ds-switch:checked::after { left: 20px; background: var(--ds-gold); }
+
+/* ---------- Barra de progresso ---------- */
+
+.ds-meter {
+  height: 4px;
+  background: rgba(255, 255, 255, 0.07);
+  overflow: hidden;
+}
+.ds-meter__fill {
+  height: 100%;
+  background: var(--ds-gold);
+  width: 0;
+  transition: width 0.8s var(--ds-ease);
+}
+
+/* ---------- Agenda Geral (grade de barbeiros) ---------- */
+
+.cal {
+  --cal-row: 46px;      /* altura de um bloco de 30 minutos */
+  --cal-time: 62px;     /* largura da coluna de horários */
+}
+
+.cal-head {
+  display: grid;
+  grid-template-columns: var(--cal-time) repeat(var(--cal-cols), minmax(150px, 1fr));
+  position: sticky;
+  top: 0;
+  z-index: 3;
+  background: var(--ds-raised);
+  border-bottom: 1px solid var(--ds-line-2);
+}
+
+.cal-head__cell {
+  padding: 0.7rem 0.8rem;
+  border-left: 1px solid var(--ds-line);
+  min-width: 0;
+}
+.cal-head__cell:first-child { border-left: 0; }
+
+.cal-body {
+  display: grid;
+  grid-template-columns: var(--cal-time) repeat(var(--cal-cols), minmax(150px, 1fr));
+  position: relative;
+}
+
+/* Coluna de horários */
+.cal-times { position: relative; }
+.cal-time {
+  height: var(--cal-row);
+  padding-right: 0.6rem;
+  text-align: right;
+  font-size: 10px;
+  color: var(--ds-faint);
+  font-variant-numeric: tabular-nums;
+  transform: translateY(-6px);
+}
+.cal-time--hora { color: var(--ds-dim); }
+
+/* Coluna de um barbeiro */
+.cal-col {
+  position: relative;
+  border-left: 1px solid var(--ds-line);
+  min-width: 0;
+}
+.cal-col--folga {
+  background:
+    repeating-linear-gradient(45deg,
+      rgba(255, 255, 255, 0.018) 0 8px,
+      transparent 8px 16px);
+}
+
+/* Linhas de meia hora ao fundo */
+.cal-line {
+  position: absolute;
+  left: 0; right: 0;
+  height: 1px;
+  background: var(--ds-line);
+}
+.cal-line--meia { background: rgba(255, 255, 255, 0.035); }
+
+/* Bloco de agendamento */
+.cal-event {
+  position: absolute;
+  left: 4px; right: 4px;
+  padding: 0.4rem 0.55rem;
+  overflow: hidden;
+  border-left: 3px solid var(--cor, var(--ds-gold));
+  background: color-mix(in srgb, var(--cor, #C9A24A) 16%, #101012);
+  color: var(--ds-text);
+  text-align: left;
+  cursor: pointer;
+  transition: transform 0.18s var(--ds-ease), box-shadow 0.18s var(--ds-ease), filter 0.18s;
+}
+/* Navegadores sem color-mix ainda recebem um fundo sólido legível */
+@supports not (background: color-mix(in srgb, red 50%, blue)) {
+  .cal-event { background: #1C1B20; }
+}
+.cal-event:hover {
+  transform: translateX(1px);
+  box-shadow: 0 6px 18px -8px rgba(0, 0, 0, 0.9);
+  filter: brightness(1.18);
+  z-index: 2;
+}
+.cal-event__hora { font-size: 9px; letter-spacing: 0.1em; color: var(--ds-dim); font-variant-numeric: tabular-nums; }
+.cal-event__nome { font-size: 0.75rem; font-weight: 600; line-height: 1.25; margin-top: 1px; }
+.cal-event__svc  { font-size: 10px; color: var(--ds-dim); line-height: 1.25; }
+.cal-event.is-concluido { opacity: 0.55; }
+.cal-event.is-concluido .cal-event__nome { text-decoration: line-through; }
+
+/* Linha do "agora" */
+.cal-now {
+  position: absolute;
+  left: 0; right: 0;
+  height: 1px;
+  background: var(--ds-danger);
+  z-index: 4;
+  pointer-events: none;
+}
+.cal-now::before {
+  content: '';
+  position: absolute;
+  left: -4px; top: -3px;
+  width: 7px; height: 7px;
+  background: var(--ds-danger);
+  border-radius: 50%;
+}
+
+/* ---------- Modal ---------- */
+
+.ds-modal { position: fixed; inset: 0; z-index: 80; }
+.ds-modal[hidden] { display: none !important; }
+.ds-modal__backdrop { position: absolute; inset: 0; background: rgba(6, 6, 7, 0.86); backdrop-filter: blur(6px); }
+.ds-modal__wrap { position: relative; height: 100%; display: grid; place-items: center; padding: 1rem; overflow-y: auto; }
+
+.ds-modal__card {
+  position: relative;
+  width: 100%;
+  max-width: 30rem;
+  background: var(--ds-surface);
+  border: 1px solid var(--ds-gold-line);
+  opacity: 0;
+  transform: translateY(14px) scale(0.98);
+  transition: opacity 0.28s var(--ds-ease), transform 0.28s var(--ds-ease);
+  margin: auto;
+}
+.ds-modal.is-in .ds-modal__card { opacity: 1; transform: none; }
+
+/* ---------- Toasts ---------- */
+
+.ds-toasts {
+  position: fixed;
+  right: 1.25rem;
+  bottom: 1.25rem;
+  z-index: 90;
+  display: grid;
+  gap: 0.5rem;
+  width: min(92vw, 23rem);
+  pointer-events: none;
+}
+.ds-toast {
+  display: flex;
+  align-items: center;
+  gap: 0.7rem;
+  padding: 0.85rem 1rem;
+  background: var(--ds-raised);
+  border: 1px solid var(--ds-line-2);
+  border-left: 3px solid var(--ds-gold);
+  font-size: 0.8125rem;
+  box-shadow: 0 20px 44px -20px rgba(0, 0, 0, 0.95);
+  pointer-events: auto;
+  animation: ds-toast-in 0.32s var(--ds-ease) both;
+}
+.ds-toast--erro { border-left-color: var(--ds-danger); }
+.ds-toast--info { border-left-color: var(--ds-info); }
+.ds-toast.is-out { animation: ds-toast-out 0.28s var(--ds-ease) both; }
+@keyframes ds-toast-in  { from { opacity: 0; transform: translateX(18px); } to { opacity: 1; transform: none; } }
+@keyframes ds-toast-out { to { opacity: 0; transform: translateX(14px); } }
+
+/* ---------- Transição entre telas ---------- */
+
+.ds-view[hidden] { display: none !important; }
+.ds-view { animation: ds-view-in 0.34s var(--ds-ease) both; }
+@keyframes ds-view-in {
+  from { opacity: 0; transform: translateY(10px); }
+  to   { opacity: 1; transform: none; }
+}
+
+/* Entrada escalonada dos cartões/linhas */
+.ds-stagger > * { animation: ds-view-in 0.4s var(--ds-ease) both; }
+.ds-stagger > *:nth-child(1) { animation-delay: 0ms; }
+.ds-stagger > *:nth-child(2) { animation-delay: 60ms; }
+.ds-stagger > *:nth-child(3) { animation-delay: 120ms; }
+.ds-stagger > *:nth-child(4) { animation-delay: 180ms; }
+.ds-stagger > *:nth-child(5) { animation-delay: 240ms; }
+.ds-stagger > *:nth-child(6) { animation-delay: 300ms; }
+
+/* ---------- Gráficos ---------- */
+
+.chart-svg { display: block; width: 100%; overflow: visible; }
+.chart-grid { stroke: rgba(255, 255, 255, 0.06); stroke-width: 1; }
+.chart-line { fill: none; stroke: var(--ds-gold); stroke-width: 1.75; stroke-linecap: round; stroke-linejoin: round; }
+.chart-dot  { fill: var(--ds-gold); }
+.chart-dot--atual { fill: var(--ds-gold-lt); stroke: var(--ds-bg); stroke-width: 2; }
+.chart-bar  { fill: rgba(201, 162, 74, 0.42); transition: fill 0.2s var(--ds-ease); }
+.chart-bar:hover { fill: var(--ds-gold); }
+.chart-bar--atual { fill: var(--ds-gold); }
+.chart-label { fill: var(--ds-faint); font-size: 9px; letter-spacing: 0.1em; text-transform: uppercase; }
+
+/* Barra horizontal de ranking */
+.rank-row { display: grid; grid-template-columns: 1fr auto; gap: 0.3rem 1rem; align-items: baseline; }
+.rank-track { grid-column: 1 / -1; height: 5px; background: rgba(255, 255, 255, 0.06); overflow: hidden; }
+.rank-fill { height: 100%; background: var(--cor, var(--ds-gold)); width: 0; transition: width 0.9s var(--ds-ease); }
+
+/* ---------- Estado vazio ---------- */
+
+.ds-empty {
+  padding: 3.5rem 1.5rem;
+  text-align: center;
+  border: 1px dashed var(--ds-line-2);
+}
+.ds-empty__icon {
+  display: grid;
+  place-items: center;
+  width: 52px; height: 52px;
+  margin: 0 auto 1.1rem;
+  border: 1px solid var(--ds-line-2);
+  color: var(--ds-faint);
+}
+
+/* ---------- Avatar ---------- */
+
+.ds-avatar {
+  display: grid;
+  place-items: center;
+  flex-shrink: 0;
+  background: var(--ds-sunken);
+  border: 1px solid var(--ds-gold-line);
+  color: var(--ds-gold);
+  font-family: 'Cormorant Garamond', Georgia, serif;
+  font-weight: 600;
+  overflow: hidden;
+}
+.ds-avatar img { width: 100%; height: 100%; object-fit: cover; }
+
+/* ---------- Tremida de validação ---------- */
+
+.shake { animation: ds-shake 0.4s var(--ds-ease); }
+@keyframes ds-shake {
+  10%, 90% { transform: translateX(-2px); }
+  20%, 80% { transform: translateX(3px); }
+  30%, 50%, 70% { transform: translateX(-5px); }
+  40%, 60% { transform: translateX(5px); }
+}
+
+/* ---------- Movimento reduzido ---------- */
+
+@media (prefers-reduced-motion: reduce) {
+  *, *::before, *::after {
+    animation-duration: 0.001ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.001ms !important;
+  }
+}
+
+/* ---------- Barra lateral como gaveta no mobile ----------
+   No desktop ela é fixa; abaixo de 1024px vira uma gaveta que
+   desliza por cima do conteúdo, com um véu clicável atrás.    */
+@media (max-width: 1023px) {
+  .ds-sidebar {
+    position: fixed;
+    top: 0;
+    bottom: 0;
+    left: 0;
+    width: 264px;
+    z-index: 70;
+    transform: translateX(-100%);
+    transition: transform 0.34s var(--ds-ease);
+  }
+  .ds-sidebar.is-open { transform: none; box-shadow: 0 0 60px rgba(0, 0, 0, 0.8); }
+}
+
+#ds-scrim {
+  position: fixed;
+  inset: 0;
+  z-index: 65;
+  background: rgba(6, 6, 7, 0.7);
+  backdrop-filter: blur(3px);
+}
+#ds-scrim[hidden] { display: none; }

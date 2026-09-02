@@ -5,13 +5,13 @@
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
 <meta name="theme-color" content="#0A0A0B" />
 
-<title>Casa Navalha — Barbearia &amp; Clube | Agendamento Online</title>
-<meta name="description" content="Casa Navalha: barbearia clássica com alma contemporânea. Corte, barba e ritual. Agende seu horário em menos de 40 segundos." />
+<title>Casa Navalha — Barbearia &amp; Clube | Vila Madalena, São Paulo</title>
+<meta name="description" content="Casa Navalha: barbearia clássica com alma contemporânea. Corte, barba e ritual na Vila Madalena desde 2014." />
 
 <!-- Open Graph (compartilhamento em redes / WhatsApp) -->
 <meta property="og:type" content="website" />
 <meta property="og:title" content="Casa Navalha — Barbearia &amp; Clube" />
-<meta property="og:description" content="Onde o corte vira ritual. Agende online." />
+<meta property="og:description" content="Onde o corte vira ritual." />
 <meta property="og:image" content="https://images.unsplash.com/photo-1585747860715-2ba37e788b70?auto=format&fit=crop&w=1200&q=80" />
 
 <!-- Favicon: monograma "CN" gerado inline (sem requisição externa) -->
@@ -89,19 +89,12 @@
       <nav class="hidden lg:flex items-center gap-9" aria-label="Navegação principal">
         <a href="#servicos" class="nav-link">Serviços</a>
         <a href="#equipe"   class="nav-link">Equipe</a>
-        <a href="#agendar"  class="nav-link">Agendar</a>
         <a href="#galeria"  class="nav-link">Galeria</a>
         <a href="#contato"  class="nav-link">Contato</a>
       </nav>
 
       <div class="flex items-center gap-2 sm:gap-3">
-        <button type="button" data-open-admin
-                class="hidden sm:inline-flex items-center gap-2 px-4 py-2.5 text-[11px] tracking-[0.2em] uppercase text-bone-dim border border-white/10 hover:border-gold/50 hover:text-bone transition-colors">
-          <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7"><rect x="3" y="4" width="18" height="17" rx="1"/><path d="M8 2v4M16 2v4M3 10h18"/></svg>
-          Painel
-        </button>
-
-        <a href="#agendar" class="btn-gold hidden sm:inline-flex items-center gap-2 px-5 py-3 bg-gold text-ink font-semibold text-[11px] tracking-[0.2em] uppercase">
+        <a href="agendar.html" class="btn-gold hidden sm:inline-flex items-center gap-2 px-5 py-3 bg-gold text-ink font-semibold text-[11px] tracking-[0.2em] uppercase">
           Agendar agora
         </a>
 
@@ -122,11 +115,10 @@
   <nav class="relative h-full flex flex-col justify-center px-8" aria-label="Navegação mobile">
     <a href="#servicos" class="m-link" style="--i:0">Serviços</a>
     <a href="#equipe"   class="m-link" style="--i:1">Equipe</a>
-    <a href="#agendar"  class="m-link" style="--i:2">Agendar</a>
-    <a href="#galeria"  class="m-link" style="--i:3">Galeria</a>
-    <a href="#contato"  class="m-link" style="--i:4">Contato</a>
-    <button type="button" data-open-admin class="m-link text-left" style="--i:5">Painel do dono</button>
-    <div class="m-link !text-base !font-sans !tracking-normal mt-8 pt-8 border-t border-white/10" style="--i:6">
+    <a href="#galeria"  class="m-link" style="--i:2">Galeria</a>
+    <a href="#contato"  class="m-link" style="--i:3">Contato</a>
+    <a href="agendar.html" class="m-link !text-gold" style="--i:4">Agendar &rarr;</a>
+    <div class="m-link !text-base !font-sans !tracking-normal mt-8 pt-8 border-t border-white/10" style="--i:5">
       <p class="text-[10px] tracking-ultra uppercase text-bone-faint mb-2">Reservas por telefone</p>
       <a href="tel:+551140028922" class="font-serif text-2xl text-gold">(11) 4002-8922</a>
     </div>
@@ -166,7 +158,7 @@
       </p>
 
       <div class="reveal flex flex-col sm:flex-row gap-3 sm:gap-4 mb-14" style="--d:380ms">
-        <a href="#agendar" class="btn-gold group inline-flex items-center justify-center gap-3 px-8 py-4 bg-gold text-ink font-semibold text-xs tracking-[0.22em] uppercase">
+        <a href="agendar.html" class="btn-gold group inline-flex items-center justify-center gap-3 px-8 py-4 bg-gold text-ink font-semibold text-xs tracking-[0.22em] uppercase">
           Agendar agora
           <svg class="transition-transform duration-300 group-hover:translate-x-1" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M5 12h14M13 6l6 6-6 6"/></svg>
         </a>
@@ -248,138 +240,44 @@
 </section>
 
 <!-- ══════════════════════════════════════════════════════════════
-     AGENDAMENTO — fluxo em 4 etapas
+     COMO FUNCIONA + CHAMADA PARA O AGENDAMENTO
+     Ponte entre o institucional e a página de reserva.
      ══════════════════════════════════════════════════════════════ -->
-<section id="agendar" class="relative py-24 lg:py-36 overflow-hidden">
-  <div class="absolute top-0 left-1/2 -translate-x-1/2 w-[900px] h-[900px] max-w-full rounded-full bg-gold/[0.045] blur-[130px] -z-10"></div>
+<section class="relative py-24 lg:py-32 overflow-hidden">
+  <div class="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[900px] h-[700px] max-w-full rounded-full bg-gold/[0.05] blur-[130px] -z-10"></div>
 
   <div class="max-w-shell mx-auto px-5">
-
-    <div class="text-center max-w-2xl mx-auto mb-12 lg:mb-16">
-      <p class="reveal section-eyebrow justify-center">Reserve seu horário</p>
-      <h2 class="reveal font-display uppercase text-[clamp(2.2rem,6.5vw,4.2rem)] leading-[0.95] mt-5" style="--d:80ms">
-        Agende em <span class="text-gold">40 segundos</span>
+    <div class="text-center max-w-2xl mx-auto mb-14">
+      <p class="reveal section-eyebrow justify-center">Sem telefone, sem espera</p>
+      <h2 class="reveal font-display uppercase text-[clamp(2rem,5.5vw,3.6rem)] leading-[0.95] mt-5" style="--d:80ms">
+        Reserve em <span class="text-gold">40 segundos</span>
       </h2>
     </div>
 
-    <div class="grid lg:grid-cols-[1fr_360px] gap-6 lg:gap-8 items-start">
+    <ol class="grid sm:grid-cols-3 gap-px bg-white/[0.07] border border-white/[0.07] mb-12">
+      <li class="reveal bg-ink p-8 text-center" style="--d:0ms">
+        <span class="mx-auto mb-5 grid place-items-center w-12 h-12 border border-gold/30 font-display text-xl text-gold">1</span>
+        <h3 class="font-display uppercase text-lg tracking-wide">Escolha o ritual</h3>
+        <p class="mt-3 text-sm text-bone-dim leading-relaxed">Serviço, barbeiro, dia e horário — tudo com preço e duração à vista.</p>
+      </li>
+      <li class="reveal bg-ink p-8 text-center" style="--d:90ms">
+        <span class="mx-auto mb-5 grid place-items-center w-12 h-12 border border-gold/30 font-display text-xl text-gold">2</span>
+        <h3 class="font-display uppercase text-lg tracking-wide">Confirme</h3>
+        <p class="mt-3 text-sm text-bone-dim leading-relaxed">Só nome e WhatsApp. Você recebe o código da reserva na hora.</p>
+      </li>
+      <li class="reveal bg-ink p-8 text-center" style="--d:180ms">
+        <span class="mx-auto mb-5 grid place-items-center w-12 h-12 border border-gold/30 font-display text-xl text-gold">3</span>
+        <h3 class="font-display uppercase text-lg tracking-wide">Apareça</h3>
+        <p class="mt-3 text-sm text-bone-dim leading-relaxed">Chegue 5 minutos antes. O café já está pronto quando você senta.</p>
+      </li>
+    </ol>
 
-      <!-- ─── Coluna do formulário ───
-           min-w-0 é essencial: sem isso o grid item assume min-width:auto
-           e a faixa de datas estoura a largura em vez de rolar internamente. -->
-      <div class="reveal min-w-0 border border-white/10 bg-ink-700/60 backdrop-blur-sm">
-
-        <!-- Trilha de progresso -->
-        <div class="px-5 sm:px-8 pt-7 pb-6 border-b border-white/10">
-          <ol id="stepper" class="flex items-center" aria-label="Etapas do agendamento"></ol>
-        </div>
-
-        <div class="px-5 sm:px-8 py-8 sm:py-10 min-h-[430px]">
-
-          <!-- ETAPA 1 · Serviço -->
-          <section class="step" data-step="1" aria-label="Etapa 1: escolha do serviço">
-            <h3 class="step-title">Qual serviço você quer?</h3>
-            <p class="step-sub">Selecione um dos serviços abaixo para continuar.</p>
-            <div id="svc-list" class="mt-7 grid gap-2.5"></div>
-          </section>
-
-          <!-- ETAPA 2 · Barbeiro -->
-          <section class="step hidden" data-step="2" aria-label="Etapa 2: escolha do barbeiro">
-            <h3 class="step-title">Com quem você quer cortar?</h3>
-            <p class="step-sub">Cada barbeiro tem sua especialidade — e sua própria agenda.</p>
-            <div id="barber-list" class="mt-7 grid sm:grid-cols-2 gap-3"></div>
-          </section>
-
-          <!-- ETAPA 3 · Data e horário -->
-          <section class="step hidden" data-step="3" aria-label="Etapa 3: data e horário">
-            <h3 class="step-title">Quando fica bom pra você?</h3>
-            <p class="step-sub" id="slot-sub">Escolha o dia e depois um horário livre.</p>
-
-            <div class="mt-7">
-              <p class="field-label">Data</p>
-              <div id="date-strip" class="mt-3 flex gap-2.5 overflow-x-auto no-scrollbar snap-x pb-2 -mx-1 px-1"></div>
-            </div>
-
-            <div class="mt-8">
-              <div class="flex items-center justify-between flex-wrap gap-3">
-                <p class="field-label">Horários</p>
-                <div class="flex items-center gap-4 text-[10px] tracking-[0.15em] uppercase text-bone-faint">
-                  <span class="flex items-center gap-1.5"><i class="w-2.5 h-2.5 border border-gold/60"></i>Livre</span>
-                  <span class="flex items-center gap-1.5"><i class="w-2.5 h-2.5 bg-white/10"></i>Ocupado</span>
-                </div>
-              </div>
-              <div id="slot-grid" class="mt-3 grid grid-cols-3 sm:grid-cols-4 lg:grid-cols-5 gap-2"></div>
-            </div>
-          </section>
-
-          <!-- ETAPA 4 · Dados do cliente -->
-          <section class="step hidden" data-step="4" aria-label="Etapa 4: seus dados">
-            <h3 class="step-title">Só falta você.</h3>
-            <p class="step-sub">Usamos seus dados apenas para confirmar e lembrar do horário.</p>
-
-            <form id="client-form" class="mt-7 grid gap-5" novalidate>
-              <div>
-                <label for="f-nome" class="field-label">Nome completo <span class="text-gold">*</span></label>
-                <input id="f-nome" name="nome" type="text" autocomplete="name" placeholder="Ex.: Rafael Moreira" class="field" />
-                <p class="field-error" data-error-for="nome"></p>
-              </div>
-
-              <div>
-                <label for="f-tel" class="field-label">WhatsApp <span class="text-gold">*</span></label>
-                <input id="f-tel" name="telefone" type="tel" inputmode="numeric" autocomplete="tel"
-                       placeholder="(11) 99999-9999" maxlength="15" class="field" />
-                <p class="field-error" data-error-for="telefone"></p>
-              </div>
-
-              <div>
-                <label for="f-obs" class="field-label">Observação <span class="text-bone-faint normal-case tracking-normal">(opcional)</span></label>
-                <textarea id="f-obs" name="obs" rows="3" placeholder="Ex.: máquina 2 nas laterais, sem degradê muito alto." class="field resize-none"></textarea>
-              </div>
-
-              <label class="flex items-start gap-3 cursor-pointer group">
-                <input type="checkbox" id="f-lembrete" checked class="check-mark" />
-                <span class="text-sm text-bone-dim group-hover:text-bone transition-colors">
-                  Quero receber um lembrete no WhatsApp 2 horas antes.
-                </span>
-              </label>
-            </form>
-          </section>
-        </div>
-
-        <!-- Navegação do fluxo -->
-        <div class="px-5 sm:px-8 py-5 border-t border-white/10 flex items-center justify-between gap-4">
-          <button type="button" id="btn-prev"
-                  class="inline-flex items-center gap-2 px-5 py-3 text-[11px] tracking-[0.2em] uppercase text-bone-dim hover:text-bone disabled:opacity-25 disabled:pointer-events-none transition-colors">
-            <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M19 12H5M11 18l-6-6 6-6"/></svg>
-            Voltar
-          </button>
-
-          <button type="button" id="btn-next"
-                  class="btn-gold inline-flex items-center gap-2.5 px-7 py-3.5 bg-gold text-ink font-semibold text-[11px] tracking-[0.2em] uppercase disabled:opacity-30 disabled:pointer-events-none">
-            <span id="btn-next-label">Continuar</span>
-            <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M5 12h14M13 6l6 6-6 6"/></svg>
-          </button>
-        </div>
-      </div>
-
-      <!-- ─── Resumo lateral (desktop) ─── -->
-      <aside class="reveal hidden lg:block sticky top-28 border border-gold/20 bg-ink-800" style="--d:120ms">
-        <div class="pole h-[3px] w-full"></div>
-        <div class="p-7">
-          <p class="text-[10px] tracking-ultra uppercase text-gold mb-6">Seu agendamento</p>
-          <dl id="summary" class="grid gap-4 text-sm"></dl>
-
-          <div class="mt-7 pt-6 border-t border-dashed border-white/15 flex items-end justify-between">
-            <span class="text-[10px] tracking-[0.2em] uppercase text-bone-faint">Total</span>
-            <span id="summary-total" class="font-display text-3xl text-gold">—</span>
-          </div>
-
-          <p class="mt-6 flex items-start gap-2.5 text-xs text-bone-faint leading-relaxed">
-            <svg class="shrink-0 mt-0.5 text-gold" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7"><circle cx="12" cy="12" r="9"/><path d="M12 8v5M12 16.5v.01"/></svg>
-            Pagamento no balcão. Cancelamento gratuito até 3h antes do horário.
-          </p>
-        </div>
-      </aside>
+    <div class="reveal text-center" style="--d:240ms">
+      <a href="agendar.html" class="btn-gold group inline-flex items-center gap-3 px-10 py-5 bg-gold text-ink font-semibold text-xs tracking-[0.22em] uppercase">
+        Abrir a agenda
+        <svg class="transition-transform duration-300 group-hover:translate-x-1" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M5 12h14M13 6l6 6-6 6"/></svg>
+      </a>
+      <p class="mt-5 text-xs text-bone-faint">Cancelamento gratuito até 3 horas antes do horário.</p>
     </div>
   </div>
 </section>
@@ -465,7 +363,7 @@
         </div>
       </div>
 
-      <a href="#agendar" class="btn-gold reveal mt-11 inline-flex items-center gap-3 px-8 py-4 bg-gold text-ink font-semibold text-xs tracking-[0.22em] uppercase" style="--d:240ms">
+      <a href="agendar.html" class="btn-gold reveal mt-11 inline-flex items-center gap-3 px-8 py-4 bg-gold text-ink font-semibold text-xs tracking-[0.22em] uppercase" style="--d:240ms">
         Reservar um horário
       </a>
     </div>
@@ -528,9 +426,9 @@
         <ul class="grid gap-3 text-sm text-bone-dim">
           <li><a href="#servicos" class="hover:text-gold transition-colors">Serviços</a></li>
           <li><a href="#equipe"   class="hover:text-gold transition-colors">Equipe</a></li>
-          <li><a href="#agendar"  class="hover:text-gold transition-colors">Agendar</a></li>
           <li><a href="#galeria"  class="hover:text-gold transition-colors">Galeria</a></li>
-          <li><button type="button" data-open-admin class="hover:text-gold transition-colors">Painel do dono</button></li>
+          <li><a href="agendar.html" class="hover:text-gold transition-colors">Agendar horário</a></li>
+          <li><a href="dashboard.html" class="hover:text-gold transition-colors">Área do proprietário</a></li>
         </ul>
       </nav>
 
@@ -546,171 +444,24 @@
 
     <div class="mt-14 pt-7 border-t border-white/[0.07] flex flex-col sm:flex-row items-center justify-between gap-4 text-[11px] text-bone-faint">
       <p>© <span id="year">2026</span> Casa Navalha Barbearia. Todos os direitos reservados.</p>
-      <p class="tracking-[0.14em] uppercase">Protótipo · dados salvos no seu navegador</p>
+      <p class="tracking-[0.14em] uppercase">Site institucional · protótipo</p>
     </div>
   </div>
 </footer>
 
 <!-- Botão flutuante do WhatsApp -->
 <a href="https://wa.me/5511940028922?text=Ol%C3%A1%21%20Gostaria%20de%20saber%20mais%20sobre%20a%20Casa%20Navalha."
-   target="_blank" rel="noopener" id="wa-float" aria-label="Falar no WhatsApp"
+   target="_blank" rel="noopener" aria-label="Falar no WhatsApp"
    class="fixed bottom-5 right-5 z-30 grid place-items-center w-14 h-14 bg-gold text-ink shadow-[0_10px_36px_-8px_rgba(201,162,74,.7)] hover:scale-105 active:scale-95 transition-transform duration-300">
   <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M21 11.5a8.4 8.4 0 01-12.6 7.3L3 20.5l1.8-5.3A8.5 8.5 0 1121 11.5z"/><path d="M8.5 9.5c0 3.5 2.5 6 6 6"/></svg>
 </a>
 
-<!-- Barra-resumo fixa (mobile) -->
-<div id="booking-bar" class="fixed bottom-0 inset-x-0 z-30 lg:hidden translate-y-full transition-transform duration-500 bg-ink-700/95 backdrop-blur-md border-t border-gold/25">
-  <div class="px-5 py-3 flex items-center justify-between gap-4">
-    <div class="min-w-0">
-      <p id="bar-title" class="text-xs text-bone truncate">—</p>
-      <p id="bar-sub" class="text-[10px] tracking-[0.15em] uppercase text-bone-faint truncate mt-0.5">—</p>
-    </div>
-    <span id="bar-total" class="font-display text-xl text-gold shrink-0">—</span>
-  </div>
-</div>
-
-<!-- ══════════════════════════════════════════════════════════════
-     MODAL DE CONFIRMAÇÃO
-     ══════════════════════════════════════════════════════════════ -->
-<div id="confirm-modal" class="fixed inset-0 z-[60] hidden" role="dialog" aria-modal="true" aria-labelledby="confirm-title">
-  <div class="absolute inset-0 bg-ink/90 backdrop-blur-md" data-close-modal></div>
-
-  <div class="relative h-full grid place-items-center p-4 overflow-y-auto">
-    <div id="confirm-card" class="relative w-full max-w-md border border-gold/30 bg-ink-800 opacity-0 translate-y-6 scale-[0.97] transition-all duration-500 my-auto">
-      <div class="pole h-[3px] w-full"></div>
-
-      <!-- Partículas douradas do "sucesso" -->
-      <div id="burst" class="pointer-events-none absolute top-20 left-1/2 -translate-x-1/2"></div>
-
-      <div class="p-7 sm:p-9 text-center">
-        <!-- Selo de sucesso animado -->
-        <svg id="success-seal" class="mx-auto mb-6" width="74" height="74" viewBox="0 0 74 74" fill="none" aria-hidden="true">
-          <circle class="ring" cx="37" cy="37" r="33" stroke="#C9A24A" stroke-width="1.5" stroke-linecap="round" />
-          <path class="tick" d="M24 38.5l9 9 17.5-19" stroke="#C9A24A" stroke-width="2.6" stroke-linecap="round" stroke-linejoin="round" />
-        </svg>
-
-        <p class="text-[10px] tracking-ultra uppercase text-gold mb-3">Confirmado</p>
-        <h3 id="confirm-title" class="font-display uppercase text-3xl sm:text-4xl leading-none mb-3">Até já!</h3>
-        <p class="text-sm text-bone-dim leading-relaxed mb-7" id="confirm-msg">—</p>
-
-        <dl id="confirm-details" class="text-left grid gap-3 text-sm border-y border-dashed border-white/15 py-6 mb-6"></dl>
-
-        <p class="text-[10px] tracking-[0.2em] uppercase text-bone-faint">Código da reserva</p>
-        <p id="confirm-code" class="font-display text-2xl tracking-[0.2em] text-gold mt-1.5 mb-7">—</p>
-
-        <div class="grid gap-2.5">
-          <a id="confirm-wa" href="#" target="_blank" rel="noopener"
-             class="btn-gold inline-flex items-center justify-center gap-2.5 px-6 py-3.5 bg-gold text-ink font-semibold text-[11px] tracking-[0.2em] uppercase">
-            Enviar no WhatsApp
-          </a>
-          <div class="grid grid-cols-2 gap-2.5">
-            <button type="button" id="confirm-ics"
-                    class="px-4 py-3 border border-white/15 hover:border-gold/50 text-[10px] tracking-[0.18em] uppercase text-bone-dim hover:text-bone transition-colors">
-              Add. agenda
-            </button>
-            <button type="button" data-close-modal
-                    class="px-4 py-3 border border-white/15 hover:border-gold/50 text-[10px] tracking-[0.18em] uppercase text-bone-dim hover:text-bone transition-colors">
-              Fechar
-            </button>
-          </div>
-        </div>
-      </div>
-    </div>
-  </div>
-</div>
-
-<!-- ══════════════════════════════════════════════════════════════
-     PAINEL DO PROPRIETÁRIO (simulado)
-     ══════════════════════════════════════════════════════════════ -->
-<div id="admin-panel" class="fixed inset-0 z-[55] hidden" role="dialog" aria-modal="true" aria-label="Painel do proprietário">
-  <div class="absolute inset-0 bg-ink/[0.92] backdrop-blur-md" data-close-admin></div>
-
-  <div id="admin-sheet" class="relative h-full w-full max-w-5xl ml-auto bg-ink-800 border-l border-white/10 translate-x-full transition-transform duration-500 flex flex-col">
-
-    <!-- Cabeçalho -->
-    <div class="shrink-0 border-b border-white/10">
-      <div class="pole h-[3px] w-full"></div>
-      <div class="px-5 sm:px-8 py-5 flex items-center justify-between gap-4">
-        <div>
-          <p class="text-[10px] tracking-ultra uppercase text-gold">Casa Navalha</p>
-          <h2 class="font-display uppercase text-2xl sm:text-3xl leading-none mt-1.5">Painel da agenda</h2>
-        </div>
-        <button type="button" data-close-admin aria-label="Fechar painel"
-                class="grid place-items-center w-11 h-11 border border-white/10 hover:border-gold/50 hover:text-gold transition-colors">
-          <svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M18 6L6 18M6 6l12 12"/></svg>
-        </button>
-      </div>
-    </div>
-
-    <!-- Tela de acesso (PIN) -->
-    <div id="admin-lock" class="flex-1 grid place-items-center p-6">
-      <div class="w-full max-w-xs text-center">
-        <span class="mx-auto mb-6 grid place-items-center w-14 h-14 border border-gold/30 text-gold">
-          <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6"><rect x="4" y="10" width="16" height="11" rx="1.5"/><path d="M8 10V7a4 4 0 018 0v3"/></svg>
-        </span>
-        <h3 class="font-display uppercase text-2xl mb-2">Área restrita</h3>
-        <p class="text-sm text-bone-dim mb-7">Digite o PIN de 4 dígitos do proprietário.</p>
-
-        <input id="admin-pin" type="password" inputmode="numeric" maxlength="4" placeholder="••••"
-               class="field text-center font-display text-3xl tracking-[0.4em] py-4" />
-        <p class="field-error mt-2" id="admin-pin-error"></p>
-
-        <button type="button" id="admin-unlock"
-                class="btn-gold w-full mt-4 px-6 py-3.5 bg-gold text-ink font-semibold text-[11px] tracking-[0.2em] uppercase">
-          Entrar
-        </button>
-        <p class="mt-5 text-[11px] text-bone-faint">Protótipo — PIN de demonstração: <span class="text-gold font-medium">1234</span></p>
-      </div>
-    </div>
-
-    <!-- Conteúdo do painel -->
-    <div id="admin-content" class="hidden flex-1 overflow-y-auto">
-
-      <!-- Indicadores -->
-      <div class="grid grid-cols-2 lg:grid-cols-4 gap-px bg-white/[0.07] border-b border-white/10">
-        <div class="kpi"><p class="kpi-label">Hoje</p><p class="kpi-value" id="kpi-hoje">0</p><p class="kpi-hint">agendamentos ativos</p></div>
-        <div class="kpi"><p class="kpi-label">Receita prevista</p><p class="kpi-value" id="kpi-receita">R$ 0</p><p class="kpi-hint">próximos 7 dias</p></div>
-        <div class="kpi"><p class="kpi-label">Ticket médio</p><p class="kpi-value" id="kpi-ticket">R$ 0</p><p class="kpi-hint">por atendimento</p></div>
-        <div class="kpi"><p class="kpi-label">Ocupação</p><p class="kpi-value" id="kpi-ocupacao">0%</p><p class="kpi-hint">da agenda de hoje</p></div>
-      </div>
-
-      <!-- Filtros e ações -->
-      <div class="px-5 sm:px-8 py-5 flex flex-wrap items-center justify-between gap-4 border-b border-white/10">
-        <div id="admin-filters" class="flex flex-wrap gap-1.5">
-          <button type="button" class="chip is-active" data-filter="todos">Todos</button>
-          <button type="button" class="chip" data-filter="hoje">Hoje</button>
-          <button type="button" class="chip" data-filter="agendado">Agendados</button>
-          <button type="button" class="chip" data-filter="concluido">Concluídos</button>
-          <button type="button" class="chip" data-filter="cancelado">Cancelados</button>
-        </div>
-        <div class="flex gap-2">
-          <button type="button" id="admin-seed" class="ghost-btn">Popular demo</button>
-          <button type="button" id="admin-clear" class="ghost-btn ghost-btn--danger">Limpar tudo</button>
-        </div>
-      </div>
-
-      <!-- Lista -->
-      <div id="admin-list" class="px-5 sm:px-8 py-6 grid gap-3 pb-24"></div>
-    </div>
-  </div>
-</div>
-
-<!-- Área de notificações (toasts) -->
-<div id="toasts" class="fixed bottom-5 left-1/2 -translate-x-1/2 z-[70] w-[min(94vw,26rem)] grid gap-2 pointer-events-none"></div>
-
-<!-- ── Scripts: ordem importa; sem ES modules para funcionar até via file:// ── -->
+<!-- ── Scripts do institucional ── -->
 <script src="assets/js/data.js"></script>
 <script src="assets/js/store.js"></script>
 <script src="assets/js/ui.js"></script>
-<script src="assets/js/booking.js"></script>
-<script src="assets/js/admin.js"></script>
 <script>
-  /* Bootstrap: inicializa os módulos após o DOM estar pronto */
-  document.addEventListener('DOMContentLoaded', function () {
-    CN.ui.init();
-    CN.booking.init();
-    CN.admin.init();
-  });
+  document.addEventListener('DOMContentLoaded', function () { CN.ui.init(); });
 </script>
 </body>
 </html>

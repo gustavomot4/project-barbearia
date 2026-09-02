@@ -1,8 +1,11 @@
 /* ============================================================
-   CASA NAVALHA — Fluxo de agendamento (stepper de 4 etapas)
+   CASA NAVALHA — Fluxo de agendamento (agendar.html)
    1. Serviço  2. Barbeiro  3. Data e horário  4. Dados
-   O estado vive em memória e só vira registro no localStorage
-   quando o cliente confirma na última etapa.
+
+   Página autônoma: funciona sozinha, sem depender do site
+   institucional. Aceita pré-seleção pela URL:
+     agendar.html?servico=combo-imperio
+     agendar.html?barbeiro=diego
    ============================================================ */
 
 window.CN = window.CN || {};
@@ -69,13 +72,20 @@ CN.booking = (function () {
     var alvo = $('#svc-list');
     if (!alvo) return;
 
-    alvo.innerHTML = CN.SERVICOS.map(function (s) {
+    var lista = CN.catalogo.servicosAtivos();
+
+    if (!lista.length) {
+      alvo.innerHTML = vazio('Nenhum serviço disponível no momento. Fale com a barbearia pelo WhatsApp.');
+      return;
+    }
+
+    alvo.innerHTML = lista.map(function (s) {
       var sel = estado.servicoId === s.id;
       return '' +
         '<button type="button" class="opt p-4 sm:p-5 ' + (sel ? 'is-selected' : '') + '" data-servico="' + s.id + '" aria-pressed="' + sel + '">' +
           '<span class="flex items-center gap-4">' +
             '<span class="opt-dot" aria-hidden="true"></span>' +
-            '<span class="flex-1 min-w-0">' +
+            '<span class="flex-1 min-w-0 text-left">' +
               '<span class="flex items-center gap-2 flex-wrap">' +
                 '<span class="font-medium text-bone">' + CN.util.escapar(s.nome) + '</span>' +
                 (s.destaque ? '<span class="px-1.5 py-0.5 bg-gold/15 text-gold text-[9px] tracking-[0.14em] uppercase">' + CN.util.escapar(s.destaque) + '</span>' : '') +
@@ -113,7 +123,7 @@ CN.booking = (function () {
     var alvo = $('#barber-list');
     if (!alvo) return;
 
-    alvo.innerHTML = CN.BARBEIROS.map(function (b) {
+    alvo.innerHTML = CN.catalogo.barbeirosAtivos().map(function (b) {
       var sel = estado.barbeiroId === b.id;
       return '' +
         '<button type="button" class="opt p-4 ' + (sel ? 'is-selected' : '') + '" data-barbeiro="' + b.id + '" aria-pressed="' + sel + '">' +
@@ -158,6 +168,7 @@ CN.booking = (function () {
   /* ══════════════════════════════════════════════════════════
      ETAPA 3 — DATA E HORÁRIO
      ══════════════════════════════════════════════════════════ */
+
   /* Ao chegar na etapa 3 sem data escolhida, já abrimos no primeiro dia
      com folga real de agenda. Poupa um toque no celular e evita cair
      em "hoje" quando só sobrou um horário no fim do expediente.       */
@@ -296,6 +307,7 @@ CN.booking = (function () {
     var tel = $('#f-tel');
     var obs = $('#f-obs');
     var lembrete = $('#f-lembrete');
+    if (!nome || !tel) return;
 
     /* Máscara aplicada enquanto digita, preservando a posição do cursor
        quando o usuário edita no meio do texto.                        */
@@ -404,11 +416,8 @@ CN.booking = (function () {
     var barra = $('#booking-bar');
     if (!barra) return;
 
-    /* Só aparece quando já há algo escolhido e a seção está visível */
-    var temAlgo = !!servico;
-    barra.classList.toggle('translate-y-full', !temAlgo || !secaoVisivel());
-
-    if (!temAlgo) return;
+    barra.classList.toggle('translate-y-full', !servico);
+    if (!servico) return;
 
     $('#bar-title').textContent = servico.nome;
     $('#bar-sub').textContent = [
@@ -417,13 +426,6 @@ CN.booking = (function () {
       estado.hora
     ].filter(Boolean).join(' · ') || (servico.duracao + ' min');
     $('#bar-total').textContent = CN.util.moeda(servico.preco);
-  }
-
-  function secaoVisivel() {
-    var sec = document.getElementById('agendar');
-    if (!sec) return false;
-    var r = sec.getBoundingClientRect();
-    return r.top < window.innerHeight * 0.85 && r.bottom > 120;
   }
 
   /* ══════════════════════════════════════════════════════════
@@ -441,6 +443,7 @@ CN.booking = (function () {
     var prev = $('#btn-prev');
     var next = $('#btn-next');
     var rotulo = $('#btn-next-label');
+    if (!prev || !next) return;
 
     prev.disabled = estado.etapa === 1;
     next.disabled = !podeAvancar();
@@ -519,7 +522,6 @@ CN.booking = (function () {
     });
 
     abrirModal(ultimaReserva);
-    CN.ui.renderTicker();
   }
 
   /* ══════════════════════════════════════════════════════════
@@ -654,20 +656,54 @@ CN.booking = (function () {
     estado.hora = null;
     estado.obs = '';
 
-    $('#f-obs').value = '';
+    var obs = $('#f-obs');
+    if (obs) obs.value = '';
     /* Nome e telefone ficam preenchidos: é comum agendar duas
        pessoas em sequência (o cliente e o filho, por exemplo). */
 
     renderServicos();
     renderBarbeiros();
     irPara(1, true);
-    atualizarResumo();
+    window.scrollTo({ top: 0, behavior: 'smooth' });
+  }
+
+  /* ══════════════════════════════════════════════════════════
+     PRÉ-SELEÇÃO VIA URL
+     Permite que o site institucional mande o visitante direto
+     para o serviço ou o barbeiro em que ele clicou.
+     ══════════════════════════════════════════════════════════ */
+  function aplicarParametrosDaURL() {
+    var p = new URLSearchParams(window.location.search);
+    var servicoId = p.get('servico');
+    var barbeiroId = p.get('barbeiro');
+    var etapaInicial = 1;
+
+    if (servicoId && CN.catalogo.servicosAtivos().some(function (s) { return s.id === servicoId; })) {
+      selecionarServico(servicoId);
+      etapaInicial = 2;
+    }
+
+    if (barbeiroId && CN.catalogo.barbeirosAtivos().some(function (b) { return b.id === barbeiroId; })) {
+      /* Veio pela ficha de um barbeiro: se ainda não há serviço,
+         assume o mais pedido para não travar o fluxo na etapa 1. */
+      if (!estado.servicoId) {
+        var lista = CN.catalogo.servicosAtivos();
+        var padrao = lista.find(function (s) { return s.destaque; }) || lista[0];
+        if (padrao) selecionarServico(padrao.id);
+      }
+      selecionarBarbeiro(barbeiroId);
+      etapaInicial = 3;
+    }
+
+    if (etapaInicial > 1) irPara(etapaInicial, false);
   }
 
   /* ══════════════════════════════════════════════════════════
      INICIALIZAÇÃO
      ══════════════════════════════════════════════════════════ */
   function init() {
+    if (!$('#stepper')) return;   /* não estamos na página de agendamento */
+
     renderStepper();
     renderServicos();
     renderBarbeiros();
@@ -677,7 +713,9 @@ CN.booking = (function () {
 
     $('#btn-next').addEventListener('click', avancar);
     $('#btn-prev').addEventListener('click', voltar);
-    $('#confirm-ics').addEventListener('click', baixarICS);
+
+    var ics = $('#confirm-ics');
+    if (ics) ics.addEventListener('click', baixarICS);
 
     $$('[data-close-modal]').forEach(function (el) {
       el.addEventListener('click', fecharModal);
@@ -689,26 +727,13 @@ CN.booking = (function () {
       }
     });
 
-    /* A barra-resumo do mobile só aparece perto da seção de agendamento */
-    window.addEventListener('scroll', function () {
-      var servico = estado.servicoId ? CN.util.servicoPorId(estado.servicoId) : null;
-      var barbeiro = estado.barbeiroId ? CN.util.barbeiroPorId(estado.barbeiroId) : null;
-      atualizarBarraMobile(servico, barbeiro);
-    }, { passive: true });
+    aplicarParametrosDaURL();
   }
 
   return {
     init: init,
-    selecionarServico: function (id) { selecionarServico(id); irPara(1, false); },
-    selecionarBarbeiro: function (id) {
-      /* Vindo da seção "Equipe": se ainda não houver serviço,
-         assume o mais pedido para não travar o fluxo.         */
-      if (!estado.servicoId) {
-        var padrao = CN.SERVICOS.find(function (s) { return s.destaque; }) || CN.SERVICOS[0];
-        selecionarServico(padrao.id);
-      }
-      selecionarBarbeiro(id);
-      irPara(2, false);
-    }
+    selecionarServico: selecionarServico,
+    selecionarBarbeiro: selecionarBarbeiro,
+    irPara: irPara
   };
 })();

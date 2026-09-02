@@ -1,0 +1,706 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<meta name="theme-color" content="#08080A" />
+<meta name="robots" content="noindex" />
+
+<title>Painel de Gestão — Casa Navalha</title>
+<meta name="description" content="Painel administrativo da Casa Navalha: faturamento, agenda, serviços, equipe e clientes." />
+
+<link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 64 64'%3E%3Crect width='64' height='64' fill='%23C9A24A'/%3E%3Ctext x='32' y='45' font-family='Georgia,serif' font-size='32' font-weight='700' fill='%230A0A0B' text-anchor='middle'%3ECN%3C/text%3E%3C/svg%3E" />
+
+<link rel="preconnect" href="https://fonts.googleapis.com" />
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+<link href="https://fonts.googleapis.com/css2?family=Anton&family=Cormorant+Garamond:wght@600&family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet" />
+
+<script src="https://cdn.tailwindcss.com"></script>
+<script>
+  /* O painel usa Tailwind só para layout; a aparência dos
+     componentes vem de assets/css/dashboard.css. */
+  tailwind.config = {
+    theme: {
+      extend: {
+        fontFamily: {
+          display: ['Anton', 'Impact', 'sans-serif'],
+          serif:   ['"Cormorant Garamond"', 'Georgia', 'serif'],
+          sans:    ['Inter', 'system-ui', '-apple-system', 'sans-serif']
+        }
+      }
+    }
+  }
+</script>
+
+<link rel="stylesheet" href="assets/css/dashboard.css" />
+</head>
+
+<body class="font-sans antialiased">
+
+<div class="flex min-h-screen">
+
+  <!-- ══════════════════════════════════════════════════════════════
+       BARRA LATERAL FIXA
+       ══════════════════════════════════════════════════════════════ -->
+  <aside id="ds-sidebar" class="ds-sidebar w-[264px] shrink-0 lg:sticky lg:top-0 lg:h-screen flex flex-col">
+
+    <!-- Marca sobre a faixa de madeira -->
+    <div class="relative shrink-0">
+      <div class="wood h-1.5"></div>
+      <div class="flex items-center gap-3 px-5 py-5 border-b" style="border-color:var(--ds-line)">
+        <span class="grid place-items-center w-10 h-10 border shrink-0" style="border-color:var(--ds-gold-line)">
+          <span class="font-serif font-semibold text-lg leading-none" style="color:var(--ds-gold)">CN</span>
+        </span>
+        <span class="leading-none min-w-0">
+          <span class="block font-display text-base tracking-[0.12em] uppercase truncate">Casa Navalha</span>
+          <span class="block text-[9px] tracking-[0.26em] uppercase mt-1" style="color:var(--ds-faint)">Painel de gestão</span>
+        </span>
+      </div>
+    </div>
+
+    <!-- Navegação principal -->
+    <nav class="flex-1 overflow-y-auto py-3" aria-label="Navegação do painel">
+      <p class="px-5 pb-2 pt-2 ds-eyebrow">Operação</p>
+
+      <button type="button" class="ds-nav-item" data-rota="dashboard">
+        <svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6"><rect x="3" y="3" width="7.5" height="8.5"/><rect x="13.5" y="3" width="7.5" height="5"/><rect x="13.5" y="10.5" width="7.5" height="10.5"/><rect x="3" y="14" width="7.5" height="7"/></svg>
+        Dashboard
+      </button>
+
+      <button type="button" class="ds-nav-item" data-rota="agenda">
+        <svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6"><rect x="3" y="4.5" width="18" height="16.5" rx="1"/><path d="M8 2.5v4M16 2.5v4M3 10h18M12 10v11"/></svg>
+        Agenda Geral
+        <span class="ds-nav-badge" id="badge-agenda">0</span>
+      </button>
+
+      <button type="button" class="ds-nav-item" data-rota="servicos">
+        <!-- tesoura: o ícone mais honesto para "serviços" numa barbearia -->
+        <svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6"><circle cx="6" cy="6" r="2.6"/><circle cx="6" cy="18" r="2.6"/><path d="M8.1 7.6L20 18M20 6L8.1 16.4"/></svg>
+        Serviços
+      </button>
+
+      <p class="px-5 pb-2 pt-5 ds-eyebrow">Gestão</p>
+
+      <button type="button" class="ds-nav-item" data-rota="financas">
+        <svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6"><path d="M3 17.5l5.5-6 4 4L21 6.5"/><path d="M21 11V6.5h-4.5"/><path d="M3 21h18"/></svg>
+        Finanças
+      </button>
+
+      <button type="button" class="ds-nav-item" data-rota="barbeiros">
+        <svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6"><circle cx="9" cy="8" r="3.2"/><path d="M2.8 20a6.2 6.2 0 0112.4 0"/><path d="M16.5 5.2a3.2 3.2 0 010 5.9M18.5 20a6.2 6.2 0 00-2.6-5"/></svg>
+        Barbeiros
+      </button>
+
+      <button type="button" class="ds-nav-item" data-rota="clientes">
+        <svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6"><circle cx="10" cy="8" r="3.5"/><path d="M3.5 20a6.5 6.5 0 0113 0"/><path d="M16.5 12.5l2 2 3.5-3.5"/></svg>
+        Clientes
+      </button>
+
+      <p class="px-5 pb-2 pt-5 ds-eyebrow">Sistema</p>
+
+      <button type="button" class="ds-nav-item" data-rota="configuracoes">
+        <svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6"><path d="M4 6h10M18 6h2M4 12h2M10 12h10M4 18h8M16 18h4"/><circle cx="16" cy="6" r="2"/><circle cx="8" cy="12" r="2"/><circle cx="14" cy="18" r="2"/></svg>
+        Configurações
+      </button>
+    </nav>
+
+    <!-- Rodapé da lateral -->
+    <div class="shrink-0 border-t p-4" style="border-color:var(--ds-line)">
+      <div class="flex items-center gap-3 mb-3">
+        <span class="ds-avatar w-9 h-9 text-xs">RM</span>
+        <div class="min-w-0">
+          <p class="text-xs font-medium truncate">Rafael Moreira</p>
+          <p class="text-[10px] truncate" style="color:var(--ds-faint)">Proprietário</p>
+        </div>
+      </div>
+      <a href="index.html" class="ds-btn w-full">
+        <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M19 12H5M11 18l-6-6 6-6"/></svg>
+        Ver o site
+      </a>
+    </div>
+  </aside>
+
+  <!-- Véu que fecha a gaveta no mobile -->
+  <div id="ds-scrim" hidden></div>
+
+  <!-- ══════════════════════════════════════════════════════════════
+       ÁREA PRINCIPAL
+       ══════════════════════════════════════════════════════════════ -->
+  <div class="flex-1 min-w-0 flex flex-col">
+
+    <!-- Barra superior -->
+    <header class="sticky top-0 z-40 border-b backdrop-blur-md"
+            style="border-color:var(--ds-line);background:rgba(10,10,11,.88)">
+      <div class="flex items-center justify-between gap-4 px-4 sm:px-6 h-[68px]">
+
+        <div class="flex items-center gap-3 min-w-0">
+          <button type="button" id="ds-menu" class="ds-btn ds-btn--icon lg:hidden" aria-label="Abrir menu">
+            <svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M4 7h16M4 12h16M4 17h16"/></svg>
+          </button>
+          <div class="min-w-0">
+            <h1 id="topbar-titulo" class="font-display uppercase text-xl sm:text-2xl leading-none tracking-wide truncate">Dashboard</h1>
+            <p id="topbar-sub" class="text-[11px] mt-1 truncate" style="color:var(--ds-faint)">Visão geral do negócio</p>
+          </div>
+        </div>
+
+        <div class="flex items-center gap-3 shrink-0">
+          <p id="topbar-data" class="hidden md:block text-xs" style="color:var(--ds-dim)">—</p>
+          <a href="agendar.html" target="_blank" rel="noopener" class="ds-btn ds-btn--outline">
+            <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 5v14M5 12h14"/></svg>
+            <span class="hidden sm:inline">Novo agendamento</span>
+          </a>
+        </div>
+      </div>
+    </header>
+
+    <main class="flex-1 p-4 sm:p-6">
+
+      <!-- ══════════════════════════════════════════════════════════
+           TELA · DASHBOARD
+           ══════════════════════════════════════════════════════════ -->
+      <section class="ds-view" data-view="dashboard">
+
+        <!-- Métricas em destaque -->
+        <div class="grid gap-4 xl:grid-cols-3 ds-stagger">
+
+          <!-- Faturamento -->
+          <article class="ds-card edge-gold p-5 flex flex-col">
+            <div class="flex items-start justify-between gap-3">
+              <p class="ds-kpi__label">Faturamento do mês</p>
+              <span id="kpi-faturamento-delta" class="ds-delta ds-delta--flat">—</span>
+            </div>
+            <p id="kpi-faturamento" class="ds-kpi__value ds-kpi__value--gold tnum">R$ 0</p>
+            <p id="kpi-faturamento-foot" class="ds-kpi__foot">—</p>
+
+            <div id="spark-faturamento" class="mt-4 -mx-1"></div>
+
+            <p class="ds-sim mt-3">Simulado via localStorage</p>
+          </article>
+
+          <!-- Lucro bruto -->
+          <article class="ds-card edge-gold p-5 flex flex-col">
+            <div class="flex items-start justify-between gap-3">
+              <p class="ds-kpi__label">Lucro bruto simulado</p>
+              <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" style="color:var(--ds-faint)"><path d="M3 17.5l5.5-6 4 4L21 6.5"/><path d="M21 11V6.5h-4.5"/></svg>
+            </div>
+            <p id="kpi-lucro" class="ds-kpi__value tnum">R$ 0</p>
+            <p id="kpi-lucro-foot" class="ds-kpi__foot">—</p>
+
+            <div id="bar-lucro" class="mt-4 -mx-1"></div>
+
+            <p class="ds-sim mt-3">Simulado via localStorage</p>
+          </article>
+
+          <!-- Próximos agendamentos -->
+          <article class="ds-card edge-gold p-5 flex flex-col">
+            <div class="flex items-start justify-between gap-3">
+              <p class="ds-kpi__label">Agendamentos de hoje</p>
+              <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" style="color:var(--ds-faint)"><rect x="3" y="4.5" width="18" height="16.5" rx="1"/><path d="M8 2.5v4M16 2.5v4M3 10h18"/></svg>
+            </div>
+            <p id="kpi-hoje" class="ds-kpi__value tnum">0</p>
+            <p id="kpi-hoje-foot" class="ds-kpi__foot">—</p>
+
+            <div class="mt-auto pt-5">
+              <a href="#/agenda" class="ds-btn w-full">
+                Abrir agenda do dia
+                <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M5 12h14M13 6l6 6-6 6"/></svg>
+              </a>
+            </div>
+          </article>
+        </div>
+
+        <!-- Gráfico + ranking -->
+        <div class="grid gap-4 xl:grid-cols-3 mt-4">
+          <div class="ds-card xl:col-span-2">
+            <div class="ds-card__head">
+              <div>
+                <h2 class="ds-card__title">Evolução do faturamento</h2>
+                <p class="ds-card__sub">Últimos 6 meses · o mês corrente soma os agendamentos reais</p>
+              </div>
+              <span class="ds-sim hidden sm:inline-flex">Simulado</span>
+            </div>
+            <div class="p-4 sm:p-5">
+              <div id="chart-faturamento"></div>
+            </div>
+          </div>
+
+          <div class="ds-card">
+            <div class="ds-card__head">
+              <div>
+                <h2 class="ds-card__title">Serviços mais vendidos</h2>
+                <p class="ds-card__sub">Receita no mês corrente</p>
+              </div>
+            </div>
+            <div id="rank-servicos" class="p-5 grid gap-4"></div>
+          </div>
+        </div>
+
+        <!-- Lista de hoje + ocupação -->
+        <div class="grid gap-4 xl:grid-cols-3 mt-4">
+          <div class="ds-card xl:col-span-2">
+            <div class="ds-card__head">
+              <div>
+                <h2 class="ds-card__title">Próximos atendimentos de hoje</h2>
+                <p class="ds-card__sub">Clique num horário para ver os detalhes e dar baixa</p>
+              </div>
+              <a href="#/agenda" class="ds-btn ds-btn--sm">Ver tudo</a>
+            </div>
+            <div id="lista-hoje"></div>
+          </div>
+
+          <div class="ds-card p-5">
+            <p class="ds-kpi__label">Ocupação da agenda de hoje</p>
+            <p id="kpi-ocupacao" class="ds-kpi__value tnum">0%</p>
+            <div class="ds-meter mt-4"><span class="ds-meter__fill" id="kpi-ocupacao-barra"></span></div>
+            <p id="kpi-ocupacao-foot" class="ds-kpi__foot mt-3">—</p>
+
+            <div class="mt-6 pt-5 border-t" style="border-color:var(--ds-line)">
+              <p class="text-xs leading-relaxed" style="color:var(--ds-faint)">
+                Calculada sobre os minutos vendidos dividido pelos minutos disponíveis
+                de todos os barbeiros em serviço hoje.
+              </p>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <!-- ══════════════════════════════════════════════════════════
+           TELA · AGENDA GERAL
+           ══════════════════════════════════════════════════════════ -->
+      <section class="ds-view" data-view="agenda" hidden>
+        <div class="ds-card">
+          <div class="ds-card__head flex-wrap">
+            <div class="flex items-center gap-2">
+              <button type="button" id="agenda-ant" class="ds-btn ds-btn--icon" aria-label="Período anterior">
+                <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M15 18l-6-6 6-6"/></svg>
+              </button>
+              <button type="button" id="agenda-hoje" class="ds-btn ds-btn--sm">Hoje</button>
+              <button type="button" id="agenda-prox" class="ds-btn ds-btn--icon" aria-label="Próximo período">
+                <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M9 6l6 6-6 6"/></svg>
+              </button>
+              <p id="agenda-rotulo" class="ml-2 text-sm font-medium">—</p>
+            </div>
+
+            <div id="agenda-modos" class="flex gap-1.5">
+              <button type="button" class="ds-chip is-active" data-modo="dia">Dia</button>
+              <button type="button" class="ds-chip" data-modo="semana">Semana</button>
+            </div>
+          </div>
+
+          <!-- A grade rola horizontalmente quando há muitos barbeiros -->
+          <div id="agenda-grade" class="overflow-auto" style="max-height:calc(100vh - 210px)"></div>
+        </div>
+
+        <p class="mt-3 text-xs" style="color:var(--ds-faint)">
+          Cada coluna é um barbeiro; a faixa listrada marca o dia de folga.
+          A linha vermelha indica o horário atual.
+        </p>
+      </section>
+
+      <!-- ══════════════════════════════════════════════════════════
+           TELA · SERVIÇOS
+           ══════════════════════════════════════════════════════════ -->
+      <section class="ds-view" data-view="servicos" hidden>
+
+        <!-- Ação principal em destaque -->
+        <div class="ds-card">
+          <div class="ds-card__head flex-wrap gap-3">
+            <div>
+              <h2 class="ds-card__title">Cardápio de serviços</h2>
+              <p class="ds-card__sub" id="servicos-resumo">—</p>
+            </div>
+            <button type="button" data-novo-servico class="ds-btn ds-btn--gold">
+              <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4"><path d="M12 5v14M5 12h14"/></svg>
+              Adicionar novo serviço
+            </button>
+          </div>
+
+          <div class="px-4 sm:px-5 py-3 border-b flex items-center gap-1.5 flex-wrap" style="border-color:var(--ds-line)">
+            <span class="ds-eyebrow mr-2">Filtrar</span>
+            <div id="servicos-filtros" class="flex gap-1.5 flex-wrap">
+              <button type="button" class="ds-chip is-active" data-filtro="todos">Todos</button>
+              <button type="button" class="ds-chip" data-filtro="ativos">Ativos</button>
+              <button type="button" class="ds-chip" data-filtro="inativos">Inativos</button>
+            </div>
+          </div>
+
+          <div id="servicos-tabela" class="overflow-x-auto">
+            <table class="ds-table">
+              <thead>
+                <tr>
+                  <th>Nome do serviço</th>
+                  <th class="num">Preço</th>
+                  <th class="num">Duração</th>
+                  <th>Status</th>
+                  <th class="text-right">Ações</th>
+                </tr>
+              </thead>
+              <tbody id="servicos-corpo"></tbody>
+            </table>
+          </div>
+
+          <div id="servicos-vazio" class="p-5" hidden></div>
+        </div>
+
+        <p class="mt-3 text-xs" style="color:var(--ds-faint)">
+          Alterações aqui valem imediatamente na página de agendamento.
+          Um serviço inativo some do site, mas os agendamentos antigos continuam intactos.
+        </p>
+      </section>
+
+      <!-- ══════════════════════════════════════════════════════════
+           TELA · FINANÇAS
+           ══════════════════════════════════════════════════════════ -->
+      <section class="ds-view" data-view="financas" hidden>
+
+        <div class="grid gap-4 sm:grid-cols-2 xl:grid-cols-4 ds-stagger">
+          <article class="ds-card edge-gold p-5">
+            <p class="ds-kpi__label">Faturamento</p>
+            <p id="fin-faturamento" class="ds-kpi__value ds-kpi__value--gold tnum">R$ 0</p>
+            <p class="ds-kpi__foot" id="fin-composicao">—</p>
+          </article>
+
+          <article class="ds-card p-5">
+            <p class="ds-kpi__label">Lucro bruto</p>
+            <p id="fin-lucro" class="ds-kpi__value tnum">R$ 0</p>
+            <p class="ds-kpi__foot" id="fin-margem-nota">—</p>
+          </article>
+
+          <article class="ds-card p-5">
+            <p class="ds-kpi__label">Despesas fixas</p>
+            <p id="fin-despesas" class="ds-kpi__value tnum">R$ 0</p>
+            <p class="ds-kpi__foot">Estimativa mensal do negócio</p>
+          </article>
+
+          <article class="ds-card p-5">
+            <p class="ds-kpi__label">Resultado líquido</p>
+            <p id="fin-liquido" class="ds-kpi__value tnum">R$ 0</p>
+            <p class="ds-kpi__foot">Lucro bruto menos despesas fixas</p>
+          </article>
+        </div>
+
+        <div class="grid gap-4 xl:grid-cols-3 mt-4">
+          <div class="ds-card xl:col-span-2">
+            <div class="ds-card__head">
+              <div>
+                <h2 class="ds-card__title">Faturamento mês a mês</h2>
+                <p class="ds-card__sub">Passe o mouse sobre os pontos para ver os valores</p>
+              </div>
+              <span class="ds-sim hidden sm:inline-flex">Simulado</span>
+            </div>
+            <div class="p-4 sm:p-5"><div id="fin-chart"></div></div>
+          </div>
+
+          <div class="ds-card">
+            <div class="ds-card__head">
+              <h2 class="ds-card__title">Receita por serviço</h2>
+            </div>
+            <div id="fin-rank-servicos" class="p-5 grid gap-4"></div>
+          </div>
+        </div>
+
+        <div class="grid gap-4 xl:grid-cols-3 mt-4">
+          <div class="ds-card xl:col-span-2">
+            <div class="ds-card__head">
+              <div>
+                <h2 class="ds-card__title">Comissões por barbeiro</h2>
+                <p class="ds-card__sub">Percentual definido em Configurações</p>
+              </div>
+            </div>
+            <div class="overflow-x-auto">
+              <table class="ds-table">
+                <thead>
+                  <tr>
+                    <th>Barbeiro</th>
+                    <th class="num">Atendimentos</th>
+                    <th class="num">Receita</th>
+                    <th class="num">Comissão</th>
+                  </tr>
+                </thead>
+                <tbody id="fin-barbeiros"></tbody>
+              </table>
+            </div>
+          </div>
+
+          <div class="ds-card">
+            <div class="ds-card__head">
+              <h2 class="ds-card__title">Despesas fixas</h2>
+            </div>
+            <div id="fin-despesas-lista" class="p-5 grid gap-4"></div>
+          </div>
+        </div>
+      </section>
+
+      <!-- ══════════════════════════════════════════════════════════
+           TELA · BARBEIROS
+           ══════════════════════════════════════════════════════════ -->
+      <section class="ds-view" data-view="barbeiros" hidden>
+        <div id="barbeiros-grade" class="grid gap-4 md:grid-cols-2 ds-stagger"></div>
+        <p class="mt-3 text-xs" style="color:var(--ds-faint)">
+          Pausar um barbeiro o remove da escolha no site sem apagar nada — os
+          agendamentos já marcados continuam aparecendo na Agenda Geral.
+        </p>
+      </section>
+
+      <!-- ══════════════════════════════════════════════════════════
+           TELA · CLIENTES
+           ══════════════════════════════════════════════════════════ -->
+      <section class="ds-view" data-view="clientes" hidden>
+        <div class="ds-card">
+          <div class="ds-card__head flex-wrap gap-3">
+            <div>
+              <h2 class="ds-card__title">Base de clientes</h2>
+              <p class="ds-card__sub" id="clientes-resumo">—</p>
+            </div>
+            <div class="relative">
+              <svg class="absolute left-3 top-1/2 -translate-y-1/2 pointer-events-none" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" style="color:var(--ds-faint)"><circle cx="11" cy="11" r="7"/><path d="M20 20l-4-4"/></svg>
+              <input type="search" id="clientes-busca" class="ds-input" style="padding-left:2.2rem;min-width:230px"
+                     placeholder="Buscar por nome ou telefone" aria-label="Buscar cliente" />
+            </div>
+          </div>
+
+          <div id="clientes-tabela" class="overflow-x-auto">
+            <table class="ds-table">
+              <thead>
+                <tr>
+                  <th>Cliente</th>
+                  <th class="num">Visitas</th>
+                  <th class="num">Última visita</th>
+                  <th>Serviço favorito</th>
+                  <th class="num">Ticket médio</th>
+                  <th class="num">Total gasto</th>
+                </tr>
+              </thead>
+              <tbody id="clientes-corpo"></tbody>
+            </table>
+          </div>
+
+          <div id="clientes-vazio" class="p-5" hidden></div>
+        </div>
+      </section>
+
+      <!-- ══════════════════════════════════════════════════════════
+           TELA · CONFIGURAÇÕES
+           ══════════════════════════════════════════════════════════ -->
+      <section class="ds-view" data-view="configuracoes" hidden>
+        <div class="grid gap-4 xl:grid-cols-2">
+
+          <!-- Dados do negócio -->
+          <div class="ds-card">
+            <div class="ds-card__head">
+              <div>
+                <h2 class="ds-card__title">Dados do negócio</h2>
+                <p class="ds-card__sub">Usados no site, no WhatsApp e nos comprovantes</p>
+              </div>
+            </div>
+            <div class="p-5 grid gap-4">
+              <div>
+                <label class="ds-label" for="cfg-nome">Nome da barbearia</label>
+                <input id="cfg-nome" type="text" class="ds-input" />
+              </div>
+              <div class="grid sm:grid-cols-2 gap-4">
+                <div>
+                  <label class="ds-label" for="cfg-telefone">Telefone</label>
+                  <input id="cfg-telefone" type="text" class="ds-input tnum" />
+                </div>
+                <div>
+                  <label class="ds-label" for="cfg-whatsapp">WhatsApp (só números, com DDI)</label>
+                  <input id="cfg-whatsapp" type="text" inputmode="numeric" class="ds-input tnum" />
+                </div>
+              </div>
+              <div>
+                <label class="ds-label" for="cfg-endereco">Endereço</label>
+                <input id="cfg-endereco" type="text" class="ds-input" />
+              </div>
+
+              <div class="grid sm:grid-cols-2 gap-4 pt-2 border-t" style="border-color:var(--ds-line)">
+                <div>
+                  <label class="ds-label" for="cfg-margem">Margem bruta simulada (%)</label>
+                  <input id="cfg-margem" type="number" min="1" max="95" class="ds-input tnum" />
+                </div>
+                <div>
+                  <label class="ds-label" for="cfg-comissao">Comissão do barbeiro (%)</label>
+                  <input id="cfg-comissao" type="number" min="0" max="90" class="ds-input tnum" />
+                </div>
+                <div>
+                  <label class="ds-label" for="cfg-janela">Agenda aberta por (dias)</label>
+                  <input id="cfg-janela" type="number" min="1" max="90" class="ds-input tnum" />
+                </div>
+                <div>
+                  <label class="ds-label" for="cfg-antecedencia">Antecedência mínima (min)</label>
+                  <input id="cfg-antecedencia" type="number" min="0" max="480" step="15" class="ds-input tnum" />
+                </div>
+              </div>
+
+              <button type="button" id="cfg-salvar" class="ds-btn ds-btn--gold justify-self-start mt-1">
+                Salvar alterações
+              </button>
+            </div>
+          </div>
+
+          <!-- Expediente -->
+          <div class="ds-card">
+            <div class="ds-card__head">
+              <div>
+                <h2 class="ds-card__title">Horário de funcionamento</h2>
+                <p class="ds-card__sub">Define quais horários o site oferece — salva automaticamente</p>
+              </div>
+            </div>
+            <div id="cfg-expediente" class="p-5"></div>
+          </div>
+
+          <!-- Dados do sistema -->
+          <div class="ds-card xl:col-span-2">
+            <div class="ds-card__head">
+              <div>
+                <h2 class="ds-card__title">Dados do sistema</h2>
+                <p class="ds-card__sub" id="cfg-dados-resumo">—</p>
+              </div>
+            </div>
+            <div class="p-5">
+              <div class="flex flex-wrap gap-2.5">
+                <button type="button" id="cfg-demo" class="ds-btn">Popular agenda de demonstração</button>
+                <button type="button" id="cfg-exportar" class="ds-btn">Exportar backup (JSON)</button>
+                <button type="button" id="cfg-restaurar" class="ds-btn">Restaurar catálogo padrão</button>
+                <button type="button" id="cfg-limpar" class="ds-btn ds-btn--danger">Limpar agendamentos</button>
+              </div>
+
+              <p class="mt-5 text-xs leading-relaxed max-w-2xl" style="color:var(--ds-faint)">
+                Este é um protótipo de front-end: tudo fica no <strong>localStorage</strong> deste
+                navegador. Os dados não são compartilhados entre dispositivos e somem se o
+                histórico do navegador for limpo. Numa versão de produção, esta camada seria
+                substituída por uma API — nenhum outro arquivo do projeto precisaria mudar.
+              </p>
+            </div>
+          </div>
+        </div>
+      </section>
+    </main>
+  </div>
+</div>
+
+<!-- ══════════════════════════════════════════════════════════════
+     MODAL · FORMULÁRIO DE SERVIÇO
+     ══════════════════════════════════════════════════════════════ -->
+<div class="ds-modal" id="modal-servico" role="dialog" aria-modal="true" aria-labelledby="form-servico-titulo" hidden>
+  <div class="ds-modal__backdrop" data-fechar="#modal-servico"></div>
+  <div class="ds-modal__wrap">
+    <div class="ds-modal__card">
+      <div class="wood h-1"></div>
+
+      <div class="ds-card__head">
+        <div>
+          <h2 class="ds-card__title" id="form-servico-titulo">Novo serviço</h2>
+          <p class="ds-card__sub" id="form-servico-sub">—</p>
+        </div>
+        <button type="button" class="ds-btn ds-btn--icon" data-fechar="#modal-servico" aria-label="Fechar">
+          <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9"><path d="M18 6L6 18M6 6l12 12"/></svg>
+        </button>
+      </div>
+
+      <form id="form-servico" class="p-5 grid gap-4" novalidate>
+        <div>
+          <label class="ds-label" for="fs-nome">Nome do serviço *</label>
+          <input id="fs-nome" type="text" class="ds-input" placeholder="Ex.: Corte Executivo" />
+          <p class="ds-error" id="erro-nome"></p>
+        </div>
+
+        <div>
+          <label class="ds-label" for="fs-desc">Descrição</label>
+          <textarea id="fs-desc" rows="2" class="ds-input" style="resize:none"
+                    placeholder="Como o serviço é feito — aparece no site."></textarea>
+        </div>
+
+        <div class="grid grid-cols-2 gap-4">
+          <div>
+            <label class="ds-label" for="fs-preco">Preço (R$) *</label>
+            <input id="fs-preco" type="number" min="0" step="1" class="ds-input tnum" placeholder="55" />
+            <p class="ds-error" id="erro-preco"></p>
+          </div>
+          <div>
+            <label class="ds-label" for="fs-duracao">Duração (min) *</label>
+            <input id="fs-duracao" type="number" min="30" step="30" class="ds-input tnum" placeholder="40" />
+            <p class="ds-error" id="erro-duracao"></p>
+          </div>
+        </div>
+
+        <div>
+          <label class="ds-label" for="fs-destaque">Selo de destaque <span style="text-transform:none;letter-spacing:0">(opcional)</span></label>
+          <input id="fs-destaque" type="text" class="ds-input" placeholder="Ex.: Mais pedido" maxlength="20" />
+        </div>
+
+        <label class="flex items-center gap-3 cursor-pointer pt-1">
+          <input type="checkbox" id="fs-ativo" class="ds-switch" checked />
+          <span class="text-sm">Disponível para agendamento no site</span>
+        </label>
+      </form>
+
+      <div class="px-5 pb-5 flex gap-2.5 justify-end">
+        <button type="button" class="ds-btn" data-fechar="#modal-servico">Cancelar</button>
+        <button type="button" class="ds-btn ds-btn--gold" id="form-servico-salvar">Salvar serviço</button>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- ══════════════════════════════════════════════════════════════
+     MODAL · DETALHE DO AGENDAMENTO
+     ══════════════════════════════════════════════════════════════ -->
+<div class="ds-modal" id="modal-evento" role="dialog" aria-modal="true" aria-labelledby="evento-titulo" hidden>
+  <div class="ds-modal__backdrop" data-fechar="#modal-evento"></div>
+  <div class="ds-modal__wrap">
+    <div class="ds-modal__card">
+      <div class="wood h-1"></div>
+
+      <div class="ds-card__head">
+        <div class="min-w-0">
+          <h2 class="ds-card__title truncate" id="evento-titulo">—</h2>
+          <span class="ds-badge ds-badge--agendado mt-1.5" id="evento-badge">—</span>
+        </div>
+        <button type="button" class="ds-btn ds-btn--icon" data-fechar="#modal-evento" aria-label="Fechar">
+          <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9"><path d="M18 6L6 18M6 6l12 12"/></svg>
+        </button>
+      </div>
+
+      <dl class="p-5" id="evento-corpo"></dl>
+
+      <div class="px-5 pb-5 flex flex-wrap gap-2.5 justify-end" id="evento-acoes"></div>
+    </div>
+  </div>
+</div>
+
+<!-- ══════════════════════════════════════════════════════════════
+     MODAL · CONFIRMAÇÃO GENÉRICA
+     ══════════════════════════════════════════════════════════════ -->
+<div class="ds-modal" id="modal-confirmar" role="alertdialog" aria-modal="true" aria-labelledby="confirmar-titulo" hidden>
+  <div class="ds-modal__backdrop" data-fechar="#modal-confirmar"></div>
+  <div class="ds-modal__wrap">
+    <div class="ds-modal__card" style="max-width:26rem">
+      <div class="p-6">
+        <span class="grid place-items-center w-11 h-11 border mb-4" style="border-color:var(--ds-gold-line);color:var(--ds-gold)">
+          <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7"><path d="M12 9v4.5M12 17v.01"/><path d="M10.3 3.9L2.5 17.4A2 2 0 004.2 20.5h15.6a2 2 0 001.7-3.1L13.7 3.9a2 2 0 00-3.4 0z"/></svg>
+        </span>
+        <h2 class="font-display uppercase text-xl tracking-wide" id="confirmar-titulo">Confirmar</h2>
+        <p class="mt-3 text-sm leading-relaxed" style="color:var(--ds-dim)" id="confirmar-texto">—</p>
+      </div>
+      <div class="px-6 pb-6 flex gap-2.5 justify-end">
+        <button type="button" class="ds-btn" data-fechar="#modal-confirmar">Voltar</button>
+        <button type="button" class="ds-btn ds-btn--gold" id="confirmar-ok">Confirmar</button>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- Notificações -->
+<div class="ds-toasts" id="ds-toasts"></div>
+
+<!-- ── Scripts do painel ── -->
+<script src="assets/js/data.js"></script>
+<script src="assets/js/store.js"></script>
+<script src="assets/js/charts.js"></script>
+<script src="assets/js/dashboard.js"></script>
+<script>
+  document.addEventListener('DOMContentLoaded', function () { CN.dashboard.init(); });
+</script>
+</body>
+</html>
