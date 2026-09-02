@@ -111,7 +111,7 @@ CN.ui = (function () {
         '<a href="agendar.html?barbeiro=' + encodeURIComponent(b.id) + '" class="barbeiro">' +
           '<img data-src="' + b.foto + '" alt="" class="barbeiro__foto" loading="lazy" />' +
           '<span class="min-w-0">' +
-            '<span class="block font-medium">' + CN.util.escapar(b.nome) + '</span>' +
+            '<span class="block font-semibold">' + CN.util.escapar(b.nome) + '</span>' +
             '<span class="block apoio" style="font-size:var(--t4)">' + CN.util.escapar(b.especialidade) + '</span>' +
             '<span class="block fraco">Folga ' + CN.DIAS_SEMANA[b.folga].toLowerCase() + '</span>' +
           '</span>' +

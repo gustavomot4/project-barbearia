@@ -3,48 +3,118 @@
    Usado por index.html (institucional) e agendar.html (reserva).
    O painel tem folha própria (assets/css/dashboard.css).
 
-   Direção visual: CLARO E NEUTRO.
-   Fundo off-white, texto quase preto, UM acento. O acento marca
-   a ação primária da tela — e nada mais. Antes ele aparecia
-   cerca de 25 vezes só no agendamento; um acento usado 25 vezes
-   não marca coisa nenhuma.
+   Direção visual: CLARO E NEUTRO, construído com o MÉTODO da Apple.
+   Os números vieram de medição no apple.com (CSS computado) e das
+   fontes medidas em canvas, não de estimativa.
 
-   Duas famílias, no total do projeto:
-   - Inter em tudo, inclusive nos números;
-   - Cormorant Garamond só nos títulos do institucional, que é
-     onde a marca ainda precisa de uma voz. O painel e o
-     agendamento não carregam a serifada.
+   ── O QUE FOI COPIADO, PORQUE É MÉTODO ────────────────────────
+   line-height de título   = corpo + 4px   (vale nos 13 degraus)
+   line-height de leitura  = corpo + 8px
+   rampa de tamanhos       12·14·17·19·21·24·28·32·40·48·56·64·80
+                           — nada de 15, 18, 22, 26
+   pesos                   só 400 e 600. A apple.com não usa 700.
+   botão                   raio 980px (pílula), 17px, padding 12/22
+   nav                     translúcida, saturate(1.8) blur(20px)
+   lista                   contêiner arredondado, separador RECUADO
+   foco                    halo do acento, não contorno duro
+   alvo de toque           44px
+
+   ── O QUE FOI TRADUZIDO, PORQUE COPIAR QUEBRARIA ──────────────
+   1. SF Pro é licenciada. Usamos Inter com o eixo OPTICAL SIZE —
+      medido: a Inter estreita 0,8% sozinha de 14px para 48px, que
+      é exatamente o trabalho da troca SF Pro Text → SF Pro Display.
+   2. TRACKING: a Apple usa -0.022em no corpo de 17px porque a SF
+      Pro Text é um desenho largo. A Inter já nasce apertada —
+      aplicar o mesmo número fecha demais. Usamos metade (-0.011em).
+      E o tracking POSITIVO que a Apple aplica de 19 a 32px é
+      compensação por usar o corte Display em corpo pequeno; com o
+      eixo opsz ligado isso é automático, então zeramos nessa faixa.
+      Copiar seria corrigir duas vezes.
+   3. CINZA: os neutros da Apple são AZULADOS (#F5F5F7 tem B > R).
+      Uma barbearia é um ambiente quente — couro, madeira, âmbar.
+      Misturar as duas famílias faz o off-white parecer encardido.
+      A rampa aqui é quente, casada por luminância.
+   4. ACENTO: calculado o contraste de branco sobre cada acento de
+      sistema da Apple — systemBlue 4,02:1, Red 3,55:1, Teal 2,57:1,
+      Green 2,22:1. Só o Indigo passa, e indigo é a cor "app de
+      banco". Até o #0071E3 do botão da apple.com dá só 4,70:1.
+      Este acento (#8E2C26, vinho de poste de barbeiro) dá 8,27:1
+      com texto branco — sobra margem para ele aparecer pequeno.
+   5. CAIXA ALTA: nenhum token da apple.com usa text-transform.
+      O eyebrow deles é um título de 21/24px em caixa normal. Os
+      rótulos de seção viraram títulos de verdade.
    ============================================================ */
 
 :root {
   color-scheme: light;
 
-  /* Superfícies */
-  --paper:    #FBFAF8;
-  --surface:  #FFFFFF;
-  --sunken:   #F4F2EE;
+  /* ---- Superfícies: rampa quente, casada por luminância ---- */
+  --paper:    #FAF9F7;   /* fundo da página */
+  --surface:  #FFFFFF;   /* cartões e listas */
+  --sunken:   #F4F2EC;   /* áreas recuadas */
+  --fill:     rgba(118, 114, 106, 0.12);   /* trilhos, chips, campos */
+  --fill-2:   rgba(120, 116, 108, 0.18);
 
-  /* Traços */
-  --line:     #E5E2DC;
-  --line-2:   #CFCBC3;
+  /* ---- Traços ---- */
+  --line:     #E8E4DC;
+  --line-2:   #CBC6BC;
 
-  /* Texto — três degraus, e só três */
-  --ink:      #16161A;
-  --ink-2:    #55534E;
-  --ink-3:    #8A8781;
+  /* ---- Texto: três degraus, todos acima de 4,5:1 ---- */
+  --ink:      #1C1B19;   /* 16,9:1 no branco */
+  --ink-2:    #6B6862;   /* 5,55:1 — secundário */
+  --ink-3:    #8A867E;   /* 3,9:1 — só letra miúda, nunca frase longa */
 
-  /* Acento único */
-  --accent:       #1F5C4C;
-  --accent-hover: #17483B;
-  --on-accent:    #FFFFFF;
+  /* ---- Acento único ---- */
+  --accent:        #8E2C26;   /* branco em cima: 8,27:1 */
+  --accent-hover:  #9C332C;   /* MAIS CLARO no hover — convenção da Apple */
+  --accent-active: #7A2520;   /* e mais escuro no active */
+  --accent-text:   #7A2520;   /* o mesmo hue, escurecido, quando é TEXTO */
+  --accent-tint:   #F1E6E5;   /* 12% — seleção e realce */
+  --on-accent:     #FFFFFF;
+  --focus:         rgba(142, 44, 38, 0.35);
 
-  /* Escala tipográfica — quatro degraus */
-  --t1: clamp(1.75rem, 4.5vw, 2.5rem);   /* título de página / herói */
-  --t2: 1.125rem;                        /* título de bloco */
-  --t3: 1rem;                            /* corpo */
-  --t4: 0.8125rem;                       /* rótulo e apoio */
+  /* ---- Rampa tipográfica: só degraus da escada da Apple ---- */
+  --t-display: 3.5rem;      /* 56px — cai para 48 e 40 nos breakpoints */
+  --t1: 1.75rem;            /* 28px */
+  --t2: 1.3125rem;          /* 21px */
+  --t3: 1.0625rem;          /* 17px — corpo */
+  --t4: 0.875rem;           /* 14px — apoio */
 
-  --ease: cubic-bezier(0.22, 0.61, 0.36, 1);
+  /* ---- Line-height como fórmula, não como tabela ---- */
+  --lh-titulo: calc(1em + 4px);
+  --lh-corpo:  calc(1em + 8px);
+  --lh-denso:  calc(1em + 6px);
+  --lh-botao:  calc(1em + 3px);
+
+  /* ---- Tracking calibrado para a Inter (metade do da SF Pro) ---- */
+  --tr-56: -0.005em;
+  --tr-48: -0.003em;
+  --tr-40:  0em;      /* de 19 a 40px o eixo opsz já resolve */
+  --tr-17: -0.011em;
+  --tr-14: -0.008em;
+
+  /* ---- Raios ---- */
+  --r-pill: 980px;
+  --r-lg:   12px;
+  --r-md:   8px;
+  --r-sm:   6px;
+
+  /* ---- Métrica de layout ---- */
+  --shell:  980px;   /* a largura clássica de conteúdo da Apple */
+  --prosa:  692px;
+  --gutter: 20px;
+  --secao-py: 80px;
+
+  --ease: cubic-bezier(0.28, 0.11, 0.32, 1);
+}
+
+/* Breakpoints da Apple: 1068px e 734px. Degraus na mesma rampa,
+   em vez de clamp()/vw — mais previsível e sem build.          */
+@media (max-width: 1068px) {
+  :root { --t-display: 3rem; --secao-py: 64px; }   /* 48px */
+}
+@media (max-width: 734px) {
+  :root { --t-display: 2.5rem; --secao-py: 48px; } /* 40px */
 }
 
 /* ---------- Base ---------- */
@@ -55,216 +125,270 @@ body {
   background: var(--paper);
   color: var(--ink);
   font-size: var(--t3);
-  line-height: 1.5;
+  line-height: var(--lh-corpo);
+  letter-spacing: var(--tr-17);
   overflow-x: hidden;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
 }
+
+/* O eixo optical size é o que faz a Inter apertar os traços em
+   corpo grande e abrir em corpo pequeno — o mesmo trabalho que a
+   Apple faz trocando SF Pro Text por SF Pro Display. Se o
+   navegador ignorar, a Inter trava no corte Text: os títulos ficam
+   levemente largos e nada mais quebra, porque a hierarquia se
+   sustenta em peso e tamanho.                                   */
+body, input, select, textarea, button { font-optical-sizing: auto; }
 
 .tnum { font-variant-numeric: tabular-nums; }
 
 ::-webkit-scrollbar { width: 10px; height: 10px; }
-::-webkit-scrollbar-track { background: var(--paper); }
-::-webkit-scrollbar-thumb { background: var(--line-2); border: 2px solid var(--paper); border-radius: 8px; }
-::-webkit-scrollbar-thumb:hover { background: var(--ink-3); }
+::-webkit-scrollbar-track { background: transparent; }
+::-webkit-scrollbar-thumb { background: rgba(0, 0, 0, 0.2); border: 3px solid transparent; background-clip: content-box; border-radius: 8px; }
+::-webkit-scrollbar-thumb:hover { background: rgba(0, 0, 0, 0.32); background-clip: content-box; }
 
 .no-scrollbar { scrollbar-width: none; -ms-overflow-style: none; }
 .no-scrollbar::-webkit-scrollbar { display: none; }
 
-:focus-visible { outline: 2px solid var(--accent); outline-offset: 3px; }
+/* Anel de foco: halo do acento, não contorno duro */
+:focus-visible { outline: none; box-shadow: 0 0 0 4px var(--focus); border-radius: var(--r-sm); }
 
-section[id] { scroll-margin-top: 80px; }
+section[id] { scroll-margin-top: 72px; }
 body.is-locked { overflow: hidden; }
 
 /* ---------- Tipografia ---------- */
 
-/* Serifada só aqui: título de página e de bloco no institucional */
-.serif {
-  font-family: 'Cormorant Garamond', Georgia, serif;
+.t-display {
+  font-size: var(--t-display);
   font-weight: 600;
-  letter-spacing: -0.01em;
+  line-height: var(--lh-titulo);
+  letter-spacing: var(--tr-56);
 }
+@media (max-width: 1068px) { .t-display { letter-spacing: var(--tr-48); } }
+@media (max-width: 734px)  { .t-display { letter-spacing: var(--tr-40); } }
 
-.t1 { font-size: var(--t1); line-height: 1.1; }
-.t2 { font-size: var(--t2); font-weight: 600; line-height: 1.3; }
-
-/* Rótulo curto — único lugar com caixa alta e letter-spacing.
-   Nunca numa frase.                                          */
-.rotulo {
-  font-size: var(--t4);
-  font-weight: 600;
-  letter-spacing: 0.08em;
-  text-transform: uppercase;
-  color: var(--ink-3);
-}
+.t1 { font-size: var(--t1); font-weight: 600; line-height: var(--lh-titulo); letter-spacing: var(--tr-40); }
+.t2 { font-size: var(--t2); font-weight: 600; line-height: var(--lh-titulo); letter-spacing: var(--tr-40); }
 
 .apoio { color: var(--ink-2); }
-.fraco { color: var(--ink-3); font-size: var(--t4); }
+.fraco { color: var(--ink-3); font-size: var(--t4); line-height: var(--lh-denso); letter-spacing: var(--tr-14); }
 
-/* ---------- Botões ---------- */
+/* ---------- Marca ---------- */
+
+.marca { display: inline-flex; align-items: center; gap: 0.55rem; color: var(--ink); }
+.marca__mark { display: block; flex-shrink: 0; }
+.marca__nome { font-size: var(--t3); font-weight: 600; letter-spacing: -0.02em; }
+
+/* ---------- Botões ----------
+   Pílula. Medidas conferidas no apple.com: o botão secundário é
+   14px com padding 9/16; o primário é 17px com padding 12/22 e
+   fecha em 44px de altura, que é o alvo mínimo do HIG.        */
 
 .btn {
   display: inline-flex;
   align-items: center;
   justify-content: center;
-  gap: 0.5rem;
-  padding: 0.7rem 1.1rem;
-  border: 1px solid var(--line-2);
-  background: var(--surface);
-  color: var(--ink-2);
+  gap: 0.4rem;
+  padding: 9px 16px;
+  border: 0;
+  border-radius: var(--r-pill);
+  background: var(--fill);
+  color: var(--ink);
   font-size: var(--t4);
-  font-weight: 500;
+  font-weight: 400;
+  line-height: var(--lh-botao);
+  letter-spacing: var(--tr-14);
   white-space: nowrap;
-  transition: border-color 0.18s var(--ease), color 0.18s var(--ease);
+  transition: background 0.2s var(--ease), opacity 0.2s var(--ease);
 }
-.btn:hover { color: var(--ink); border-color: var(--ink-3); }
-.btn:disabled { opacity: 0.4; pointer-events: none; }
+.btn:hover { background: var(--fill-2); }
+.btn:disabled { opacity: 0.42; pointer-events: none; }
 
 /* AÇÃO PRIMÁRIA — o único elemento com o acento em cada tela */
 .btn--primary {
+  padding: 12px 22px;
   background: var(--accent);
-  border-color: var(--accent);
   color: var(--on-accent);
-  font-weight: 600;
   font-size: var(--t3);
-  padding: 0.8rem 1.4rem;
+  letter-spacing: var(--tr-17);
 }
-.btn--primary:hover { background: var(--accent-hover); border-color: var(--accent-hover); }
-/* Desabilitado precisa DIZER o que falta, não ser uma placa apagada:
-   o rótulo do botão é trocado por instrução em booking.js.        */
-.btn--primary:disabled { background: var(--sunken); border-color: var(--line-2); color: var(--ink-3); }
+.btn--primary:hover  { background: var(--accent-hover); }
+.btn--primary:active { background: var(--accent-active); }
+/* Desabilitado NÃO usa opacity: branco a 42% sobre o acento cai
+   para ~2,9:1 e fica ilegível. Troca de superfície em vez disso —
+   e o rótulo do botão diz o que falta (ver booking.js).        */
+.btn--primary:disabled { background: var(--fill); color: var(--ink-3); opacity: 1; }
 
+/* Ação secundária como texto: o padrão de link da Apple, no mesmo
+   hue do acento, escurecido para funcionar como texto.         */
 .btn--quiet {
-  border-color: transparent;
+  padding: 9px 4px;
   background: transparent;
-  color: var(--ink-2);
-  text-decoration: underline;
-  text-underline-offset: 3px;
-  padding: 0.7rem 0.4rem;
+  color: var(--accent-text);
 }
-.btn--quiet:hover { color: var(--ink); }
+.btn--quiet:hover { background: transparent; opacity: 0.7; }
 
-/* ---------- Cabeçalho do site ---------- */
+.link { color: var(--accent-text); }
+.link:hover { opacity: 0.7; }
+
+/* ---------- Cabeçalho translúcido ---------- */
 
 .topo {
   position: sticky;
   top: 0;
   z-index: 40;
+  /* Fundo sólido primeiro: sem backdrop-filter o texto não pode
+     ficar sobre o conteúdo rolando.                            */
   background: var(--paper);
+  background: rgba(250, 249, 247, 0.72);
+  -webkit-backdrop-filter: saturate(1.8) blur(20px);
+  backdrop-filter: saturate(1.8) blur(20px);
   border-bottom: 1px solid var(--line);
 }
 .topo__interno {
-  max-width: 1000px;
+  max-width: var(--shell);
   margin: 0 auto;
-  padding: 0 1.25rem;
-  height: 62px;
+  padding: 0 var(--gutter);
+  min-height: 52px;
   display: flex;
   align-items: center;
   justify-content: space-between;
   gap: 1rem;
 }
-.marca { font-weight: 600; font-size: var(--t3); color: var(--ink); }
 
-.shell { max-width: 1000px; margin: 0 auto; padding: 0 1.25rem; }
-.shell--estreito { max-width: 640px; }
+.shell { max-width: var(--shell); margin: 0 auto; padding: 0 var(--gutter); }
+.shell--estreito { max-width: 560px; }
+.prosa { max-width: var(--prosa); }
+
+/* ---------- Cartão / lista agrupada ----------
+   Padrão de lista da Apple: nenhuma caixa em volta de cada linha,
+   separador RECUADO até onde o conteúdo começa, e o contêiner
+   arredondado dando a forma do conjunto.                       */
+
+.card {
+  background: var(--surface);
+  border-radius: var(--r-lg);
+  overflow: hidden;
+  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.04);
+}
+
+.lista > * { position: relative; }
+.lista > * + *::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: var(--recuo, 20px);
+  right: 0;
+  height: 1px;
+  background: var(--line);
+}
 
 /* ---------- Institucional ---------- */
 
-.secao { padding: 3.5rem 0; border-top: 1px solid var(--line); }
-.secao:first-of-type { border-top: 0; }
+.secao { padding: var(--secao-py) 0 calc(var(--secao-py) * 0.6); }
+.bloco { padding-bottom: 2.5rem; }
+.bloco__titulo { margin-bottom: 0.75rem; }
 
-/* Linha de serviço: a informação herói do institucional.
-   Nome, uma linha de diferença, preço e duração — e a linha
-   inteira leva ao agendamento com o serviço pré-escolhido.  */
+/* Linha de serviço: a informação herói do institucional. */
 .svc-linha {
   display: grid;
   grid-template-columns: 1fr auto;
-  gap: 0.25rem 1.5rem;
+  gap: 0.1rem 1.5rem;
   align-items: baseline;
-  padding: 1.1rem 0;
-  border-bottom: 1px solid var(--line);
+  padding: 1.15rem 20px;
+  transition: background 0.15s var(--ease);
 }
-.svc-linha:last-child { border-bottom: 0; }
-.svc-linha:hover .svc-linha__nome { text-decoration: underline; text-underline-offset: 3px; }
-.svc-linha__nome  { font-weight: 500; }
-.svc-linha__preco { font-size: var(--t2); font-weight: 600; font-variant-numeric: tabular-nums; }
-.svc-linha__desc  { grid-column: 1; color: var(--ink-2); font-size: var(--t4); }
-.svc-linha__dur   { grid-column: 2; text-align: right; color: var(--ink-3); font-size: var(--t4); }
+.svc-linha:hover { background: var(--sunken); }
+.svc-linha__nome  { font-weight: 600; letter-spacing: var(--tr-17); }
+.svc-linha__preco { font-size: var(--t2); font-weight: 600; font-variant-numeric: tabular-nums; letter-spacing: var(--tr-40); }
+.svc-linha__desc  { grid-column: 1; color: var(--ink-2); font-size: var(--t4); line-height: var(--lh-denso); }
+.svc-linha__dur   { grid-column: 2; text-align: right; color: var(--ink-2); font-size: var(--t4); font-variant-numeric: tabular-nums; }
 
-/* Barbeiro: foto pequena, nome, especialidade e folga.
-   A folga fica porque no agendamento o motivo de um dia
-   bloqueado só existe como tooltip — que não abre no toque. */
-.barbeiro { display: flex; gap: 1rem; align-items: flex-start; padding: 1rem 0; border-bottom: 1px solid var(--line); }
-.barbeiro:last-child { border-bottom: 0; }
+.barbeiro {
+  display: flex;
+  gap: 1rem;
+  align-items: center;
+  padding: 0.9rem 20px;
+  transition: background 0.15s var(--ease);
+}
+.barbeiro:hover { background: var(--sunken); }
 .barbeiro__foto {
-  width: 56px; height: 56px;
+  width: 52px; height: 52px;
   flex-shrink: 0;
+  border-radius: 50%;
   object-fit: cover;
-  filter: grayscale(1);
-  background: var(--sunken);
+  background: var(--fill);
 }
 
-.galeria { display: grid; grid-template-columns: repeat(3, 1fr); gap: 0.75rem; }
-.galeria img { width: 100%; aspect-ratio: 1; object-fit: cover; background: var(--sunken); filter: grayscale(1); }
-@media (max-width: 640px) { .galeria { grid-template-columns: 1fr; } }
+.galeria { display: grid; grid-template-columns: repeat(3, 1fr); gap: 1rem; }
+.galeria img { width: 100%; aspect-ratio: 4 / 5; object-fit: cover; border-radius: var(--r-lg); background: var(--fill); }
+@media (max-width: 734px) { .galeria { grid-template-columns: 1fr; } }
 
-.rodape { border-top: 1px solid var(--line); padding: 1.75rem 0; color: var(--ink-3); font-size: var(--t4); }
+.rodape { margin-top: 2rem; padding: 2rem 0 2.5rem; color: var(--ink-2); font-size: var(--t4); border-top: 1px solid var(--line); }
 
 /* ---------- Fluxo de agendamento ---------- */
 
-/* A pergunta da etapa — uma linha, em peso, não em caixa alta */
-.pergunta { font-size: var(--t2); font-weight: 600; }
+.pergunta { font-size: var(--t1); font-weight: 600; line-height: var(--lh-titulo); letter-spacing: var(--tr-40); }
 
-/* Opção selecionável (serviço, barbeiro).
-   Seleção é traço em tinta, não cor: o acento é da ação.   */
+/* Opção selecionável. A Apple marca escolha com o acento e um
+   preenchimento leve — não com borda preta.                  */
 .opt {
   display: block;
   width: 100%;
   text-align: left;
-  padding: 0.9rem 1rem;
-  border: 1px solid var(--line-2);
+  padding: 0.9rem 1.1rem;
+  border: 0;
+  border-radius: var(--r-md);
   background: var(--surface);
-  transition: border-color 0.18s var(--ease), box-shadow 0.18s var(--ease);
+  box-shadow: inset 0 0 0 1px var(--line-2);
+  transition: box-shadow 0.18s var(--ease), background 0.18s var(--ease);
 }
-.opt:hover:not(:disabled) { border-color: var(--ink-3); }
-.opt.is-selected { border-color: var(--ink); box-shadow: inset 0 0 0 1px var(--ink); }
-.opt:disabled { opacity: 0.4; cursor: not-allowed; }
+.opt:hover:not(:disabled) { box-shadow: inset 0 0 0 1px var(--ink-3); }
+.opt.is-selected { box-shadow: inset 0 0 0 2px var(--accent); background: var(--accent-tint); }
+.opt:disabled { opacity: 0.42; cursor: not-allowed; }
 
-/* Chip de data (faixa horizontal rolável) */
+/* Chip de data */
 .day-chip {
   flex-shrink: 0;
   scroll-snap-align: start;
-  width: 58px;
+  width: 62px;
   padding: 0.6rem 0;
   text-align: center;
-  border: 1px solid var(--line-2);
+  border: 0;
+  border-radius: var(--r-md);
   background: var(--surface);
-  color: var(--ink-2);
-  transition: border-color 0.18s var(--ease);
+  box-shadow: inset 0 0 0 1px var(--line-2);
+  color: var(--ink);
+  transition: box-shadow 0.18s var(--ease), background 0.18s var(--ease);
 }
-.day-chip:hover:not(:disabled) { border-color: var(--ink-3); }
-.day-chip.is-selected { background: var(--ink); border-color: var(--ink); color: var(--paper); }
+.day-chip:hover:not(:disabled) { box-shadow: inset 0 0 0 1px var(--ink-3); }
+.day-chip.is-selected { background: var(--accent); box-shadow: none; color: var(--on-accent); }
 .day-chip.is-selected .day-chip__dow,
-.day-chip.is-selected .day-chip__mes { color: rgba(251, 250, 248, 0.7); }
+.day-chip.is-selected .day-chip__mes { color: rgba(255, 255, 255, 0.78); }
 .day-chip:disabled { opacity: 0.35; cursor: not-allowed; }
-.day-chip__dow { display: block; font-size: var(--t4); color: var(--ink-3); }
-.day-chip__num { display: block; font-size: var(--t2); font-weight: 600; line-height: 1.2; font-variant-numeric: tabular-nums; }
+.day-chip__dow { display: block; font-size: var(--t4); color: var(--ink-2); }
+.day-chip__num { display: block; font-size: var(--t2); font-weight: 600; line-height: var(--lh-titulo); font-variant-numeric: tabular-nums; }
 /* O mês aparece só no primeiro chip de cada mês: a janela é de 21
    dias e cruza a virada, então some-lo por inteiro faria alguém
    marcar 3 de outubro achando que era 3 de setembro.            */
-.day-chip__mes { display: block; font-size: var(--t4); color: var(--ink-3); min-height: 1.2em; }
+.day-chip__mes { display: block; font-size: var(--t4); color: var(--ink-2); min-height: 1.2em; }
 
 /* Horário */
 .slot {
+  min-height: 44px;   /* alvo mínimo de toque do HIG */
   padding: 0.6rem 0.25rem;
-  border: 1px solid var(--line-2);
+  border: 0;
+  border-radius: var(--r-md);
   background: var(--surface);
+  box-shadow: inset 0 0 0 1px var(--line-2);
   color: var(--ink);
   font-size: var(--t4);
   font-variant-numeric: tabular-nums;
-  transition: border-color 0.18s var(--ease);
+  transition: box-shadow 0.18s var(--ease), background 0.18s var(--ease);
 }
-.slot:hover:not(:disabled) { border-color: var(--ink-3); }
-.slot.is-selected { background: var(--ink); border-color: var(--ink); color: var(--paper); font-weight: 600; }
-.slot:disabled { background: var(--sunken); border-color: var(--sunken); color: var(--ink-3); cursor: not-allowed; }
+.slot:hover:not(:disabled) { box-shadow: inset 0 0 0 1px var(--ink-3); }
+.slot.is-selected { background: var(--accent); box-shadow: none; color: var(--on-accent); font-weight: 600; }
+.slot:disabled { background: var(--fill); box-shadow: none; color: var(--ink-3); cursor: not-allowed; }
 
 /* ---------- Formulário ---------- */
 
@@ -272,26 +396,30 @@ body.is-locked { overflow: hidden; }
 
 .field {
   width: 100%;
-  padding: 0.75rem 0.9rem;
+  min-height: 44px;
+  padding: 0.7rem 0.9rem;
   background: var(--surface);
-  border: 1px solid var(--line-2);
-  border-radius: 0;
+  border: 0;
+  border-radius: var(--r-md);
+  box-shadow: inset 0 0 0 1px var(--line-2);
   color: var(--ink);
   font-size: var(--t3);
   font-family: inherit;
-  transition: border-color 0.18s var(--ease);
+  letter-spacing: var(--tr-17);
+  transition: box-shadow 0.18s var(--ease);
 }
 .field::placeholder { color: var(--ink-3); }
-.field:focus { outline: none; border-color: var(--ink); box-shadow: inset 0 0 0 1px var(--ink); }
+.field:focus { outline: none; box-shadow: inset 0 0 0 2px var(--accent); }
 
-/* Erro sem segunda cor: traço em tinta e mensagem em peso 600 */
-.field.has-error { border-color: var(--ink); box-shadow: inset 0 0 0 1px var(--ink); }
+/* Erro: o acento É o estado crítico pela regra do projeto, então
+   aqui ele aparece legitimamente — mesmo hue, escurecido no texto. */
+.field.has-error { box-shadow: inset 0 0 0 2px var(--accent); }
 .field-error {
   min-height: 1rem;
   margin-top: 0.3rem;
   font-size: var(--t4);
   font-weight: 600;
-  color: var(--ink);
+  color: var(--accent-text);
   opacity: 0;
 }
 .field-error.is-visible { opacity: 1; }
@@ -306,9 +434,8 @@ body.is-locked { overflow: hidden; }
 
 /* ---------- Barra de ação do agendamento ----------
    O botão de avanço era inline no cartão e saía da tela no celular
-   enquanto o cliente rolava 21 datas e 22 horários — enquanto a
-   barra fixa gastava o melhor espaço do aparelho com um resumo
-   passivo. Agora o espaço é da AÇÃO, e o resumo é a legenda dela. */
+   enquanto o cliente rolava 21 datas e 22 horários. Agora o espaço
+   é da AÇÃO, e o resumo é a legenda dela.                        */
 
 .acao-barra {
   position: fixed;
@@ -316,17 +443,22 @@ body.is-locked { overflow: hidden; }
   left: 0;
   right: 0;
   z-index: 30;
-  background: var(--surface);
+  background: var(--paper);
+  background: rgba(250, 249, 247, 0.82);
+  -webkit-backdrop-filter: saturate(1.8) blur(20px);
+  backdrop-filter: saturate(1.8) blur(20px);
   border-top: 1px solid var(--line);
+  padding-bottom: env(safe-area-inset-bottom);
 }
 .acao-barra__interno {
-  max-width: 640px;
+  max-width: 560px;
   margin: 0 auto;
-  padding: 0.7rem 1.25rem;
+  padding: 0.75rem var(--gutter);
   display: flex;
   align-items: center;
   gap: 1rem;
 }
+
 /* O resumo é legenda: uma linha só, sempre. Se não couber, corta —
    nunca vira um parágrafo empurrando a ação para fora da tela.   */
 .acao-barra__resumo {
@@ -341,15 +473,15 @@ body.is-locked { overflow: hidden; }
 .acao-barra__resumo strong { color: var(--ink); font-weight: 600; }
 
 /* Espaço para a barra não cobrir o fim do conteúdo */
-.com-barra { padding-bottom: 6rem; }
+.com-barra { padding-bottom: 7rem; }
 
 /* No celular a barra empilha: legenda em cima, ação embaixo em
    largura cheia — é o alvo mais importante do aparelho.        */
 @media (max-width: 560px) {
-  .acao-barra__interno { flex-wrap: wrap; gap: 0.5rem 0.75rem; }
+  .acao-barra__interno { flex-wrap: wrap; gap: 0.5rem 0.75rem; padding: 0.7rem 1.25rem; }
   .acao-barra__resumo { order: -1; flex: 1 0 100%; }
   .acao-barra__interno .btn--primary { flex: 1; }
-  .com-barra { padding-bottom: 9rem; }
+  .com-barra { padding-bottom: 10rem; }
 }
 
 /* ---------- Estado vazio de horários ---------- */
@@ -360,14 +492,15 @@ body.is-locked { overflow: hidden; }
   text-align: center;
   color: var(--ink-2);
   font-size: var(--t4);
-  border: 1px dashed var(--line-2);
+  background: var(--surface);
+  border-radius: var(--r-md);
 }
 
 /* ---------- Modal ---------- */
 
 .overlay { position: fixed; inset: 0; z-index: 60; }
 .overlay.hidden { display: none; }
-.overlay__backdrop { position: absolute; inset: 0; background: rgba(22, 22, 26, 0.35); }
+.overlay__backdrop { position: absolute; inset: 0; background: rgba(28, 27, 25, 0.28); -webkit-backdrop-filter: blur(4px); backdrop-filter: blur(4px); }
 .overlay__wrap { position: relative; height: 100%; display: grid; place-items: center; padding: 1rem; overflow-y: auto; }
 .overlay__card {
   position: relative;
@@ -375,25 +508,28 @@ body.is-locked { overflow: hidden; }
   max-width: 26rem;
   margin: auto;
   background: var(--surface);
-  border: 1px solid var(--line-2);
-  box-shadow: 0 24px 60px -30px rgba(22, 22, 26, 0.35);
+  border-radius: var(--r-lg);
+  box-shadow: rgba(0, 0, 0, 0.22) 3px 5px 30px 0;
 }
 
 /* ---------- Toasts ---------- */
 
 .toast {
-  padding: 0.75rem 1rem;
-  background: var(--ink);
-  color: var(--paper);
+  padding: 0.8rem 1rem;
+  background: rgba(28, 27, 25, 0.92);
+  -webkit-backdrop-filter: blur(20px);
+  backdrop-filter: blur(20px);
+  color: #fff;
+  border-radius: var(--r-md);
   font-size: var(--t4);
-  box-shadow: 0 16px 36px -20px rgba(22, 22, 26, 0.6);
+  box-shadow: 0 16px 36px -20px rgba(0, 0, 0, 0.6);
   pointer-events: auto;
 }
 .toast.is-out { opacity: 0; transition: opacity 0.2s; }
 
 /* ---------- Imagem que falhou ---------- */
 
-.img-fallback { background: var(--sunken) !important; }
+.img-fallback { background: var(--fill) !important; }
 
 /* ---------- Movimento reduzido ---------- */
 

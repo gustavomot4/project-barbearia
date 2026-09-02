@@ -3,19 +3,19 @@
 <head>
 <meta charset="UTF-8" />
 <meta name="viewport" content="width=device-width, initial-scale=1" />
-<meta name="theme-color" content="#FBFAF8" />
+<meta name="theme-color" content="#FAF9F7" />
 <meta name="robots" content="noindex" />
 
 <title>Painel de Gestão — Casa Navalha</title>
 <meta name="description" content="Painel administrativo da Casa Navalha: agenda, serviços, equipe, clientes e finanças." />
 
-<link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 64 64'%3E%3Crect width='64' height='64' fill='%23FBFAF8'/%3E%3Ctext x='32' y='44' font-family='Inter,Helvetica,sans-serif' font-size='30' font-weight='600' fill='%2316161A' text-anchor='middle'%3ECN%3C/text%3E%3C/svg%3E" />
+<link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24'%3E%3Cdefs%3E%3CclipPath id='p'%3E%3Crect x='7' y='2' width='10' height='20' rx='5'/%3E%3C/clipPath%3E%3C/defs%3E%3Crect width='24' height='24' fill='%23FAF9F7'/%3E%3Cg clip-path='url(%23p)' stroke='%238E2C26' stroke-width='2.6'%3E%3Cpath d='M1 14 13 2M1 20 13 8M1 26 13 14'/%3E%3C/g%3E%3Crect x='7' y='2' width='10' height='20' rx='5' fill='none' stroke='%238E2C26' stroke-width='1.5'/%3E%3C/svg%3E" />
 
-<!-- UMA família tipográfica no painel inteiro. Anton e Cormorant
-     saíram: eram duas vozes competindo numa ferramenta de trabalho. -->
+<!-- UMA família no projeto inteiro. Inter com o eixo de OPTICAL SIZE
+     ligado, e só os dois pesos que a Apple usa: 400 e 600. -->
 <link rel="preconnect" href="https://fonts.googleapis.com" />
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
-<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600&display=swap" rel="stylesheet" />
+<link href="https://fonts.googleapis.com/css2?family=Inter:opsz,wght@14..32,400;14..32,600&display=swap" rel="stylesheet" />
 
 <script src="https://cdn.tailwindcss.com"></script>
 <script>
@@ -25,7 +25,7 @@
     theme: {
       extend: {
         fontFamily: {
-          sans: ['Inter', 'system-ui', '-apple-system', 'Segoe UI', 'sans-serif']
+          sans: ['Inter', '-apple-system', 'BlinkMacSystemFont', '"Segoe UI"', 'Roboto', '"Helvetica Neue"', 'Arial', 'sans-serif']
         }
       }
     }
@@ -47,11 +47,20 @@
        ══════════════════════════════════════════════════════════════ -->
   <aside id="ds-sidebar" class="ds-sidebar w-[264px] shrink-0 lg:sticky lg:top-0 lg:h-screen flex flex-col">
 
-    <div class="shrink-0 px-5 py-5 border-b" style="border-color:var(--ds-line)">
-      <span class="ds-brand">Casa Navalha</span>
+    <div class="shrink-0 px-4 py-4 border-b" style="border-color:var(--ds-line)">
+      <span class="ds-brand">
+        <svg class="ds-brand__mark" width="20" height="20" viewBox="0 0 24 24" fill="none" aria-hidden="true">
+          <defs><clipPath id="cn-pole-painel"><rect x="7.25" y="2.25" width="9.5" height="19.5" rx="4.75" /></clipPath></defs>
+          <g clip-path="url(#cn-pole-painel)" stroke="currentColor" stroke-width="2.4">
+            <path d="M1 14 13 2M1 20 13 8M1 26 13 14" />
+          </g>
+          <rect x="7.25" y="2.25" width="9.5" height="19.5" rx="4.75" stroke="currentColor" stroke-width="1.5" />
+        </svg>
+        <span class="ds-brand__nome">Casa Navalha</span>
+      </span>
     </div>
 
-    <nav class="flex-1 overflow-y-auto py-2" aria-label="Navegação do painel">
+    <nav class="ds-nav flex-1 overflow-y-auto" aria-label="Navegação do painel">
       <button type="button" class="ds-nav-item" data-rota="dashboard">Hoje</button>
 
       <button type="button" class="ds-nav-item" data-rota="agenda">
@@ -82,13 +91,21 @@
     <!-- A barra superior existe SÓ no mobile, onde a lateral é gaveta.
          No desktop a lateral já diz onde a pessoa está: um título
          repetindo isso era duplicata permanente. -->
-    <header class="lg:hidden sticky top-0 z-40 border-b"
-            style="border-color:var(--ds-line);background:var(--ds-paper)">
-      <div class="flex items-center gap-3 px-4 h-[56px]">
+    <header class="ds-bar lg:hidden">
+      <div class="flex items-center gap-3 px-4 h-full">
         <button type="button" id="ds-menu" class="ds-btn ds-btn--icon" aria-label="Abrir menu">
           <svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M4 7h16M4 12h16M4 17h16"/></svg>
         </button>
-        <span class="ds-brand">Casa Navalha</span>
+        <span class="ds-brand">
+        <svg class="ds-brand__mark" width="20" height="20" viewBox="0 0 24 24" fill="none" aria-hidden="true">
+          <defs><clipPath id="cn-pole-barra"><rect x="7.25" y="2.25" width="9.5" height="19.5" rx="4.75" /></clipPath></defs>
+          <g clip-path="url(#cn-pole-barra)" stroke="currentColor" stroke-width="2.4">
+            <path d="M1 14 13 2M1 20 13 8M1 26 13 14" />
+          </g>
+          <rect x="7.25" y="2.25" width="9.5" height="19.5" rx="4.75" stroke="currentColor" stroke-width="1.5" />
+        </svg>
+        <span class="ds-brand__nome">Casa Navalha</span>
+      </span>
       </div>
     </header>
 
@@ -135,7 +152,7 @@
               <button type="button" id="agenda-prox" class="ds-btn ds-btn--icon" aria-label="Próximo período">
                 <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M9 6l6 6-6 6"/></svg>
               </button>
-              <div id="agenda-modos" class="flex gap-1.5 ml-2">
+              <div id="agenda-modos" class="ds-segmented ml-2">
                 <button type="button" class="ds-chip is-active" data-modo="dia">Dia</button>
                 <button type="button" class="ds-chip" data-modo="semana">Semana</button>
               </div>
@@ -290,12 +307,12 @@
         <h1 class="ds-card__title">Configurações</h1>
 
         <div class="mt-6 max-w-2xl">
-          <p class="ds-eyebrow">Expediente</p>
+          <h2 class="ds-card__title">Expediente</h2>
           <div id="cfg-expediente" class="mt-3"></div>
         </div>
 
         <div class="mt-10 max-w-2xl grid gap-4">
-          <p class="ds-eyebrow">Dados do negócio</p>
+          <h2 class="ds-card__title">Dados do negócio</h2>
           <div>
             <label class="ds-label" for="cfg-nome">Nome da barbearia</label>
             <input id="cfg-nome" type="text" class="ds-input" />
@@ -341,7 +358,7 @@
         </div>
 
         <div class="mt-12 max-w-2xl">
-          <p class="ds-eyebrow">Dados do sistema</p>
+          <h2 class="ds-card__title">Dados do sistema</h2>
           <p id="cfg-dados-resumo" class="mt-2" style="color:var(--ds-ink-2)">—</p>
           <div class="mt-4 flex flex-wrap gap-2.5">
             <button type="button" id="cfg-demo" class="ds-btn">Popular agenda de demonstração</button>

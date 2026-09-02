@@ -30,37 +30,95 @@ ponto de contato é o `localStorage`, através de `store.js`.
 
 ## Sistema visual
 
-O projeto foi redesenhado sob um único princípio: **subtração antes de
-decoração**. Cada elemento precisa responder "que decisão do usuário este dado
-muda?" — se a resposta é "nenhuma", ele sai da tela.
+O projeto foi redesenhado sob um princípio — **subtração antes de decoração**:
+cada elemento precisa responder "que decisão do usuário este dado muda?"; se a
+resposta é "nenhuma", ele sai da tela. Depois disso, a construção foi calibrada
+pelos padrões da **Apple**, com valores medidos no CSS computado do apple.com e
+nas fontes medidas em canvas — não estimados.
 
-**Cor.** Fundo off-white (`#FBFAF8`), texto quase preto (`#16161A`) e **um
-acento** (`#1F5C4C`). O acento marca a **ação primária** de cada tela e o único
-estado crítico do sistema (a linha do "agora" na Agenda). Não existe segunda
-cor: status de agendamento, seleção, erro de campo e dia de hoje são
-comunicados por **peso, posição e preenchimento neutro**.
+### Tipografia
 
-Numa confirmação destrutiva a ação destrutiva *é* a primária daquele diálogo,
-então ela usa o acento — a proteção é o texto explícito (com o número real do
-que será apagado) e o "Voltar" neutro ao lado.
+**Uma família: Inter**, servida com o eixo de *optical size* ligado
+(`family=Inter:opsz,wght@14..32,400;14..32,600`). Isso reproduz de graça o
+mecanismo central da tipografia da Apple: medido, a Inter estreita 0,8% sozinha
+de 14px para 48px, que é exatamente o trabalho da troca SF Pro Text → SF Pro
+Display. Sem o `opsz,` na URL o Google Fonts serve outro arquivo e o recurso
+desliga em silêncio.
 
-**Tipografia.** Duas famílias no projeto inteiro:
+| Regra | Valor |
+| --- | --- |
+| Rampa de tamanhos | 12 · 14 · 17 · 21 · 28 · 40 · 48 · 56 — nunca 15, 18, 22 |
+| Line-height de título | `calc(1em + 4px)` |
+| Line-height de leitura | `calc(1em + 8px)` |
+| Pesos | **só 400 e 600** — a apple.com não usa 700 |
+| Tracking | 56px `-0.005em` · 48px `-0.003em` · 21–40px `0` · 17px `-0.011em` · 14px `-0.008em` |
+| Breakpoints | 1068px e 734px, descendo degraus na mesma rampa |
 
-- **Inter** em tudo, inclusive nos números (`font-variant-numeric: tabular-nums`);
-- **Cormorant Garamond** só nos títulos do institucional. O painel e o
-  agendamento não carregam a serifada.
+Duas armadilhas evitadas: o tracking da Apple (`-0.022em` no corpo) foi
+calibrado para a SF Pro Text, que é um desenho largo — a Inter já nasce
+apertada, então usamos metade. E o tracking *positivo* que a Apple aplica entre
+19 e 32px é compensação por usar o corte Display em corpo pequeno; com o eixo
+`opsz` ligado isso é automático, e copiar seria corrigir duas vezes.
 
-Quatro tamanhos por tela, e a hierarquia se resolve por **peso** antes de
-tamanho. Caixa alta com `letter-spacing` só em rótulo curto (`.rotulo`,
-`.ds-eyebrow`) — nunca em frase.
+### Cor
 
-**Composição.** Uma informação herói e uma ação primária por tela. Espaço vazio
-é resultado aceito, não problema a resolver.
+Tema claro, **um acento**. A rampa de neutros é **quente** de propósito: os
+cinzas da Apple são azulados (`#F5F5F7` tem B > R) e misturá-los com o off-white
+de uma barbearia faz o branco parecer encardido.
 
-Os tokens ficam em `:root`: prefixo `--ds-` em `assets/css/dashboard.css`
-(painel) e sem prefixo em `assets/css/styles.css` (site e agendamento).
+| Token | Valor | Papel |
+| --- | --- | --- |
+| `--paper` | `#FAF9F7` | fundo da página |
+| `--surface` | `#FFFFFF` | cartões e listas |
+| `--line` | `#E8E4DC` | separador |
+| `--ink` | `#1C1B19` | texto (16,9:1) |
+| `--ink-2` | `#6B6862` | secundário (5,55:1) |
+| `--ink-3` | `#8A867E` | letra miúda |
+| `--accent` | `#8E2C26` | ação primária e estado crítico |
+| `--accent-hover` | `#9C332C` | **mais claro** no hover, como a Apple |
+| `--accent-text` | `#7A2520` | o mesmo hue, escurecido, quando é texto |
 
----
+O acento foi calculado, não escolhido de catálogo: branco sobre cada acento de
+sistema da Apple dá systemBlue 4,02:1, Red 3,55:1, Teal 2,57:1, Green 2,22:1 —
+todos reprovam. Até o `#0071E3` do botão da apple.com dá só 4,70:1. Este dá
+**8,27:1**, o que deixa margem para o acento aparecer pequeno.
+
+Trocar de acento é editar `--accent`, `--accent-hover`, `--accent-active`,
+`--accent-text` e `--accent-tint` nas duas folhas.
+
+### Componentes — três referências, não uma
+
+Página de marketing e ferramenta de trabalho são produtos diferentes na própria
+Apple. Copiar a vitrine para dentro de um ERP dá uma tela bonita onde cabe
+metade dos dados.
+
+| Peça | Referência | O que isso significa |
+| --- | --- | --- |
+| `index.html` | apple.com | pílula de 44px, corpo 17px, headline 56px, respiro de 80px |
+| `agendar.html` | fluxo de checkout | alvo de 44px, uma ação por tela, barra fixa |
+| `dashboard.html` | app do macOS | botão de 6px de raio, corpo 14px, linha de 36px |
+
+Vieram do HIG, com valores: pílula de navegação de 32px com raio 6px e respiro
+de 8px; lista agrupada com separador recuado 16px; *segmented control* com
+trilho de 9px e pílula de 7px com sombra; interruptor 38×22 com botão de 18;
+campo de 36px; anel de foco como halo de 3px; cartão de raio 12px com sombra
+`0 1px 3px rgba(0,0,0,.04)`; alvo mínimo de 28px no mouse e 44px no dedo.
+
+### Onde este sistema se afasta da Apple, de propósito
+
+1. **A Apple usa o azul em cinco lugares** — seleção de sidebar, link, foco,
+   interruptor ligado e botão primário. A regra deste projeto é um acento. Ele
+   fica na ação primária, no anel de foco e na linha do "agora" da agenda;
+   seleção de menu e interruptor se resolvem na escala de neutros.
+2. **Caixa alta saiu.** Nenhum token da apple.com usa `text-transform`. Os
+   rótulos de seção viraram títulos de verdade e o cabeçalho de coluna passou a
+   caixa normal, como em Numbers e no Finder.
+3. **`backdrop-filter` só na barra fixa.** É caro, e numa agenda que rola muito
+   o custo aparece em máquina fraca — que é o hardware provável de uma
+   barbearia. A sidebar é sólida.
+4. **A marca é um símbolo.** O poste de barbeiro, reduzido a um retângulo
+   arredondado com três diagonais, desenhado inline em SVG (`currentColor`, sem
+   arquivo) e reaproveitado no favicon das três páginas.
 
 ## Publicar no GitHub Pages
 
